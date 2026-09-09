@@ -114,6 +114,26 @@ struct InspectorIdentityTests {
         #expect(decoded == transfer)
         #expect(UTType.torahSource.identifier == "com.gloiiire.pinkha.torahSource")
     }
+
+    @Test func changingSelectedSegmentUpdatesPreferredIdentity() {
+        let seg1 = TorahTextSegment(canonicalRef: "Berakhot 2a:1", text: "From when", ordinal: 1)
+        let seg2 = TorahTextSegment(canonicalRef: "Berakhot 2a:2", text: "They may recite", ordinal: 2)
+        var selection = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Berakhot 2a",
+            preferredSegmentRef: seg1.canonicalRef
+        )
+        #expect(selection.prefers(seg1))
+        #expect(!selection.prefers(seg2))
+
+        selection = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Berakhot 2a",
+            preferredSegmentRef: seg2.canonicalRef
+        )
+        #expect(!selection.prefers(seg1))
+        #expect(selection.prefers(seg2))
+    }
 }
 
 @Suite("Reader navigation state")
