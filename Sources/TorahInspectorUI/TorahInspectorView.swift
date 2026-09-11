@@ -118,21 +118,20 @@ private struct _InspectorSourceReaderEntry: View {
 }
 
 /// Entry directly at the segment relationships view.
-/// The NavigationStack is pre-seeded with the source reader + segment detail
-/// route so the user can tap Back to reach the text reader.
+/// The root of the NavigationStack is the segment detail (relationships),
+/// so the user sees relationships immediately without a source reader flash.
+/// Tapping a related source pushes within the same stack.
 private struct _InspectorSegmentRelationshipsEntry: View {
     let selection: TorahInspectorSelection
     let initialSegmentRef: String
     let repository: TorahInspectorRepository
     let actions: TorahInspectorHostActions
 
-    /// Synthesise a lightweight segment stub for the pre-seeded route.
-    /// The real text content is fetched lazily inside TorahSegmentDetailView.
+    /// Synthesise a lightweight segment stub for the root view.
+    /// The real relationship content is fetched lazily inside TorahSegmentDetailView.
     private var initialSegment: TorahTextSegment {
         TorahTextSegment(canonicalRef: initialSegmentRef, hebrewRef: initialSegmentRef, text: "", ordinal: 0)
     }
-
-    @State private var path: [TorahInspectorRoute]
 
     init(
         selection: TorahInspectorSelection,
@@ -144,21 +143,17 @@ private struct _InspectorSegmentRelationshipsEntry: View {
         self.initialSegmentRef = initialSegmentRef
         self.repository = repository
         self.actions = actions
-        // Pre-seed the stack: root = source reader, top = segment detail.
-        _path = State(initialValue: [
-            .segment(TorahTextSegment(
-                canonicalRef: initialSegmentRef,
-                hebrewRef: initialSegmentRef,
-                text: "",
-                ordinal: 0
-            ))
-        ])
     }
 
     var body: some View {
-        NavigationStack(path: $path) {
-            TorahSourceReaderView(selection: selection, repository: repository, actions: actions)
-                .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
+        NavigationStack {
+            TorahSegmentDetailView(
+                segment: initialSegment,
+                providerID: selection.providerID,
+                repository: repository,
+                actions: actions
+            )
+            .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
         }
     }
 }
