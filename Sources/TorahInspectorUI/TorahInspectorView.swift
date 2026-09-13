@@ -126,12 +126,8 @@ private struct _InspectorSegmentRelationshipsEntry: View {
     let initialSegmentRef: String
     let repository: TorahInspectorRepository
     let actions: TorahInspectorHostActions
-
-    /// Synthesise a lightweight segment stub for the root view.
-    /// The real relationship content is fetched lazily inside TorahSegmentDetailView.
-    private var initialSegment: TorahTextSegment {
-        TorahTextSegment(canonicalRef: initialSegmentRef, hebrewRef: initialSegmentRef, text: "", ordinal: 0)
-    }
+    @State private var segment: TorahTextSegment?
+    @State private var errorMessage: String?
 
     init(
         selection: TorahInspectorSelection,
@@ -147,13 +143,59 @@ private struct _InspectorSegmentRelationshipsEntry: View {
 
     var body: some View {
         NavigationStack {
-            TorahSegmentDetailView(
-                segment: initialSegment,
-                providerID: selection.providerID,
-                repository: repository,
-                actions: actions
-            )
+            Group {
+                if let segment {
+                    TorahSegmentDetailView(
+                        segment: segment,
+                        providerID: selection.providerID,
+                        repository: repository,
+                        actions: actions
+                    )
+                } else if let errorMessage {
+                    ContentUnavailableView {
+                        Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                    } description: {
+                        Text(errorMessage)
+                    } actions: {
+                        Button(TorahStrings.retry) { Task { await loadSegment() } }
+                    }
+                } else {
+                    ProgressView()
+                }
+            }
             .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
+            .task(id: selection.id) { await loadSegment() }
         }
+    }
+
+    private func loadSegment() async {
+        segment = nil
+        errorMessage = nil
+        do {
+            let document = try await repository.document(
+                for: selection.canonicalRef,
+                providerID: selection.providerID
+            )
+            guard let resolved = TorahInspectorSegmentResolver.segment(
+                in: document,
+                preferredReference: initialSegmentRef
+            ) else {
+                throw TorahError.noText
+            }
+            segment = resolved
+        } catch is CancellationError {
+        } catch {
+            errorMessage = TorahStrings.message(for: error)
+        }
+    }
+}
+
+enum TorahInspectorSegmentResolver {
+    static func segment(
+        in document: TorahTextDocument,
+        preferredReference: String
+    ) -> TorahTextSegment? {
+        document.segments.first { $0.canonicalRef == preferredReference }
+            ?? document.segments.first
     }
 }

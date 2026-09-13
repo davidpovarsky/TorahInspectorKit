@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 import TorahInspectorCore
 
@@ -13,6 +14,7 @@ public struct TorahSegmentDetailView: View {
     @State private var topicsError: String?
     @State private var loadingLinks = true
     @State private var loadingTopics = true
+    @Environment(\.locale) private var locale
 
     public init(
         segment: TorahTextSegment,
@@ -41,7 +43,7 @@ public struct TorahSegmentDetailView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     Text(segment.text)
                         .font(.body)
-                        .environment(\.layoutDirection, .rightToLeft)
+                        .environment(\.layoutDirection, segmentLayoutDirection)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     HStack(spacing: 12) {
                         if let onInsertSegment = actions.onInsertSegment {
@@ -60,7 +62,7 @@ public struct TorahSegmentDetailView: View {
                 }
                 .padding(.vertical, 4)
             } header: {
-                Text(segment.hebrewRef ?? segment.canonicalRef).font(.headline)
+                Text(segmentDisplayRef).font(.headline)
             }
 
             relationshipSection(title: TorahStrings.text("Commentary"), values: groups.commentary)
@@ -77,13 +79,13 @@ public struct TorahSegmentDetailView: View {
                     ForEach(topics) { topic in
                         HStack {
                             Image(systemName: TorahInspectorAppearance.topicSymbol).foregroundStyle(.purple)
-                            Text(topic.titleHe ?? topic.titleEn ?? topic.slug)
+                            Text(TorahInspectorPresentation.topicTitle(topic, locale: locale))
                         }
                     }
                 }
             }
         }
-        .navigationTitle(segment.hebrewRef ?? segment.canonicalRef)
+        .navigationTitle(segmentDisplayRef)
         .torahInlineNavigationTitle()
         .toolbar {
             if let onOpenInNewTab = actions.onOpenInNewTab {
@@ -108,6 +110,26 @@ public struct TorahSegmentDetailView: View {
 
     private var groups: TorahRelationshipGroups { TorahRelationshipGroups(sources: links) }
 
+    private var segmentDisplayRef: String {
+        TorahInspectorPresentation.reference(
+            canonical: segment.canonicalRef,
+            hebrew: segment.hebrewRef,
+            locale: locale
+        )
+    }
+
+    private var segmentLayoutDirection: LayoutDirection {
+        for scalar in segment.text.unicodeScalars {
+            switch scalar.value {
+            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
+                return .rightToLeft
+            default:
+                if CharacterSet.letters.contains(scalar) { return .leftToRight }
+            }
+        }
+        return .leftToRight
+    }
+
     @ViewBuilder
     private func relationshipSection(title: String, values: [TorahLinkedSource]) -> some View {
         Section(title) {
@@ -124,9 +146,13 @@ public struct TorahSegmentDetailView: View {
                         HStack(alignment: .top, spacing: 8) {
                             Image(systemName: TorahInspectorAppearance.referenceSymbol).foregroundStyle(.blue)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(value.sourceHebrewRef ?? value.sourceRef).font(.body)
+                                Text(TorahInspectorPresentation.reference(
+                                    canonical: value.sourceRef,
+                                    hebrew: value.sourceHebrewRef,
+                                    locale: locale
+                                )).font(.body)
                                 Text(value.category).font(.caption).foregroundStyle(.secondary)
-                                if let text = value.hebrewText {
+                                if let text = TorahInspectorPresentation.linkedText(value, locale: locale) {
                                     Text(text).font(.caption).lineLimit(3).foregroundStyle(.secondary)
                                 }
                             }

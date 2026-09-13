@@ -4,6 +4,7 @@ import TorahInspectorCore
 public struct TorahSegmentPreviewCard: View {
     public let segment: TorahTextSegment
     public let section: TorahTextDocument
+    @Environment(\.locale) private var locale
 
     public init(segment: TorahTextSegment, section: TorahTextDocument) {
         self.segment = segment
@@ -12,7 +13,11 @@ public struct TorahSegmentPreviewCard: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(segment.hebrewRef ?? segment.canonicalRef)
+            Text(TorahInspectorPresentation.reference(
+                canonical: segment.canonicalRef,
+                hebrew: segment.hebrewRef,
+                locale: locale
+            ))
                 .font(.headline)
                 .foregroundStyle(.secondary)
             Text(segment.text)
@@ -64,6 +69,7 @@ public struct TorahSourceReaderView: View {
     @State private var loadingNext = false
     @State private var errorMessage: String?
     @State private var stateMachine = TorahReaderScrollStateMachine()
+    @Environment(\.locale) private var locale
 
     private static let maximumSectionWindow = 7
 
@@ -113,7 +119,12 @@ public struct TorahSourceReaderView: View {
     }
 
     private var displayTitle: String {
-        sections.first?.hebrewSectionRef ?? sections.first?.sectionRef ?? selection.canonicalRef
+        guard let section = sections.first else { return selection.canonicalRef }
+        return TorahInspectorPresentation.reference(
+            canonical: section.sectionRef,
+            hebrew: section.hebrewSectionRef,
+            locale: locale
+        )
     }
 
     @ViewBuilder
@@ -146,7 +157,11 @@ public struct TorahSourceReaderView: View {
                             segmentRow(segment, in: section).id(segment.id)
                         }
                     } header: {
-                        Text(section.hebrewSectionRef ?? section.sectionRef)
+                        Text(TorahInspectorPresentation.reference(
+                            canonical: section.sectionRef,
+                            hebrew: section.hebrewSectionRef,
+                            locale: locale
+                        ))
                             .font(.headline)
                             .foregroundStyle(.secondary)
                     }
@@ -191,7 +206,14 @@ public struct TorahSourceReaderView: View {
             TorahSegmentPreviewCard(segment: segment, section: section)
         }
         .draggable(transfer) {
-            TorahDragPreview(title: segment.hebrewRef ?? segment.canonicalRef, text: segment.text)
+            TorahDragPreview(
+                title: TorahInspectorPresentation.reference(
+                    canonical: segment.canonicalRef,
+                    hebrew: segment.hebrewRef,
+                    locale: locale
+                ),
+                text: segment.text
+            )
         }
         .onDrag { transfer.itemProvider }
     }
