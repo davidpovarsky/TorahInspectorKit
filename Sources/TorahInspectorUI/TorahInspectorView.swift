@@ -97,8 +97,69 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     actions: actions
                 )
             case .source(let nextSelection):
-                TorahSourceReaderView(selection: nextSelection, repository: repository, actions: actions)
+                _InspectorLinkedSourceEntry(
+                    selection: nextSelection,
+                    repository: repository,
+                    actions: actions
+                )
             }
+        }
+    }
+}
+
+/// A relationship tap is a drill-down inside the inspector. Loading the
+/// linked document is still necessary, but presenting its full source reader
+/// makes a compact inspector look and behave like a replacement reader.
+private struct _InspectorLinkedSourceEntry: View {
+    let selection: TorahInspectorSelection
+    let repository: TorahInspectorRepository
+    let actions: TorahInspectorHostActions
+
+    @State private var segment: TorahTextSegment?
+    @State private var errorMessage: String?
+
+    var body: some View {
+        Group {
+            if let segment {
+                TorahSegmentDetailView(
+                    segment: segment,
+                    providerID: selection.providerID,
+                    repository: repository,
+                    actions: actions
+                )
+            } else if let errorMessage {
+                ContentUnavailableView {
+                    Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                } description: {
+                    Text(errorMessage)
+                } actions: {
+                    Button(TorahStrings.retry) { Task { await loadSegment() } }
+                }
+            } else {
+                ProgressView()
+            }
+        }
+        .task(id: selection.id) { await loadSegment() }
+    }
+
+    private func loadSegment() async {
+        segment = nil
+        errorMessage = nil
+        do {
+            let document = try await repository.document(
+                for: selection.canonicalRef,
+                providerID: selection.providerID
+            )
+            guard let resolved = TorahInspectorSegmentResolver.segment(
+                in: document,
+                preferredReference: selection.preferredSegmentRef ?? selection.canonicalRef
+            ) else {
+                throw TorahError.noText
+            }
+            segment = resolved
+        } catch is CancellationError {
+        } catch {
+            errorMessage = TorahStrings.message(for: error)
         }
     }
 }
