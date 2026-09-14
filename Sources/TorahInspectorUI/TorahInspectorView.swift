@@ -169,9 +169,10 @@ private struct _InspectorSourceReaderEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
     let actions: TorahInspectorHostActions
+    @State private var path: [TorahInspectorRoute] = []
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             TorahSourceReaderView(selection: selection, repository: repository, actions: actions)
                 .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
         }
@@ -187,6 +188,7 @@ private struct _InspectorSegmentRelationshipsEntry: View {
     let initialSegmentRef: String
     let repository: TorahInspectorRepository
     let actions: TorahInspectorHostActions
+    @State private var path: [TorahInspectorRoute] = []
     @State private var segment: TorahTextSegment?
     @State private var errorMessage: String?
 
@@ -203,7 +205,7 @@ private struct _InspectorSegmentRelationshipsEntry: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if let segment {
                     TorahSegmentDetailView(
