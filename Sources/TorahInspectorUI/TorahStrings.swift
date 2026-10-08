@@ -30,7 +30,17 @@ public enum TorahStrings {
         String(localized: key, bundle: .module)
     }
 
-    public static func text(_ key: String.LocalizationValue, locale: Locale) -> String {
-        String(localized: key, bundle: .module, locale: locale)
+    public static func text(_ key: String, locale: Locale) -> String {
+        let rawLanguage = locale.identifier
+            .split(whereSeparator: { $0 == "_" || $0 == "-" })
+            .first
+            .map(String.init)?
+            .lowercased() ?? "en"
+        let language = rawLanguage == "iw" ? "he" : rawLanguage
+        guard let path = Bundle.module.path(forResource: language, ofType: "lproj"),
+              let localizedBundle = Bundle(path: path) else {
+            return NSLocalizedString(key, bundle: .module, comment: "")
+        }
+        return NSLocalizedString(key, bundle: localizedBundle, comment: "")
     }
 }
