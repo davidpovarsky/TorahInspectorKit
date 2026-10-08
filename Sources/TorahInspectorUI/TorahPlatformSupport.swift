@@ -17,6 +17,18 @@ enum TorahPlatformClipboard {
     }
 }
 
+extension Color {
+    static var torahSecondarySystemBackground: Color {
+        #if canImport(UIKit)
+        Color(uiColor: .secondarySystemBackground)
+        #elseif canImport(AppKit)
+        Color(nsColor: .controlBackgroundColor)
+        #else
+        Color.secondary.opacity(0.08)
+        #endif
+    }
+}
+
 extension View {
     @ViewBuilder
     func torahInlineNavigationTitle() -> some View {

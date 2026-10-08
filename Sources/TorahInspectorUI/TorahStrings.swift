@@ -9,6 +9,9 @@ public enum TorahStrings {
     public static var viewDetails: String { text("View details") }
     public static var couldNotLoadRelatedSources: String { text("Could not load related sources") }
     public static var retry: String { text("Retry") }
+    public static var studyTools: String { text("Study Tools") }
+    public static var selectedSegment: String { text("Selected Segment") }
+    public static var addNote: String { text("Add Note") }
 
     public static func message(for error: Error) -> String {
         guard let torah = error as? TorahError else { return text("Could not load source") }
@@ -25,5 +28,9 @@ public enum TorahStrings {
 
     public static func text(_ key: String.LocalizationValue) -> String {
         String(localized: key, bundle: .module)
+    }
+
+    public static func text(_ key: String.LocalizationValue, locale: Locale) -> String {
+        String(localized: key, bundle: .module, locale: locale)
     }
 }

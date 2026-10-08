@@ -171,6 +171,20 @@ public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
     }
 }
 
+public struct TorahInspectorNote: Identifiable, Hashable, Sendable {
+    public let id: String
+    public let selectedText: String
+    public let note: String
+    public let tag: String?
+
+    public init(id: String, selectedText: String, note: String, tag: String? = nil) {
+        self.id = id
+        self.selectedText = selectedText
+        self.note = note
+        self.tag = tag
+    }
+}
+
 public struct TorahRelationshipGroups: Equatable, Sendable {
     public let commentary: [TorahLinkedSource]
     public let linkedSources: [TorahLinkedSource]

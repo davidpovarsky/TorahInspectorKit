@@ -5,10 +5,12 @@ public final class TorahInspectorRepository {
     public typealias TextFetcher = @Sendable (String, String?) async throws -> TorahTextDocument
     public typealias LinksFetcher = @Sendable (String, String?) async throws -> [TorahLinkedSource]
     public typealias TopicsFetcher = @Sendable (String, String?) async throws -> [TorahLinkedTopic]
+    public typealias NotesFetcher = @Sendable (TorahInspectorSelection) async throws -> [TorahInspectorNote]
 
     private let textFetcher: TextFetcher
     private let linksFetcher: LinksFetcher
     private let topicsFetcher: TopicsFetcher
+    private let notesFetcher: NotesFetcher
     public let documentCapacity: Int
     public let relationshipCapacity: Int
 
@@ -22,17 +24,21 @@ public final class TorahInspectorRepository {
     private var topicsCache: [String: [TorahLinkedTopic]] = [:]
     private var topicsLRU: [String] = []
     private var inFlightTopics: [String: Task<[TorahLinkedTopic], Error>] = [:]
+    private var notesCache: [String: [TorahInspectorNote]] = [:]
+    private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
 
     public init(
         documentCapacity: Int = 30,
         relationshipCapacity: Int = 50,
         textFetcher: @escaping TextFetcher,
         linksFetcher: @escaping LinksFetcher = { _, _ in [] },
-        topicsFetcher: @escaping TopicsFetcher = { _, _ in [] }
+        topicsFetcher: @escaping TopicsFetcher = { _, _ in [] },
+        notesFetcher: @escaping NotesFetcher = { _ in [] }
     ) {
         self.textFetcher = textFetcher
         self.linksFetcher = linksFetcher
         self.topicsFetcher = topicsFetcher
+        self.notesFetcher = notesFetcher
         self.documentCapacity = max(0, documentCapacity)
         self.relationshipCapacity = max(0, relationshipCapacity)
     }
@@ -63,7 +69,8 @@ public final class TorahInspectorRepository {
                     throw TorahError.missingProvider
                 }
                 return try await provider.topics(for: reference)
-            }
+            },
+            notesFetcher: { _ in [] }
         )
     }
 
@@ -169,6 +176,34 @@ public final class TorahInspectorRepository {
             inFlightTopics.removeValue(forKey: key)
             throw error
         }
+    }
+
+    public func cachedNotes(for selection: TorahInspectorSelection) -> [TorahInspectorNote]? {
+        notesCache[selection.id]
+    }
+
+    public func notes(for selection: TorahInspectorSelection) async throws -> [TorahInspectorNote] {
+        let key = selection.id
+        if let cached = notesCache[key] { return cached }
+        if let inFlight = inFlightNotes[key] { return try await inFlight.value }
+        let fetcher = notesFetcher
+        let task = Task<[TorahInspectorNote], Error> { try await fetcher(selection) }
+        inFlightNotes[key] = task
+        do {
+            let values = try await task.value
+            inFlightNotes.removeValue(forKey: key)
+            notesCache[key] = values
+            return values
+        } catch {
+            inFlightNotes.removeValue(forKey: key)
+            throw error
+        }
+    }
+
+    public func invalidateNotes(for selection: TorahInspectorSelection) {
+        notesCache.removeValue(forKey: selection.id)
+        inFlightNotes[selection.id]?.cancel()
+        inFlightNotes.removeValue(forKey: selection.id)
     }
 
     private static func touchRelationship(_ key: String, lru: inout [String]) {

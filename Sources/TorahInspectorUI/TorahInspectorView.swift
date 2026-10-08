@@ -18,16 +18,20 @@ public struct TorahInspectorView: View {
     private let repository: TorahInspectorRepository
     private let actions: TorahInspectorHostActions
     private let entryMode: TorahInspectorEntryMode
+    private let externalSelectedTool: Binding<TorahStudyTool>?
+    @State private var localSelectedTool: TorahStudyTool = .commentaries
 
     public init(
         repository: TorahInspectorRepository,
         selection: TorahInspectorSelection,
         entryMode: TorahInspectorEntryMode = .sourceReader,
+        selectedTool: Binding<TorahStudyTool>? = nil,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.repository = repository
         self.selection = selection
         self.entryMode = entryMode
+        self.externalSelectedTool = selectedTool
         self.actions = actions
     }
 
@@ -35,18 +39,28 @@ public struct TorahInspectorView: View {
         repository: TorahInspectorRepository,
         selection: TorahInspectorSelection,
         entryMode: TorahInspectorEntryMode = .sourceReader,
+        selectedTool: Binding<TorahStudyTool>? = nil,
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
-        onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil
+        onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil,
+        onAddNote: ((TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        showsCloseButton: Bool? = nil
     ) {
         self.init(
             repository: repository,
             selection: selection,
             entryMode: entryMode,
+            selectedTool: selectedTool,
             actions: TorahInspectorHostActions(
                 onClose: onClose,
                 onInsertSegment: onInsertSegment,
-                onOpenInNewTab: onOpenInNewTab
+                onOpenInNewTab: onOpenInNewTab,
+                onAddNote: onAddNote,
+                onOpenNote: onOpenNote,
+                onDeleteNote: onDeleteNote,
+                showsCloseButton: showsCloseButton
             )
         )
     }
@@ -57,6 +71,7 @@ public struct TorahInspectorView: View {
             _InspectorSourceReaderEntry(
                 selection: selection,
                 repository: repository,
+                selectedTool: selectedToolBinding,
                 actions: actions
             )
         case .segmentRelationships:
@@ -65,16 +80,31 @@ public struct TorahInspectorView: View {
                     selection: selection,
                     initialSegmentRef: segRef,
                     repository: repository,
+                    selectedTool: selectedToolBinding,
                     actions: actions
                 )
             } else {
                 _InspectorSourceReaderEntry(
                     selection: selection,
                     repository: repository,
+                    selectedTool: selectedToolBinding,
                     actions: actions
                 )
             }
         }
+    }
+
+    private var selectedToolBinding: Binding<TorahStudyTool> {
+        Binding(
+            get: { externalSelectedTool?.wrappedValue ?? localSelectedTool },
+            set: { newValue in
+                if let externalSelectedTool {
+                    externalSelectedTool.wrappedValue = newValue
+                } else {
+                    localSelectedTool = newValue
+                }
+            }
+        )
     }
 }
 
@@ -84,6 +114,7 @@ public struct TorahInspectorView: View {
 private struct _InspectorNavigationDestinations: ViewModifier {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
+    @Binding var selectedTool: TorahStudyTool
     let actions: TorahInspectorHostActions
 
     func body(content: Content) -> some View {
@@ -94,12 +125,14 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     segment: segment,
                     providerID: selection.providerID,
                     repository: repository,
+                    selectedTool: $selectedTool,
                     actions: actions
                 )
             case .source(let nextSelection):
                 _InspectorLinkedSourceEntry(
                     selection: nextSelection,
                     repository: repository,
+                    selectedTool: $selectedTool,
                     actions: actions
                 )
             }
@@ -113,6 +146,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
 private struct _InspectorLinkedSourceEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
+    @Binding var selectedTool: TorahStudyTool
     let actions: TorahInspectorHostActions
 
     @State private var segment: TorahTextSegment?
@@ -125,6 +159,7 @@ private struct _InspectorLinkedSourceEntry: View {
                     segment: segment,
                     providerID: selection.providerID,
                     repository: repository,
+                    selectedTool: $selectedTool,
                     actions: actions
                 )
             } else if let errorMessage {
@@ -168,13 +203,19 @@ private struct _InspectorLinkedSourceEntry: View {
 private struct _InspectorSourceReaderEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
+    @Binding var selectedTool: TorahStudyTool
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
 
     var body: some View {
         NavigationStack(path: $path) {
             TorahSourceReaderView(selection: selection, repository: repository, actions: actions)
-                .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
+                .modifier(_InspectorNavigationDestinations(
+                    selection: selection,
+                    repository: repository,
+                    selectedTool: $selectedTool,
+                    actions: actions
+                ))
         }
     }
 }
@@ -187,6 +228,7 @@ private struct _InspectorSegmentRelationshipsEntry: View {
     let selection: TorahInspectorSelection
     let initialSegmentRef: String
     let repository: TorahInspectorRepository
+    @Binding var selectedTool: TorahStudyTool
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
     @State private var segment: TorahTextSegment?
@@ -196,11 +238,13 @@ private struct _InspectorSegmentRelationshipsEntry: View {
         selection: TorahInspectorSelection,
         initialSegmentRef: String,
         repository: TorahInspectorRepository,
+        selectedTool: Binding<TorahStudyTool>,
         actions: TorahInspectorHostActions
     ) {
         self.selection = selection
         self.initialSegmentRef = initialSegmentRef
         self.repository = repository
+        self._selectedTool = selectedTool
         self.actions = actions
     }
 
@@ -212,6 +256,7 @@ private struct _InspectorSegmentRelationshipsEntry: View {
                         segment: segment,
                         providerID: selection.providerID,
                         repository: repository,
+                        selectedTool: $selectedTool,
                         actions: actions
                     )
                 } else if let errorMessage {
@@ -226,7 +271,12 @@ private struct _InspectorSegmentRelationshipsEntry: View {
                     ProgressView()
                 }
             }
-            .modifier(_InspectorNavigationDestinations(selection: selection, repository: repository, actions: actions))
+            .modifier(_InspectorNavigationDestinations(
+                selection: selection,
+                repository: repository,
+                selectedTool: $selectedTool,
+                actions: actions
+            ))
             .task(id: selection.id) { await loadSegment() }
         }
     }

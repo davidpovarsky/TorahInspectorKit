@@ -16,3 +16,11 @@
 "Could not load source" = "לא ניתן לטעון את המקור";
 "Could not load related sources" = "לא ניתן לטעון מקורות מקושרים";
 "No Torah provider is available." = "ספק התוכן התורני אינו זמין.";
+"Study Tools" = "כלי לימוד";
+"Commentaries" = "מפרשים";
+"Links" = "קישורים";
+"Notes" = "הערות";
+"Add Note" = "הוסף הערה";
+"Selected Segment" = "קטע נבחר";
+"No notes" = "אין הערות";
+"Could not load notes" = "לא ניתן לטעון הערות";

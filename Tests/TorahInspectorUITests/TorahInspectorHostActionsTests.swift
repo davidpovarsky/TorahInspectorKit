@@ -10,6 +10,17 @@ struct TorahInspectorHostActionsTests {
         #expect(actions.onClose == nil)
         #expect(actions.onInsertSegment == nil)
         #expect(actions.onOpenInNewTab == nil)
+        #expect(actions.onAddNote == nil)
+        #expect(actions.onOpenNote == nil)
+        #expect(actions.onDeleteNote == nil)
+        #expect(!actions.showsCloseButton)
+    }
+
+    @Test func studyToolStringsAreLocalizedInEnglishAndHebrew() {
+        #expect(TorahStudyTool.commentaries.localizedTitle(locale: Locale(identifier: "en_US")) == "Commentaries")
+        #expect(TorahStudyTool.links.localizedTitle(locale: Locale(identifier: "he_IL")) == "קישורים")
+        #expect(TorahStudyTool.notes.localizedTitle(locale: Locale(identifier: "he_IL")) == "הערות")
+        #expect(TorahStrings.text("Add Note", locale: Locale(identifier: "he_IL")) == "הוסף הערה")
     }
 
     @Test func entryModesAreDistinct() {

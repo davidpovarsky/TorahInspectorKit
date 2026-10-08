@@ -82,6 +82,37 @@ struct RepositoryBoundaryTests {
         let fetchCount = await count.value()
         #expect(fetchCount == 1)
     }
+
+    @Test @MainActor func optionalNotesProviderDefaultsToEmptyAndSupportsRefresh() async throws {
+        let selection = TorahInspectorSelection(
+            providerID: "fixture",
+            canonicalRef: "Genesis 1:1",
+            preferredSegmentRef: "Genesis 1:1"
+        )
+        let compatibleRepository = TorahInspectorRepository(textFetcher: { reference, _ in
+            makeDocument(reference: reference)
+        })
+        #expect(try await compatibleRepository.notes(for: selection).isEmpty)
+
+        let count = Counter()
+        let repository = TorahInspectorRepository(
+            textFetcher: { reference, _ in makeDocument(reference: reference) },
+            notesFetcher: { _ in
+                await count.increment()
+                return [TorahInspectorNote(id: "42", selectedText: "בראשית", note: "My note", tag: "study")]
+            }
+        )
+        let first = try await repository.notes(for: selection)
+        let cached = try await repository.notes(for: selection)
+        #expect(first == cached)
+        #expect(first.first == TorahInspectorNote(id: "42", selectedText: "בראשית", note: "My note", tag: "study"))
+        let cachedFetchCount = await count.value()
+        #expect(cachedFetchCount == 1)
+        repository.invalidateNotes(for: selection)
+        _ = try await repository.notes(for: selection)
+        let refreshedFetchCount = await count.value()
+        #expect(refreshedFetchCount == 2)
+    }
 }
 
 @Suite("Inspector identity and relationships")
