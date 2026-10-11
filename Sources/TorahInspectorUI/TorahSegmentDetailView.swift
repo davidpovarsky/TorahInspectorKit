@@ -3,10 +3,10 @@ import SwiftUI
 import TorahInspectorCore
 
 public struct TorahSegmentDetailView: View {
-    public let segment: TorahTextSegment
-    public let providerID: String
+    public let focus: TorahInspectorFocus
     public let repository: TorahInspectorRepository
     public let actions: TorahInspectorHostActions
+    public let chrome: TorahInspectorChrome
     @Binding private var selectedTool: TorahStudyTool
 
     @State private var links: [TorahLinkedSource] = []
@@ -18,58 +18,75 @@ public struct TorahSegmentDetailView: View {
     @State private var loadingLinks = true
     @State private var loadingTopics = true
     @State private var loadingNotes = true
-    @State private var selectedCommentaryID: TorahLinkedSource.ID?
+    @State private var expandedSourceIDs: Set<TorahLinkedSource.ID> = []
+    @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
+    @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
+    @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
     @Environment(\.locale) private var locale
+
+    public init(
+        focus: TorahInspectorFocus,
+        repository: TorahInspectorRepository,
+        selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
+        chrome: TorahInspectorChrome = .floatingPanel,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) {
+        self.focus = focus
+        self.repository = repository
+        self._selectedTool = selectedTool
+        self.chrome = chrome
+        self.actions = actions
+    }
 
     public init(
         segment: TorahTextSegment,
         providerID: String,
         repository: TorahInspectorRepository,
         selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
+        chrome: TorahInspectorChrome = .floatingPanel,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
-        self.segment = segment
-        self.providerID = providerID
-        self.repository = repository
-        self._selectedTool = selectedTool
-        self.actions = actions
-    }
-
-    private var selection: TorahInspectorSelection {
-        TorahInspectorSelection(
-            providerID: providerID,
-            canonicalRef: segment.canonicalRef,
-            preferredSegmentRef: segment.canonicalRef
+        self.init(
+            focus: TorahInspectorFocus(segment: segment, providerID: providerID),
+            repository: repository,
+            selectedTool: selectedTool,
+            chrome: chrome,
+            actions: actions
         )
     }
 
-    private var transferPayload: TorahSourceTransfer {
-        TorahSourceTransfer(
-            providerID: providerID,
-            canonicalRef: segment.canonicalRef,
-            hebrewRef: segment.hebrewRef,
-            text: segment.text
-        )
-    }
+    private var selection: TorahInspectorSelection { focus.selection }
+    private var providerID: String { selection.providerID }
 
     private var groups: TorahRelationshipGroups { TorahRelationshipGroups(sources: links) }
 
+    @ViewBuilder
     public var body: some View {
+        switch chrome {
+        case .embeddedSheet:
+            panelContent
+                .background(.regularMaterial)
+        case .floatingPanel:
+            panelContent
+                .background(.regularMaterial)
+                .compositingGroup()
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .strokeBorder(Color.primary.opacity(0.07), lineWidth: 1)
+                }
+                .shadow(color: .black.opacity(0.035), radius: 7, x: 0, y: 2)
+                .padding(8)
+        }
+    }
+
+    private var panelContent: some View {
         VStack(spacing: 0) {
             panelHeader
             Divider().opacity(0.45)
             toolContent
         }
-        .background(.regularMaterial)
-        .compositingGroup()
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.07), lineWidth: 1)
-        }
-        .shadow(color: .black.opacity(0.035), radius: 7, x: 0, y: 2)
-        .padding(8)
-        .task(id: segment.id) { await loadPanelData() }
+        .task(id: focus.id) { await loadPanelData() }
     }
 
     private var panelHeader: some View {
@@ -84,15 +101,6 @@ public struct TorahSegmentDetailView: View {
                         .lineLimit(1)
                 }
                 Spacer(minLength: 8)
-                if let onOpenInNewTab = actions.onOpenInNewTab {
-                    Button {
-                        onOpenInNewTab(selection)
-                    } label: {
-                        Image(systemName: "plus.square.on.square")
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.openInNewTab)
-                }
                 if actions.showsCloseButton, let onClose = actions.onClose {
                     Button(action: onClose) {
                         Image(systemName: "xmark")
@@ -104,6 +112,8 @@ public struct TorahSegmentDetailView: View {
                     .accessibilityLabel(TorahStrings.close)
                 }
             }
+
+            selectedSegmentCard
 
             Picker(TorahStrings.studyTools, selection: $selectedTool) {
                 ForEach(TorahStudyTool.allCases) { tool in
@@ -119,7 +129,6 @@ public struct TorahSegmentDetailView: View {
     private var toolContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
-                selectedSegmentCard
                 switch selectedTool {
                 case .commentaries:
                     commentariesContent
@@ -138,11 +147,13 @@ public struct TorahSegmentDetailView: View {
             Text(TorahStrings.selectedSegment)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
-            Text(segment.text)
-                .font(.subheadline)
-                .lineLimit(2)
-                .lineSpacing(3)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            if let text = focus.text, !text.isEmpty {
+                Text(text)
+                    .font(.subheadline)
+                    .lineLimit(2)
+                    .lineSpacing(3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             Text(segmentDisplayRef)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -163,13 +174,7 @@ public struct TorahSegmentDetailView: View {
             emptyRow(TorahStrings.text("No results"))
         } else {
             ForEach(groups.commentary) { source in
-                let nextSelection = TorahInspectorSelection(providerID: providerID, canonicalRef: source.sourceRef)
-                NavigationLink(value: TorahInspectorRoute.source(nextSelection)) {
-                    commentaryCard(source)
-                }
-                .buttonStyle(.plain)
-                .simultaneousGesture(TapGesture().onEnded { selectedCommentaryID = source.id })
-                .contextMenu { sourceContextMenu(selection: nextSelection) }
+                expandableSourceRow(source, commentary: true)
             }
         }
     }
@@ -180,10 +185,7 @@ public struct TorahSegmentDetailView: View {
                 Text(commentaryTitle(source))
                     .font(.subheadline.weight(.semibold))
                 Spacer(minLength: 4)
-                if selectedCommentaryID == source.id {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.accentColor)
-                }
+                expansionIndicator(source)
             }
             if let text = TorahInspectorPresentation.linkedText(source, locale: locale) {
                 Text(text)
@@ -197,7 +199,7 @@ public struct TorahSegmentDetailView: View {
                 .foregroundStyle(.secondary)
         }
         .padding(13)
-        .background(selectedCommentaryID == source.id ? Color.accentColor.opacity(0.08) : .torahSecondarySystemBackground)
+        .background(expandedSourceIDs.contains(source.id) ? Color.accentColor.opacity(0.08) : .torahSecondarySystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -211,12 +213,7 @@ public struct TorahSegmentDetailView: View {
             emptyRow(TorahStrings.text("No results"))
         } else {
             ForEach(groups.linkedSources) { source in
-                let nextSelection = TorahInspectorSelection(providerID: providerID, canonicalRef: source.sourceRef)
-                NavigationLink(value: TorahInspectorRoute.source(nextSelection)) {
-                    linkedSourceCard(source)
-                }
-                .buttonStyle(.plain)
-                .contextMenu { sourceContextMenu(selection: nextSelection) }
+                expandableSourceRow(source, commentary: false)
             }
             topicsContent
         }
@@ -241,13 +238,113 @@ public struct TorahSegmentDetailView: View {
                 }
             }
             Spacer(minLength: 6)
-            Image(systemName: "chevron.forward")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.tertiary)
+            expansionIndicator(source)
         }
         .padding(13)
         .background(Color.torahSecondarySystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func expansionIndicator(_ source: TorahLinkedSource) -> some View {
+        Image(systemName: expandedSourceIDs.contains(source.id) ? "chevron.up" : "chevron.down")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.tertiary)
+    }
+
+    private func expandableSourceRow(_ source: TorahLinkedSource, commentary: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Group {
+                if commentary {
+                    commentaryCard(source)
+                } else {
+                    linkedSourceCard(source)
+                }
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                TapGesture(count: 2)
+                    .exclusively(before: TapGesture(count: 1))
+                    .onEnded { value in
+                        switch value {
+                        case .first:
+                            openInReader(source)
+                        case .second:
+                            toggleExpansion(source)
+                        }
+                    }
+            )
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAction { toggleExpansion(source) }
+            .accessibilityAction(named: Text(TorahStrings.openInNewTab)) {
+                openInReader(source)
+            }
+
+            if expandedSourceIDs.contains(source.id) {
+                expandedSourceContent(source)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.torahSecondarySystemBackground.opacity(0.72))
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    @ViewBuilder
+    private func expandedSourceContent(_ source: TorahLinkedSource) -> some View {
+        if loadingSourceIDs.contains(source.id) {
+            ProgressView().frame(maxWidth: .infinity)
+        } else if let message = expandedSourceErrors[source.id] {
+            retryCard(message) { Task { await loadFullSource(source) } }
+        } else if let text = expandedSourceText[source.id] {
+            Text(text)
+                .font(.body)
+                .lineSpacing(5)
+                .textSelection(.enabled)
+                .environment(\.layoutDirection, layoutDirection(for: text))
+        }
+    }
+
+    private func toggleExpansion(_ source: TorahLinkedSource) {
+        if expandedSourceIDs.remove(source.id) != nil { return }
+        expandedSourceIDs.insert(source.id)
+        guard expandedSourceText[source.id] == nil,
+              !loadingSourceIDs.contains(source.id) else { return }
+        Task { await loadFullSource(source) }
+    }
+
+    private func openInReader(_ source: TorahLinkedSource) {
+        actions.onOpenInNewTab?(
+            TorahInspectorSelection(
+                providerID: providerID,
+                canonicalRef: source.sourceRef,
+                preferredSegmentRef: source.sourceRef,
+                scope: .segment
+            )
+        )
+    }
+
+    @MainActor
+    private func loadFullSource(_ source: TorahLinkedSource) async {
+        loadingSourceIDs.insert(source.id)
+        expandedSourceErrors.removeValue(forKey: source.id)
+        defer { loadingSourceIDs.remove(source.id) }
+        do {
+            let document = try await repository.document(
+                for: source.sourceRef,
+                providerID: providerID
+            )
+            guard let text = TorahInspectorSourceTextResolver.text(
+                in: document,
+                exactReference: source.sourceRef
+            ) else {
+                throw TorahError.noText
+            }
+            expandedSourceText[source.id] = text
+        } catch is CancellationError {
+        } catch {
+            expandedSourceErrors[source.id] = TorahStrings.message(for: error)
+        }
     }
 
     @ViewBuilder
@@ -373,17 +470,12 @@ public struct TorahSegmentDetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    @ViewBuilder
-    private func sourceContextMenu(selection: TorahInspectorSelection) -> some View {
-        if let onOpenInNewTab = actions.onOpenInNewTab {
-            Button { onOpenInNewTab(selection) } label: {
-                Label(TorahStrings.openInNewTab, systemImage: "plus.square.on.square")
-            }
-        }
-    }
-
     private var segmentDisplayRef: String {
-        TorahInspectorPresentation.reference(canonical: segment.canonicalRef, hebrew: segment.hebrewRef, locale: locale)
+        TorahInspectorPresentation.reference(
+            canonical: focus.displayRef,
+            hebrew: focus.hebrewDisplayRef,
+            locale: locale
+        )
     }
 
     private func displayReference(_ source: TorahLinkedSource) -> String {
@@ -398,7 +490,11 @@ public struct TorahSegmentDetailView: View {
     }
 
     private var segmentLayoutDirection: LayoutDirection {
-        for scalar in segment.text.unicodeScalars {
+        layoutDirection(for: focus.text ?? focus.displayRef)
+    }
+
+    private func layoutDirection(for text: String) -> LayoutDirection {
+        for scalar in text.unicodeScalars {
             switch scalar.value {
             case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
                 return .rightToLeft
@@ -421,7 +517,7 @@ public struct TorahSegmentDetailView: View {
         loadingLinks = true
         linksError = nil
         do {
-            links = try await repository.links(for: segment.canonicalRef, providerID: providerID)
+            links = try await repository.links(for: selection.relationshipRef, providerID: providerID)
         } catch is CancellationError {
         } catch {
             linksError = TorahStrings.couldNotLoadRelatedSources
@@ -434,7 +530,7 @@ public struct TorahSegmentDetailView: View {
         loadingTopics = true
         topicsError = nil
         do {
-            topics = try await repository.topics(for: segment.canonicalRef, providerID: providerID)
+            topics = try await repository.topics(for: selection.relationshipRef, providerID: providerID)
         } catch is CancellationError {
         } catch {
             topicsError = TorahStrings.couldNotLoadRelatedSources
@@ -463,5 +559,18 @@ public struct TorahSegmentDetailView: View {
 
     private func notesDidChange() {
         Task { await refreshNotes() }
+    }
+}
+
+enum TorahInspectorSourceTextResolver {
+    static func text(in document: TorahTextDocument, exactReference: String) -> String? {
+        if let segment = document.segments.first(where: { $0.canonicalRef == exactReference }) {
+            return segment.text.isEmpty ? nil : segment.text
+        }
+        let documentMatches = [document.requestedRef, document.canonicalRef, document.sectionRef]
+            .contains(exactReference)
+        guard documentMatches else { return nil }
+        let text = document.segments.map(\.text).filter { !$0.isEmpty }.joined(separator: "\n")
+        return text.isEmpty ? nil : text
     }
 }

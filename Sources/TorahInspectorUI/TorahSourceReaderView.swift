@@ -102,12 +102,6 @@ public struct TorahSourceReaderView: View {
         .navigationTitle(displayTitle)
         .torahInlineNavigationTitle()
         .toolbar {
-            if let onOpenInNewTab = actions.onOpenInNewTab {
-                ToolbarItem {
-                    Button { onOpenInNewTab(selection) } label: { Image(systemName: "plus.square.on.square") }
-                        .accessibilityLabel(TorahStrings.openInNewTab)
-                }
-            }
             if let onClose = actions.onClose {
                 ToolbarItem {
                     Button(action: onClose) { Image(systemName: "xmark").foregroundStyle(.secondary) }

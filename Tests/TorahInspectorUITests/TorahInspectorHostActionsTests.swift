@@ -25,17 +25,17 @@ struct TorahInspectorHostActionsTests {
 
     @Test func entryModesAreDistinct() {
         let modeDefault = TorahInspectorEntryMode.sourceReader
-        let modeSegment = TorahInspectorEntryMode.segmentRelationships
+        let modeRelationships = TorahInspectorEntryMode.relationships
         switch modeDefault {
         case .sourceReader:
             #expect(true)
-        case .segmentRelationships:
+        case .relationships, .segmentRelationships:
             #expect(false)
         }
-        switch modeSegment {
-        case .segmentRelationships:
+        switch modeRelationships {
+        case .relationships:
             #expect(true)
-        case .sourceReader:
+        case .sourceReader, .segmentRelationships:
             #expect(false)
         }
     }
@@ -84,6 +84,36 @@ struct TorahInspectorHostActionsTests {
 
         #expect(resolved == requested)
         #expect(resolved?.text.isEmpty == false)
+        #expect(TorahInspectorSegmentResolver.segment(
+            in: document,
+            preferredReference: "Genesis 1:99"
+        ) == nil)
+    }
+
+    @Test func fullSourceResolutionNeverFallsBackToAnUnrelatedFirstSegment() {
+        let document = TorahTextDocument(
+            providerID: "test",
+            requestedRef: "Genesis 1",
+            canonicalRef: "Genesis 1",
+            sectionRef: "Genesis 1",
+            segments: [
+                TorahTextSegment(canonicalRef: "Genesis 1:1", text: "First", ordinal: 1),
+                TorahTextSegment(canonicalRef: "Genesis 1:2", text: "Second", ordinal: 2),
+            ],
+            version: TorahTextVersionMetadata(language: "en", versionTitle: "Fixture")
+        )
+        #expect(TorahInspectorSourceTextResolver.text(
+            in: document,
+            exactReference: "Genesis 1:2"
+        ) == "Second")
+        #expect(TorahInspectorSourceTextResolver.text(
+            in: document,
+            exactReference: "Genesis 1"
+        ) == "First\nSecond")
+        #expect(TorahInspectorSourceTextResolver.text(
+            in: document,
+            exactReference: "Exodus 2:1"
+        ) == nil)
     }
 
     @Test func referencesAndRelationshipTextFollowLocaleWithFallback() {

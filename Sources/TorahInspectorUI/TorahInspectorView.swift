@@ -18,6 +18,7 @@ public struct TorahInspectorView: View {
     private let repository: TorahInspectorRepository
     private let actions: TorahInspectorHostActions
     private let entryMode: TorahInspectorEntryMode
+    private let chrome: TorahInspectorChrome
     private let externalSelectedTool: Binding<TorahStudyTool>?
     @State private var localSelectedTool: TorahStudyTool = .commentaries
 
@@ -25,12 +26,14 @@ public struct TorahInspectorView: View {
         repository: TorahInspectorRepository,
         selection: TorahInspectorSelection,
         entryMode: TorahInspectorEntryMode = .sourceReader,
+        chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.repository = repository
         self.selection = selection
         self.entryMode = entryMode
+        self.chrome = chrome
         self.externalSelectedTool = selectedTool
         self.actions = actions
     }
@@ -39,6 +42,7 @@ public struct TorahInspectorView: View {
         repository: TorahInspectorRepository,
         selection: TorahInspectorSelection,
         entryMode: TorahInspectorEntryMode = .sourceReader,
+        chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
@@ -52,6 +56,7 @@ public struct TorahInspectorView: View {
             repository: repository,
             selection: selection,
             entryMode: entryMode,
+            chrome: chrome,
             selectedTool: selectedTool,
             actions: TorahInspectorHostActions(
                 onClose: onClose,
@@ -72,25 +77,17 @@ public struct TorahInspectorView: View {
                 selection: selection,
                 repository: repository,
                 selectedTool: selectedToolBinding,
+                chrome: chrome,
                 actions: actions
             )
-        case .segmentRelationships:
-            if let segRef = selection.preferredSegmentRef {
-                _InspectorSegmentRelationshipsEntry(
-                    selection: selection,
-                    initialSegmentRef: segRef,
-                    repository: repository,
-                    selectedTool: selectedToolBinding,
-                    actions: actions
-                )
-            } else {
-                _InspectorSourceReaderEntry(
-                    selection: selection,
-                    repository: repository,
-                    selectedTool: selectedToolBinding,
-                    actions: actions
-                )
-            }
+        case .relationships, .segmentRelationships:
+            _InspectorRelationshipsEntry(
+                selection: selection,
+                repository: repository,
+                selectedTool: selectedToolBinding,
+                chrome: chrome,
+                actions: actions
+            )
         }
     }
 
@@ -115,6 +112,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
     @Binding var selectedTool: TorahStudyTool
+    let chrome: TorahInspectorChrome
     let actions: TorahInspectorHostActions
 
     func body(content: Content) -> some View {
@@ -122,10 +120,14 @@ private struct _InspectorNavigationDestinations: ViewModifier {
             switch route {
             case .segment(let segment):
                 TorahSegmentDetailView(
-                    segment: segment,
-                    providerID: selection.providerID,
+                    focus: TorahInspectorFocus(
+                        segment: segment,
+                        providerID: selection.providerID,
+                        sectionRef: selection.canonicalRef
+                    ),
                     repository: repository,
                     selectedTool: $selectedTool,
+                    chrome: chrome,
                     actions: actions
                 )
             case .source(let nextSelection):
@@ -133,6 +135,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     selection: nextSelection,
                     repository: repository,
                     selectedTool: $selectedTool,
+                    chrome: chrome,
                     actions: actions
                 )
             }
@@ -147,6 +150,7 @@ private struct _InspectorLinkedSourceEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
     @Binding var selectedTool: TorahStudyTool
+    let chrome: TorahInspectorChrome
     let actions: TorahInspectorHostActions
 
     @State private var segment: TorahTextSegment?
@@ -156,10 +160,14 @@ private struct _InspectorLinkedSourceEntry: View {
         Group {
             if let segment {
                 TorahSegmentDetailView(
-                    segment: segment,
-                    providerID: selection.providerID,
+                    focus: TorahInspectorFocus(
+                        segment: segment,
+                        providerID: selection.providerID,
+                        sectionRef: selection.canonicalRef
+                    ),
                     repository: repository,
                     selectedTool: $selectedTool,
+                    chrome: chrome,
                     actions: actions
                 )
             } else if let errorMessage {
@@ -204,6 +212,7 @@ private struct _InspectorSourceReaderEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
     @Binding var selectedTool: TorahStudyTool
+    let chrome: TorahInspectorChrome
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
 
@@ -214,6 +223,7 @@ private struct _InspectorSourceReaderEntry: View {
                     selection: selection,
                     repository: repository,
                     selectedTool: $selectedTool,
+                    chrome: chrome,
                     actions: actions
                 ))
         }
@@ -224,39 +234,39 @@ private struct _InspectorSourceReaderEntry: View {
 /// The root of the NavigationStack is the segment detail (relationships),
 /// so the user sees relationships immediately without a source reader flash.
 /// Tapping a related source pushes within the same stack.
-private struct _InspectorSegmentRelationshipsEntry: View {
+private struct _InspectorRelationshipsEntry: View {
     let selection: TorahInspectorSelection
-    let initialSegmentRef: String
     let repository: TorahInspectorRepository
     @Binding var selectedTool: TorahStudyTool
+    let chrome: TorahInspectorChrome
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
-    @State private var segment: TorahTextSegment?
+    @State private var focus: TorahInspectorFocus?
     @State private var errorMessage: String?
 
     init(
         selection: TorahInspectorSelection,
-        initialSegmentRef: String,
         repository: TorahInspectorRepository,
         selectedTool: Binding<TorahStudyTool>,
+        chrome: TorahInspectorChrome,
         actions: TorahInspectorHostActions
     ) {
         self.selection = selection
-        self.initialSegmentRef = initialSegmentRef
         self.repository = repository
         self._selectedTool = selectedTool
+        self.chrome = chrome
         self.actions = actions
     }
 
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if let segment {
+                if let focus {
                     TorahSegmentDetailView(
-                        segment: segment,
-                        providerID: selection.providerID,
+                        focus: focus,
                         repository: repository,
                         selectedTool: $selectedTool,
+                        chrome: chrome,
                         actions: actions
                     )
                 } else if let errorMessage {
@@ -275,6 +285,7 @@ private struct _InspectorSegmentRelationshipsEntry: View {
                 selection: selection,
                 repository: repository,
                 selectedTool: $selectedTool,
+                chrome: chrome,
                 actions: actions
             ))
             .task(id: selection.id) { await loadSegment() }
@@ -282,20 +293,35 @@ private struct _InspectorSegmentRelationshipsEntry: View {
     }
 
     private func loadSegment() async {
-        segment = nil
+        focus = nil
         errorMessage = nil
         do {
             let document = try await repository.document(
                 for: selection.canonicalRef,
                 providerID: selection.providerID
             )
-            guard let resolved = TorahInspectorSegmentResolver.segment(
-                in: document,
-                preferredReference: initialSegmentRef
-            ) else {
-                throw TorahError.noText
+            switch selection.scope {
+            case .segment:
+                guard let preferred = selection.preferredSegmentRef,
+                      let resolved = TorahInspectorSegmentResolver.segment(
+                        in: document,
+                        preferredReference: preferred
+                      ) else {
+                    throw TorahError.noText
+                }
+                focus = TorahInspectorFocus(
+                    segment: resolved,
+                    providerID: selection.providerID,
+                    sectionRef: selection.canonicalRef
+                )
+            case .section:
+                focus = TorahInspectorFocus(
+                    selection: selection,
+                    displayRef: document.sectionRef,
+                    hebrewDisplayRef: document.hebrewSectionRef,
+                    text: document.segments.map(\.text).joined(separator: "\n")
+                )
             }
-            segment = resolved
         } catch is CancellationError {
         } catch {
             errorMessage = TorahStrings.message(for: error)
@@ -309,6 +335,5 @@ enum TorahInspectorSegmentResolver {
         preferredReference: String
     ) -> TorahTextSegment? {
         document.segments.first { $0.canonicalRef == preferredReference }
-            ?? document.segments.first
     }
 }

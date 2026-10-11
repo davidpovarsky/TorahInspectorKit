@@ -154,20 +154,70 @@ public struct TorahLinkedTopic: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
-public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
-    public var id: String { "\(providerID):\(canonicalRef):\(preferredSegmentRef ?? "")" }
-    public let providerID: String
-    public let canonicalRef: String
-    public let preferredSegmentRef: String?
+public enum TorahInspectorSelectionScope: String, Hashable, Codable, Sendable {
+    case section
+    case segment
+}
 
-    public init(providerID: String, canonicalRef: String, preferredSegmentRef: String? = nil) {
+public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
+    public var id: String {
+        "\(providerID):\(scope.rawValue):\(canonicalRef):\(preferredSegmentRef ?? "")"
+    }
+    public let providerID: String
+    /// The document/section reference used to establish reading context.
+    public let canonicalRef: String
+    /// An exact segment reference. It is never synthesized for section scope.
+    public let preferredSegmentRef: String?
+    public let scope: TorahInspectorSelectionScope
+
+    public init(
+        providerID: String,
+        canonicalRef: String,
+        preferredSegmentRef: String? = nil,
+        scope: TorahInspectorSelectionScope? = nil
+    ) {
         self.providerID = providerID
         self.canonicalRef = canonicalRef
         self.preferredSegmentRef = preferredSegmentRef
+        self.scope = scope ?? (preferredSegmentRef == nil ? .section : .segment)
     }
+
+    public var relationshipRef: String { preferredSegmentRef ?? canonicalRef }
 
     public func prefers(_ segment: TorahTextSegment) -> Bool {
         preferredSegmentRef == segment.canonicalRef
+    }
+}
+
+public struct TorahInspectorFocus: Identifiable, Hashable, Sendable {
+    public var id: String { selection.id }
+    public let selection: TorahInspectorSelection
+    public let displayRef: String
+    public let hebrewDisplayRef: String?
+    public let text: String?
+
+    public init(
+        selection: TorahInspectorSelection,
+        displayRef: String,
+        hebrewDisplayRef: String? = nil,
+        text: String? = nil
+    ) {
+        self.selection = selection
+        self.displayRef = displayRef
+        self.hebrewDisplayRef = hebrewDisplayRef
+        self.text = text
+    }
+
+    public init(segment: TorahTextSegment, providerID: String, sectionRef: String? = nil) {
+        selection = TorahInspectorSelection(
+            providerID: providerID,
+            canonicalRef: sectionRef ?? segment.canonicalRef,
+            preferredSegmentRef: segment.canonicalRef,
+            scope: .segment
+        )
+        displayRef = segment.canonicalRef
+        hebrewDisplayRef = segment.hebrewRef
+        text = segment.text
     }
 }
 

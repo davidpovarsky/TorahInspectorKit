@@ -10,10 +10,16 @@ public enum TorahInspectorRoute: Hashable, Sendable {
 public enum TorahInspectorEntryMode: Sendable {
     /// Open the scrollable text reader for the whole section (default).
     case sourceReader
-    /// Jump directly to the segment-level relationships view.
-    /// Requires ``TorahInspectorSelection/preferredSegmentRef`` to be non-nil;
-    /// falls back to ``sourceReader`` otherwise.
+    /// Open relationships for the explicit section-or-segment selection.
+    case relationships
+    /// Compatibility spelling for callers that still enter with a segment.
+    @available(*, deprecated, renamed: "relationships")
     case segmentRelationships
+}
+
+public enum TorahInspectorChrome: Sendable {
+    case floatingPanel
+    case embeddedSheet
 }
 
 public enum TorahStudyTool: String, CaseIterable, Identifiable, Hashable, Sendable {

@@ -117,6 +117,26 @@ struct RepositoryBoundaryTests {
 
 @Suite("Inspector identity and relationships")
 struct InspectorIdentityTests {
+    @Test func sectionAndSegmentSelectionsHaveExplicitDistinctIdentity() {
+        let section = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            scope: .section
+        )
+        let segment = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:1",
+            scope: .segment
+        )
+        #expect(section.scope == .section)
+        #expect(section.preferredSegmentRef == nil)
+        #expect(section.relationshipRef == "Genesis 1")
+        #expect(segment.scope == .segment)
+        #expect(segment.relationshipRef == "Genesis 1:1")
+        #expect(section.id != segment.id)
+    }
+
     @Test func preferredSegmentUsesStableReferenceIdentity() {
         let document = makeDocument()
         let selection = TorahInspectorSelection(
