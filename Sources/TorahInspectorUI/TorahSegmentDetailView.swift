@@ -22,6 +22,7 @@ public struct TorahSegmentDetailView: View {
     @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
     @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
     @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
+    @State private var expandedCommentaryGroupIDs: Set<TorahSourceGroup.ID> = []
     @Environment(\.locale) private var locale
 
     public init(
@@ -170,19 +171,58 @@ public struct TorahSegmentDetailView: View {
             loadingRow
         } else if let linksError {
             retryCard(linksError) { Task { await loadLinks() } }
-        } else if groups.commentary.isEmpty {
+        } else if groups.commentaryGroups.isEmpty {
             emptyRow(TorahStrings.text("No results"))
         } else {
-            ForEach(groups.commentary) { source in
-                expandableSourceRow(source, commentary: true)
+            ForEach(groups.commentaryGroups) { group in
+                commentaryGroupCard(group)
             }
         }
+    }
+
+    private func commentaryGroupCard(_ group: TorahSourceGroup) -> some View {
+        DisclosureGroup(
+            isExpanded: Binding(
+                get: { expandedCommentaryGroupIDs.contains(group.id) },
+                set: { isExpanded in
+                    if isExpanded {
+                        expandedCommentaryGroupIDs.insert(group.id)
+                    } else {
+                        expandedCommentaryGroupIDs.remove(group.id)
+                    }
+                }
+            )
+        ) {
+            LazyVStack(alignment: .leading, spacing: 10) {
+                ForEach(group.entries) { source in
+                    expandableSourceRow(source, commentary: true)
+                }
+            }
+            .padding(.top, 10)
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(commentaryGroupTitle(group))
+                    .font(.headline)
+                    .lineLimit(2)
+                Spacer(minLength: 8)
+                Text(group.count, format: .number)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.primary.opacity(0.05), in: Capsule())
+            }
+        }
+        .padding(13)
+        .background(Color.torahSecondarySystemBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .contain)
     }
 
     private func commentaryCard(_ source: TorahLinkedSource) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(commentaryTitle(source))
+                Text(displayReference(source))
                     .font(.subheadline.weight(.semibold))
                 Spacer(minLength: 4)
                 expansionIndicator(source)
@@ -194,7 +234,7 @@ public struct TorahSegmentDetailView: View {
                     .lineLimit(5)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            Text(displayReference(source))
+            Text(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -227,7 +267,7 @@ public struct TorahSegmentDetailView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(displayReference(source))
                     .font(.subheadline.weight(.semibold))
-                Text(source.category)
+                Text(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if let text = TorahInspectorPresentation.linkedText(source, locale: locale) {
@@ -487,6 +527,13 @@ public struct TorahSegmentDetailView: View {
         let preferred = prefersHebrew ? source.hebrewCollectiveTitle : source.collectiveTitle
         let fallback = prefersHebrew ? source.collectiveTitle : source.hebrewCollectiveTitle
         return preferred ?? fallback ?? displayReference(source)
+    }
+
+    private func commentaryGroupTitle(_ group: TorahSourceGroup) -> String {
+        let prefersHebrew = TorahInspectorPresentation.prefersHebrew(locale)
+        let preferred = prefersHebrew ? group.hebrewTitle : group.title
+        let fallback = prefersHebrew ? group.title : group.hebrewTitle
+        return preferred ?? fallback ?? group.title
     }
 
     private var segmentLayoutDirection: LayoutDirection {

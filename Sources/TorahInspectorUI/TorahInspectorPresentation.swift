@@ -22,4 +22,19 @@ enum TorahInspectorPresentation {
         let fallback = prefersHebrew(locale) ? topic.titleEn : topic.titleHe
         return preferred ?? fallback ?? topic.slug
     }
+
+    static func categoryTitle(_ category: TorahSourceCategory, locale: Locale) -> String {
+        let key: String
+        switch category {
+        case .commentary: key = "Commentary"
+        case .quotingCommentary: key = "Quoting Commentary"
+        case .tanakh: key = "Tanakh"
+        case .talmud: key = "Talmud"
+        case .midrash: key = "Midrash"
+        case .targum: key = "Targum"
+        case .halakhah: key = "Halakhah"
+        case .other: key = "Other"
+        }
+        return TorahStrings.text(key, locale: locale)
+    }
 }

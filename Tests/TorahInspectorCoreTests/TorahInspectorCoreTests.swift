@@ -157,6 +157,48 @@ struct InspectorIdentityTests {
         let groups = TorahRelationshipGroups(sources: sources)
         #expect(groups.commentary.map(\.sourceRef) == ["Rashi", "Local"])
         #expect(groups.linkedSources.map(\.sourceRef) == ["Midrash"])
+        #expect(groups.commentaryGroups.count == 2)
+    }
+
+    @Test func commentaryGroupingUsesCanonicalBookIdentityAndKeepsOrderedEntries() {
+        let sources = [
+            TorahLinkedSource(
+                sourceRef: "Rashi on Genesis 1:1",
+                category: "Commentary",
+                type: "commentary",
+                collectiveTitle: "Rashi",
+                canonicalBookID: "sefaria:Rashi on Genesis",
+                anchorRefs: ["Genesis 1:1"]
+            ),
+            TorahLinkedSource(
+                sourceRef: "Rashi on Genesis 1:2",
+                category: "Commentary",
+                type: "commentary",
+                collectiveTitle: "Rashi",
+                canonicalBookID: "sefaria:Rashi on Genesis",
+                anchorRefs: ["Genesis 1:2"]
+            ),
+            TorahLinkedSource(
+                sourceRef: "Rashi on Exodus 1:1",
+                category: "Quoting Commentary",
+                type: "quotation",
+                collectiveTitle: "Rashi",
+                canonicalBookID: "sefaria:Rashi on Exodus",
+                anchorRefs: ["Exodus 1:1"]
+            )
+        ]
+
+        let groups = TorahRelationshipGroups(sources: sources)
+
+        #expect(groups.commentaryGroups.map(\.id) == [
+            "sefaria:Rashi on Genesis",
+            "sefaria:Rashi on Exodus",
+        ])
+        #expect(groups.commentaryGroups[0].entries.map(\.sourceRef) == [
+            "Rashi on Genesis 1:1",
+            "Rashi on Genesis 1:2",
+        ])
+        #expect(groups.commentaryGroups[1].category == .quotingCommentary)
     }
 
     @Test func transferPayloadKeepsPinkhaUTTypeAndRoundTrips() throws {

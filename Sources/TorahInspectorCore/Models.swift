@@ -95,8 +95,27 @@ public struct TorahTextDocument: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
+public enum TorahRelationshipKind: String, Hashable, Codable, Sendable {
+    case commentary
+    case link
+}
+
+public enum TorahSourceCategory: String, Hashable, Codable, CaseIterable, Sendable {
+    case commentary
+    case quotingCommentary
+    case tanakh
+    case talmud
+    case midrash
+    case targum
+    case halakhah
+    case other
+}
+
 public struct TorahLinkedSource: Identifiable, Hashable, Codable, Sendable {
-    public var id: String { "\(sourceRef)|\(type)|\(category)" }
+    public var id: String {
+        let anchors = anchorRefs.joined(separator: ",")
+        return "\(canonicalBookID)|\(sourceRef)|\(type)|\(category)|\(versionTitle ?? "")|\(anchors)"
+    }
     public let sourceRef: String
     public let sourceHebrewRef: String?
     public let category: String
@@ -108,6 +127,10 @@ public struct TorahLinkedSource: Identifiable, Hashable, Codable, Sendable {
     public let versionTitle: String?
     public let hebrewVersionTitle: String?
     public let license: String?
+    public let canonicalBookID: String
+    public let anchorRefs: [String]
+    public let relationshipKind: TorahRelationshipKind
+    public let semanticCategory: TorahSourceCategory
     public let rawProviderPayload: String
 
     public init(
@@ -122,6 +145,10 @@ public struct TorahLinkedSource: Identifiable, Hashable, Codable, Sendable {
         versionTitle: String? = nil,
         hebrewVersionTitle: String? = nil,
         license: String? = nil,
+        canonicalBookID: String? = nil,
+        anchorRefs: [String] = [],
+        relationshipKind: TorahRelationshipKind? = nil,
+        semanticCategory: TorahSourceCategory? = nil,
         rawProviderPayload: String = "{}"
     ) {
         self.sourceRef = sourceRef
@@ -135,7 +162,42 @@ public struct TorahLinkedSource: Identifiable, Hashable, Codable, Sendable {
         self.versionTitle = versionTitle
         self.hebrewVersionTitle = hebrewVersionTitle
         self.license = license
+        self.canonicalBookID = canonicalBookID
+            ?? Self.fallbackBookIdentity(sourceRef: sourceRef, collectiveTitle: collectiveTitle)
+        self.anchorRefs = anchorRefs
+        self.relationshipKind = relationshipKind
+            ?? Self.inferRelationshipKind(category: category, type: type)
+        self.semanticCategory = semanticCategory
+            ?? Self.inferSemanticCategory(category: category, type: type)
         self.rawProviderPayload = rawProviderPayload
+    }
+
+    private static func fallbackBookIdentity(sourceRef: String, collectiveTitle: String?) -> String {
+        if let collectiveTitle, !collectiveTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "title:\(collectiveTitle.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current))"
+        }
+        let bookTokens = sourceRef.split(separator: " ").prefix { token in
+            !token.unicodeScalars.contains(where: CharacterSet.decimalDigits.contains)
+        }
+        let book = bookTokens.isEmpty ? sourceRef : bookTokens.joined(separator: " ")
+        return "ref:\(book.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current))"
+    }
+
+    private static func inferRelationshipKind(category: String, type: String) -> TorahRelationshipKind {
+        let tokens = "\(category) \(type)".lowercased()
+        return tokens.contains("commentary") ? .commentary : .link
+    }
+
+    private static func inferSemanticCategory(category: String, type: String) -> TorahSourceCategory {
+        let tokens = "\(category) \(type)".lowercased()
+        if tokens.contains("quoting commentary") { return .quotingCommentary }
+        if tokens.contains("commentary") { return .commentary }
+        if tokens.contains("tanakh") { return .tanakh }
+        if tokens.contains("talmud") { return .talmud }
+        if tokens.contains("midrash") { return .midrash }
+        if tokens.contains("targum") { return .targum }
+        if tokens.contains("halakh") { return .halakhah }
+        return .other
     }
 }
 
@@ -235,18 +297,64 @@ public struct TorahInspectorNote: Identifiable, Hashable, Sendable {
     }
 }
 
+public struct TorahSourceGroup: Identifiable, Equatable, Sendable {
+    public let id: String
+    public let title: String
+    public let hebrewTitle: String?
+    public let category: TorahSourceCategory
+    public let entries: [TorahLinkedSource]
+
+    public var count: Int { entries.count }
+
+    public init(
+        id: String,
+        title: String,
+        hebrewTitle: String? = nil,
+        category: TorahSourceCategory,
+        entries: [TorahLinkedSource]
+    ) {
+        self.id = id
+        self.title = title
+        self.hebrewTitle = hebrewTitle
+        self.category = category
+        self.entries = entries
+    }
+}
+
 public struct TorahRelationshipGroups: Equatable, Sendable {
     public let commentary: [TorahLinkedSource]
     public let linkedSources: [TorahLinkedSource]
+    public let commentaryGroups: [TorahSourceGroup]
+    public let linkedSourceGroups: [TorahSourceGroup]
 
     public init(sources: [TorahLinkedSource]) {
-        commentary = sources.filter(Self.isCommentary)
-        linkedSources = sources.filter { !Self.isCommentary($0) }
+        var seen = Set<TorahLinkedSource.ID>()
+        let uniqueSources = sources.filter { seen.insert($0.id).inserted }
+        commentary = uniqueSources.filter { $0.relationshipKind == .commentary }
+        linkedSources = uniqueSources.filter { $0.relationshipKind != .commentary }
+        commentaryGroups = Self.group(commentary)
+        linkedSourceGroups = Self.group(linkedSources)
     }
 
-    private static func isCommentary(_ source: TorahLinkedSource) -> Bool {
-        source.category.caseInsensitiveCompare("Commentary") == .orderedSame
-            || source.type.caseInsensitiveCompare("Commentary") == .orderedSame
+    private static func group(_ sources: [TorahLinkedSource]) -> [TorahSourceGroup] {
+        var order: [String] = []
+        var entriesByBook: [String: [TorahLinkedSource]] = [:]
+        for source in sources {
+            if entriesByBook[source.canonicalBookID] == nil {
+                order.append(source.canonicalBookID)
+            }
+            entriesByBook[source.canonicalBookID, default: []].append(source)
+        }
+        return order.compactMap { id in
+            guard let entries = entriesByBook[id], let first = entries.first else { return nil }
+            return TorahSourceGroup(
+                id: id,
+                title: first.collectiveTitle ?? first.sourceRef,
+                hebrewTitle: first.hebrewCollectiveTitle,
+                category: first.semanticCategory,
+                entries: entries
+            )
+        }
     }
 }
 

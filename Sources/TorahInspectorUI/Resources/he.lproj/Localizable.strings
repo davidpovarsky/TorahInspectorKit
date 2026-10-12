@@ -24,3 +24,11 @@
 "Selected Segment" = "קטע נבחר";
 "No notes" = "אין הערות";
 "Could not load notes" = "לא ניתן לטעון הערות";
+"Commentary" = "מפרשים";
+"Quoting Commentary" = "ציטוט מפרש";
+"Tanakh" = "תנ״ך";
+"Talmud" = "תלמוד";
+"Midrash" = "מדרש";
+"Targum" = "תרגום";
+"Halakhah" = "הלכה";
+"Other" = "אחר";
