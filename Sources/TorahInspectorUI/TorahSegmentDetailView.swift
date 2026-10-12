@@ -319,6 +319,7 @@ public struct TorahSegmentDetailView: View {
                     }
             )
             .accessibilityAddTraits(.isButton)
+            .accessibilityIdentifier("torah-inspector-source-\(source.id)")
             .accessibilityAction { toggleExpansion(source) }
             .accessibilityAction(named: Text(TorahStrings.openInNewTab)) {
                 openInReader(source)
@@ -330,6 +331,7 @@ public struct TorahSegmentDetailView: View {
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.torahSecondarySystemBackground.opacity(0.72))
+                    .accessibilityIdentifier("torah-inspector-source-expanded-\(source.id)")
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
