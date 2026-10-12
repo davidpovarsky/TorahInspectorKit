@@ -87,6 +87,7 @@ public struct TorahSegmentDetailView: View {
             Divider().opacity(0.45)
             toolContent
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-panel")
         .task(id: focus.id) { await loadPanelData() }
     }
@@ -166,6 +167,7 @@ public struct TorahSegmentDetailView: View {
         .padding(12)
         .background(Color.accentColor.opacity(0.06))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-selected-segment")
     }
 
@@ -318,6 +320,7 @@ public struct TorahSegmentDetailView: View {
                         }
                     }
             )
+            .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("torah-inspector-source-\(source.id)")
             .accessibilityAction { toggleExpansion(source) }
@@ -331,6 +334,7 @@ public struct TorahSegmentDetailView: View {
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.torahSecondarySystemBackground.opacity(0.72))
+                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("torah-inspector-source-expanded-\(source.id)")
             }
         }
