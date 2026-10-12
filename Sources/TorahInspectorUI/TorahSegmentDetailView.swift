@@ -87,6 +87,7 @@ public struct TorahSegmentDetailView: View {
             Divider().opacity(0.45)
             toolContent
         }
+        .accessibilityIdentifier("torah-inspector-panel")
         .task(id: focus.id) { await loadPanelData() }
     }
 
@@ -111,6 +112,7 @@ public struct TorahSegmentDetailView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(TorahStrings.close)
+                    .accessibilityIdentifier("torah-inspector-close")
                 }
             }
 
@@ -122,6 +124,7 @@ public struct TorahSegmentDetailView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier("torah-inspector-tools")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
@@ -163,6 +166,7 @@ public struct TorahSegmentDetailView: View {
         .padding(12)
         .background(Color.accentColor.opacity(0.06))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityIdentifier("torah-inspector-selected-segment")
     }
 
     @ViewBuilder
@@ -176,6 +180,7 @@ public struct TorahSegmentDetailView: View {
         } else {
             ForEach(groups.commentaryGroups) { group in
                 commentaryGroupCard(group)
+                    .accessibilityIdentifier("torah-inspector-commentary-group-\(group.id)")
             }
         }
     }
@@ -430,6 +435,7 @@ public struct TorahSegmentDetailView: View {
                         noteRow(note)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("torah-inspector-note-\(note.id)")
                     .contextMenu {
                         if let onDeleteNote = actions.onDeleteNote {
                             Button(role: .destructive) {
@@ -461,6 +467,7 @@ public struct TorahSegmentDetailView: View {
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .tint(.accentColor)
+            .accessibilityIdentifier("torah-inspector-add-note")
         }
     }
 
