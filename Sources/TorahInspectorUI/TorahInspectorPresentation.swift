@@ -8,17 +8,17 @@ enum TorahInspectorPresentation {
     }
 
     static func reference(canonical: String, hebrew: String?, locale: Locale) -> String {
-        if let hebrew, !hebrew.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return hebrew
-        }
         if canonical.hasPrefix("otzaria:") {
+            if let hebrew, !hebrew.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return hebrew
+            }
             let parts = canonical.split(separator: ":")
             if parts.count >= 4, let line = Int(parts.last!) {
                 return "שורה \(line)"
             }
             return ""
         }
-        return canonical
+        return prefersHebrew(locale) ? (hebrew ?? canonical) : canonical
     }
 
     static func linkedText(_ source: TorahLinkedSource, locale: Locale) -> String? {
