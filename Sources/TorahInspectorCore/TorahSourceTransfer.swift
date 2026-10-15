@@ -1,12 +1,16 @@
+#if canImport(CoreTransferable)
 import CoreTransferable
+#endif
 import Foundation
+#if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
 
 public extension UTType {
     static let torahSource = UTType(exportedAs: "com.gloiiire.pinkha.torahSource")
 }
+#endif
 
-public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable, Transferable {
+public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
     public var id: String { "\(providerID):\(canonicalRef)" }
     public let providerID: String
     public let canonicalRef: String
@@ -53,11 +57,14 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable, Tr
         )
     }
 
+#if canImport(CoreTransferable) && canImport(UniformTypeIdentifiers)
     public static var transferRepresentation: some TransferRepresentation {
         CodableRepresentation(contentType: .torahSource)
         ProxyRepresentation(exporting: \.text)
     }
+#endif
 
+#if canImport(UniformTypeIdentifiers) && !os(Windows)
     public var itemProvider: NSItemProvider {
         let data = (try? JSONEncoder().encode(self)) ?? Data()
         let provider = NSItemProvider()
@@ -76,4 +83,9 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable, Tr
             completion(decoded)
         }
     }
+#endif
 }
+
+#if canImport(CoreTransferable) && canImport(UniformTypeIdentifiers)
+extension TorahSourceTransfer: Transferable {}
+#endif

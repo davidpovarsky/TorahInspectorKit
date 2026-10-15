@@ -1,6 +1,8 @@
 import Foundation
 import Testing
+#if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
+#endif
 @testable import TorahInspectorCore
 
 private struct FixtureProvider: TorahInspectorProvider {
@@ -160,7 +162,7 @@ struct InspectorIdentityTests {
         #expect(groups.commentaryGroups.count == 2)
     }
 
-    @Test func commentaryGroupingUsesCanonicalBookIdentityAndKeepsOrderedEntries() {
+    @Test func commentaryGroupingSeparatesQuotingCommentaryIntoDistinctGroup() {
         let sources = [
             TorahLinkedSource(
                 sourceRef: "Rashi on Genesis 1:1",
@@ -181,7 +183,7 @@ struct InspectorIdentityTests {
             TorahLinkedSource(
                 sourceRef: "Rashi on Exodus 1:1",
                 category: "Quoting Commentary",
-                type: "quotation",
+                type: "quoting commentary",
                 collectiveTitle: "Rashi",
                 canonicalBookID: "sefaria:Rashi on Exodus",
                 anchorRefs: ["Exodus 1:1"]
@@ -190,23 +192,98 @@ struct InspectorIdentityTests {
 
         let groups = TorahRelationshipGroups(sources: sources)
 
-        #expect(groups.commentaryGroups.map(\.id) == [
-            "sefaria:Rashi on Genesis",
-            "sefaria:Rashi on Exodus",
-        ])
-        #expect(groups.commentaryGroups[0].entries.map(\.sourceRef) == [
-            "Rashi on Genesis 1:1",
-            "Rashi on Genesis 1:2",
-        ])
-        #expect(groups.commentaryGroups[1].category == .quotingCommentary)
+        #expect(groups.commentaryGroups.count == 1)
+        #expect(groups.commentaryGroups[0].title == "Rashi")
+        #expect(groups.commentaryGroups[0].entries.count == 2)
+        #expect(groups.quotingCommentaryGroups.count == 1)
+        #expect(groups.quotingCommentaryGroups[0].title == "Rashi")
+        #expect(groups.quotingCommentaryGroups[0].category == .quotingCommentary)
+        #expect(groups.quotingCommentaryGroups[0].entries.first?.sourceRef == "Rashi on Exodus 1:1")
     }
 
+    @Test func commentatorGroupingUnifiesSameCommentatorAcrossMultipleWorks() {
+        let sources = [
+            TorahLinkedSource(
+                sourceRef: "Chomat Anakh on Psalms 1:1",
+                category: "Commentary",
+                type: "commentary",
+                collectiveTitle: "Chomat Anakh",
+                commentatorID: "author:chida",
+                commentatorName: "Chida",
+                workTitle: "Chomat Anakh on Psalms",
+                canonicalBookID: "book:101",
+                anchorRefs: ["Psalms 1:1"]
+            ),
+            TorahLinkedSource(
+                sourceRef: "Chomat Anakh on Psalms 2:1",
+                category: "Commentary",
+                type: "commentary",
+                collectiveTitle: "Chomat Anakh",
+                commentatorID: "author:chida",
+                commentatorName: "Chida",
+                workTitle: "Chomat Anakh on Psalms",
+                canonicalBookID: "book:101",
+                anchorRefs: ["Psalms 2:1"]
+            ),
+            TorahLinkedSource(
+                sourceRef: "Marit HaAyin on Berakhot 2a:1",
+                category: "Commentary",
+                type: "commentary",
+                collectiveTitle: "Marit HaAyin",
+                commentatorID: "author:chida",
+                commentatorName: "Chida",
+                workTitle: "Marit HaAyin",
+                canonicalBookID: "book:102",
+                anchorRefs: ["Berakhot 2a:1"]
+            )
+        ]
+
+        let groups = TorahRelationshipGroups(sources: sources)
+
+        #expect(groups.commentaryGroups.count == 1)
+        let chidaGroup = groups.commentaryGroups[0]
+        #expect(chidaGroup.id == "author:chida")
+        #expect(chidaGroup.title == "Chida")
+        #expect(chidaGroup.count == 3)
+        #expect(chidaGroup.works.count == 2)
+        #expect(chidaGroup.works.map(\.title) == ["Chomat Anakh on Psalms", "Marit HaAyin"])
+        #expect(chidaGroup.works[0].count == 2)
+        #expect(chidaGroup.works[1].count == 1)
+    }
+
+    @Test func differentCommentatorsWithSimilarNamesRemainSeparate() {
+        let sources = [
+            TorahLinkedSource(
+                sourceRef: "Ibn Ezra on Genesis 1:1",
+                category: "Commentary",
+                type: "commentary",
+                commentatorID: "author:ibn-ezra",
+                commentatorName: "Ibn Ezra",
+                canonicalBookID: "book:201"
+            ),
+            TorahLinkedSource(
+                sourceRef: "Ibn Caspi on Genesis 1:1",
+                category: "Commentary",
+                type: "commentary",
+                commentatorID: "author:ibn-caspi",
+                commentatorName: "Ibn Caspi",
+                canonicalBookID: "book:202"
+            )
+        ]
+
+        let groups = TorahRelationshipGroups(sources: sources)
+        #expect(groups.commentaryGroups.count == 2)
+        #expect(groups.commentaryGroups.map(\.id) == ["author:ibn-ezra", "author:ibn-caspi"])
+    }
+
+#if canImport(UniformTypeIdentifiers)
     @Test func transferPayloadKeepsPinkhaUTTypeAndRoundTrips() throws {
         let transfer = TorahSourceTransfer(segment: makeDocument().segments[0], document: makeDocument())
         let decoded = try JSONDecoder().decode(TorahSourceTransfer.self, from: JSONEncoder().encode(transfer))
         #expect(decoded == transfer)
         #expect(UTType.torahSource.identifier == "com.gloiiire.pinkha.torahSource")
     }
+#endif
 
     @Test func changingSelectedSegmentUpdatesPreferredIdentity() {
         let seg1 = TorahTextSegment(canonicalRef: "Berakhot 2a:1", text: "From when", ordinal: 1)

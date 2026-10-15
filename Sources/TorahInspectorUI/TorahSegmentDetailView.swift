@@ -177,12 +177,25 @@ public struct TorahSegmentDetailView: View {
             loadingRow
         } else if let linksError {
             retryCard(linksError) { Task { await loadLinks() } }
-        } else if groups.commentaryGroups.isEmpty {
+        } else if groups.commentaryGroups.isEmpty && groups.quotingCommentaryGroups.isEmpty {
             emptyRow(TorahStrings.text("No results"))
         } else {
-            ForEach(groups.commentaryGroups) { group in
-                commentaryGroupCard(group)
-                    .accessibilityIdentifier("torah-inspector-commentary-group-\(group.id)")
+            if !groups.commentaryGroups.isEmpty {
+                ForEach(groups.commentaryGroups) { group in
+                    commentaryGroupCard(group)
+                        .accessibilityIdentifier("torah-inspector-commentary-group-\(group.id)")
+                }
+            }
+            if !groups.quotingCommentaryGroups.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(TorahStrings.text("Quoting Commentaries", locale: locale))
+                        .font(.headline)
+                        .padding(.top, groups.commentaryGroups.isEmpty ? 0 : 8)
+                    ForEach(groups.quotingCommentaryGroups) { group in
+                        commentaryGroupCard(group)
+                            .accessibilityIdentifier("torah-inspector-quoting-commentary-group-\(group.id)")
+                    }
+                }
             }
         }
     }
@@ -201,8 +214,22 @@ public struct TorahSegmentDetailView: View {
             )
         ) {
             LazyVStack(alignment: .leading, spacing: 10) {
-                ForEach(group.entries) { source in
-                    expandableSourceRow(source, commentary: true)
+                if group.works.count > 1 {
+                    ForEach(group.works) { work in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(work.hebrewTitle ?? work.title)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+                            ForEach(work.entries) { source in
+                                expandableSourceRow(source, commentary: true)
+                            }
+                        }
+                    }
+                } else {
+                    ForEach(group.entries) { source in
+                        expandableSourceRow(source, commentary: true)
+                    }
                 }
             }
             .padding(.top, 10)
@@ -226,27 +253,79 @@ public struct TorahSegmentDetailView: View {
         .accessibilityElement(children: .contain)
     }
 
+    @ViewBuilder
+    private func sourceBodyContent(source: TorahLinkedSource, isCommentary: Bool) -> some View {
+        let isExpanded = expandedSourceIDs.contains(source.id)
+        if isExpanded {
+            if loadingSourceIDs.contains(source.id) {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .padding(.vertical, 8)
+                    Spacer()
+                }
+            } else if let errorMsg = expandedSourceErrors[source.id] {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(errorMsg)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Button(TorahStrings.retry) {
+                        Task { await loadFullSource(source) }
+                    }
+                    .font(.caption.weight(.semibold))
+                }
+            } else if let fullText = expandedSourceText[source.id] {
+                Text(fullText)
+                    .font(isCommentary ? .system(size: 15) : .body)
+                    .lineSpacing(isCommentary ? 4 : 3)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .environment(\.layoutDirection, layoutDirection(for: fullText))
+            } else if let snippet = TorahInspectorPresentation.linkedText(source, locale: locale) {
+                Text(snippet)
+                    .font(isCommentary ? .system(size: 15) : .caption)
+                    .lineSpacing(isCommentary ? 4 : 2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        } else if let snippet = TorahInspectorPresentation.linkedText(source, locale: locale) {
+            Text(snippet)
+                .font(isCommentary ? .system(size: 15) : .caption)
+                .lineSpacing(isCommentary ? 4 : 2)
+                .lineLimit(isCommentary ? 5 : 2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(isCommentary ? .primary : .secondary)
+        }
+    }
+
     private func commentaryCard(_ source: TorahLinkedSource) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let isExpanded = expandedSourceIDs.contains(source.id)
+        return VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(displayReference(source))
                     .font(.subheadline.weight(.semibold))
                 Spacer(minLength: 4)
                 expansionIndicator(source)
             }
-            if let text = TorahInspectorPresentation.linkedText(source, locale: locale) {
-                Text(text)
-                    .font(.system(size: 15))
-                    .lineSpacing(4)
-                    .lineLimit(5)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            sourceBodyContent(source: source, isCommentary: true)
+            HStack {
+                Text(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if isExpanded {
+                    Button {
+                        openInReader(source)
+                    } label: {
+                        Label(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square")
+                            .font(.caption2)
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityIdentifier("torah-inspector-open-\(source.id)")
+                }
             }
-            Text(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))
-                .font(.caption2)
-                .foregroundStyle(.secondary)
         }
         .padding(13)
-        .background(expandedSourceIDs.contains(source.id) ? Color.accentColor.opacity(0.08) : .torahSecondarySystemBackground)
+        .background(isExpanded ? Color.accentColor.opacity(0.08) : Color.torahSecondarySystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -267,28 +346,37 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func linkedSourceCard(_ source: TorahLinkedSource) -> some View {
-        HStack(alignment: .top, spacing: 11) {
+        let isExpanded = expandedSourceIDs.contains(source.id)
+        return HStack(alignment: .top, spacing: 11) {
             Image(systemName: TorahInspectorAppearance.referenceSymbol)
                 .foregroundStyle(Color.accentColor)
                 .frame(width: 22)
             VStack(alignment: .leading, spacing: 4) {
-                Text(displayReference(source))
-                    .font(.subheadline.weight(.semibold))
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(displayReference(source))
+                        .font(.subheadline.weight(.semibold))
+                    Spacer(minLength: 4)
+                    expansionIndicator(source)
+                }
                 Text(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                if let text = TorahInspectorPresentation.linkedText(source, locale: locale) {
-                    Text(text)
-                        .font(.caption)
-                        .lineLimit(2)
-                        .foregroundStyle(.secondary)
+                sourceBodyContent(source: source, isCommentary: false)
+                if isExpanded {
+                    Button {
+                        openInReader(source)
+                    } label: {
+                        Label(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square")
+                            .font(.caption2)
+                    }
+                    .buttonStyle(.borderless)
+                    .padding(.top, 4)
+                    .accessibilityIdentifier("torah-inspector-open-\(source.id)")
                 }
             }
-            Spacer(minLength: 6)
-            expansionIndicator(source)
         }
         .padding(13)
-        .background(Color.torahSecondarySystemBackground)
+        .background(isExpanded ? Color.accentColor.opacity(0.08) : Color.torahSecondarySystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -299,60 +387,31 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func expandableSourceRow(_ source: TorahLinkedSource, commentary: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Group {
-                if commentary {
-                    commentaryCard(source)
-                } else {
-                    linkedSourceCard(source)
-                }
-            }
-            .contentShape(Rectangle())
-            .gesture(
-                TapGesture(count: 2)
-                    .exclusively(before: TapGesture(count: 1))
-                    .onEnded { value in
-                        switch value {
-                        case .first:
-                            openInReader(source)
-                        case .second:
-                            toggleExpansion(source)
-                        }
-                    }
-            )
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isButton)
-            .accessibilityIdentifier("torah-inspector-source-\(source.id)")
-            .accessibilityAction { toggleExpansion(source) }
-            .accessibilityAction(named: Text(TorahStrings.openInNewTab)) {
-                openInReader(source)
-            }
-
-            if expandedSourceIDs.contains(source.id) {
-                expandedSourceContent(source)
-                    .padding(.horizontal, 13)
-                    .padding(.vertical, 12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.torahSecondarySystemBackground.opacity(0.72))
-                    .accessibilityElement(children: .contain)
-                    .accessibilityIdentifier("torah-inspector-source-expanded-\(source.id)")
+        Button {
+            toggleExpansion(source)
+        } label: {
+            if commentary {
+                commentaryCard(source)
+            } else {
+                linkedSourceCard(source)
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-    }
-
-    @ViewBuilder
-    private func expandedSourceContent(_ source: TorahLinkedSource) -> some View {
-        if loadingSourceIDs.contains(source.id) {
-            ProgressView().frame(maxWidth: .infinity)
-        } else if let message = expandedSourceErrors[source.id] {
-            retryCard(message) { Task { await loadFullSource(source) } }
-        } else if let text = expandedSourceText[source.id] {
-            Text(text)
-                .font(.body)
-                .lineSpacing(5)
-                .textSelection(.enabled)
-                .environment(\.layoutDirection, layoutDirection(for: text))
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("torah-inspector-source-\(source.id)")
+        .accessibilityLabel("\(displayReference(source)), \(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))")
+        .accessibilityValue(expandedSourceIDs.contains(source.id) ? "Expanded" : "Collapsed")
+        .contextMenu {
+            Button(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square") {
+                openInReader(source)
+            }
+            #if canImport(UIKit)
+            Button(TorahStrings.copy, systemImage: "doc.on.doc") {
+                let textToCopy = expandedSourceText[source.id] ?? TorahInspectorPresentation.linkedText(source, locale: locale) ?? ""
+                UIPasteboard.general.string = textToCopy
+            }
+            #endif
         }
     }
 
