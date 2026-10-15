@@ -387,32 +387,57 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func expandableSourceRow(_ source: TorahLinkedSource, commentary: Bool) -> some View {
-        Button {
-            toggleExpansion(source)
-        } label: {
-            if commentary {
-                commentaryCard(source)
-            } else {
-                linkedSourceCard(source)
+        let isExpanded = expandedSourceIDs.contains(source.id)
+        return VStack(alignment: .leading, spacing: 0) {
+            Group {
+                if commentary {
+                    commentaryCard(source)
+                } else {
+                    linkedSourceCard(source)
+                }
             }
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityIdentifier("torah-inspector-source-\(source.id)")
-        .accessibilityLabel("\(displayReference(source)), \(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))")
-        .accessibilityValue(expandedSourceIDs.contains(source.id) ? "Expanded" : "Collapsed")
-        .contextMenu {
-            Button(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square") {
+            .contentShape(Rectangle())
+            .gesture(
+                TapGesture(count: 2)
+                    .exclusively(before: TapGesture(count: 1))
+                    .onEnded { value in
+                        switch value {
+                        case .first:
+                            openInReader(source)
+                        case .second:
+                            toggleExpansion(source)
+                        }
+                    }
+            )
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityIdentifier("torah-inspector-source-\(source.id)")
+            .accessibilityLabel("\(displayReference(source)), \(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))")
+            .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
+            .accessibilityAction { toggleExpansion(source) }
+            .accessibilityAction(named: Text(TorahStrings.openInNewTab)) {
                 openInReader(source)
             }
-            #if canImport(UIKit)
-            Button(TorahStrings.copy, systemImage: "doc.on.doc") {
-                let textToCopy = expandedSourceText[source.id] ?? TorahInspectorPresentation.linkedText(source, locale: locale) ?? ""
-                UIPasteboard.general.string = textToCopy
+            .contextMenu {
+                Button(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square") {
+                    openInReader(source)
+                }
+                #if canImport(UIKit)
+                Button(TorahStrings.copy, systemImage: "doc.on.doc") {
+                    let textToCopy = expandedSourceText[source.id] ?? TorahInspectorPresentation.linkedText(source, locale: locale) ?? ""
+                    UIPasteboard.general.string = textToCopy
+                }
+                #endif
             }
-            #endif
+
+            if isExpanded {
+                Color.clear
+                    .frame(height: 2)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("torah-inspector-source-expanded-\(source.id)")
+            }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private func toggleExpansion(_ source: TorahLinkedSource) {
