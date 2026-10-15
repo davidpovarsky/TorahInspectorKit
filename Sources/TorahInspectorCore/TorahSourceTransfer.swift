@@ -57,13 +57,6 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
         )
     }
 
-#if canImport(CoreTransferable) && canImport(UniformTypeIdentifiers)
-    public static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .torahSource)
-        ProxyRepresentation(exporting: \.text)
-    }
-#endif
-
 #if canImport(UniformTypeIdentifiers) && !os(Windows)
     public var itemProvider: NSItemProvider {
         let data = (try? JSONEncoder().encode(self)) ?? Data()
@@ -87,5 +80,10 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
 }
 
 #if canImport(CoreTransferable) && canImport(UniformTypeIdentifiers)
-extension TorahSourceTransfer: Transferable {}
+extension TorahSourceTransfer: Transferable {
+    public static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .torahSource)
+        ProxyRepresentation(exporting: \TorahSourceTransfer.text)
+    }
+}
 #endif
