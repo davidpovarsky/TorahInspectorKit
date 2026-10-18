@@ -6,18 +6,18 @@ public struct TorahInspectorHostActions {
     public var onClose: (() -> Void)?
     public var onInsertSegment: ((TorahSourceTransfer) -> Void)?
     public var onOpenInNewTab: ((TorahInspectorSelection) -> Void)?
-    public var onAddNote: ((TorahInspectorSelection, NotesDidChange) -> Void)?
-    public var onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, NotesDidChange) -> Void)?
-    public var onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, NotesDidChange) -> Void)?
+    public var onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
+    public var onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
+    public var onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var showsCloseButton: Bool
 
     public init(
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
         onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil,
-        onAddNote: ((TorahInspectorSelection, NotesDidChange) -> Void)? = nil,
-        onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, NotesDidChange) -> Void)? = nil,
-        onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, NotesDidChange) -> Void)? = nil,
+        onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
+        onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
+        onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         showsCloseButton: Bool? = nil
     ) {
         self.onClose = onClose

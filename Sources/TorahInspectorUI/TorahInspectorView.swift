@@ -47,9 +47,9 @@ public struct TorahInspectorView: View {
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
         onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil,
-        onAddNote: ((TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
-        onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
-        onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        onAddNote: ((TorahInspectorSelection, @escaping TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
+        onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping TorahInspectorHostActions.NotesDidChange) -> Void)? = nil,
         showsCloseButton: Bool? = nil
     ) {
         self.init(

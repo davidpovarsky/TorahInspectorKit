@@ -92,7 +92,7 @@ public struct TorahSegmentDetailView: View {
         .task(id: focus.id) { await loadPanelData() }
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
             Task { @MainActor in
-                await loadNotes()
+                await refreshNotes()
             }
         }
     }
