@@ -515,6 +515,22 @@ public struct TorahSegmentDetailView: View {
 
     @ViewBuilder
     private var notesContent: some View {
+        if let onAddNote = actions.onAddNote {
+            Button {
+                onAddNote(selection, notesDidChange)
+            } label: {
+                Label(TorahStrings.addNote, systemImage: "plus")
+                    .font(.body.weight(.medium))
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .tint(.accentColor)
+            .accessibilityIdentifier("torah-inspector-add-note")
+        }
+
         if loadingNotes {
             loadingRow
         } else if let notesError {
@@ -548,22 +564,6 @@ public struct TorahSegmentDetailView: View {
             }
             .background(Color.torahSecondarySystemBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        }
-
-        if let onAddNote = actions.onAddNote {
-            Button {
-                onAddNote(selection, notesDidChange)
-            } label: {
-                Label(TorahStrings.addNote, systemImage: "plus")
-                    .font(.body.weight(.medium))
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 14)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.capsule)
-            .tint(.accentColor)
-            .accessibilityIdentifier("torah-inspector-add-note")
         }
     }
 
