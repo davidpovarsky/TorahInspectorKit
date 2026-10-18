@@ -29,7 +29,7 @@
 
 ---
 
-## 3. Mandatory Subagent Delegation & Approval Gates
-- **חובת האצלה:** הסוכן הראשי פועל כמתאם בלבד ומחויב להפעיל סוכני משנה (`invoke_subagent`). כל קוד מועבר לרוני לאימות.
+## 3. Two-Tier Execution Policy & Approval Gates
+- **מדיניות ביצוע (NORMAL מול TEAM):** ברירת המחדל היא ביצוע ישיר בסשן הראשי (`[MAIN_SESSION]`) תוך טעינת הוראות התפקיד מ-`.agents/roles/<role>.md` ו-`PROJECT_ASSIGNMENTS.md`. הפעלת סוכני משנה (`invoke_subagent` / `[SUBAGENT]`) מתבצעת אך ורק לפי בקשה מפורשת של המשתמש ("עבוד במצב צוות" / "הפעל סוכני משנה").
 - **Release & Tagging:** Pinned package tags or breaking API changes require owner approval.
 - **Asana Policy:** Coordinate tasks in the respective host project's Asana board per `docs/ai-team/ASANA_POLICY.md`.
