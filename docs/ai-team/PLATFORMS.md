@@ -1,11 +1,22 @@
-# Named team platform entrypoints
+# Platforms: Antigravity & Codex Integration
 
-**Automatic on branch checkout**: `AGENTS.md` at the repository root is loaded by Codex and current Antigravity. `GEMINI.md` is the Antigravity compatibility pointer. Native role definitions live in `.codex/agents/<name>.toml` and `.agents/agents/<name>.md`. Both reference `.agents/roles/<name>.md`.
+This repository supports unified persistent named roles across both Google Antigravity and Codex platforms.
 
-**Important**: The instruction files do not create Asana users, grant API credentials, start background workers, or make role aliases persisted identities outside this repository.
+## 1. Google Antigravity Integration
+Antigravity automatically discovers and activates the named team via:
+- **Global Router:** `~/.gemini/config/rules/named-team-router.md` (`trigger: always_on`), filtering by repository remote URL.
+- **Repository Entrypoint:** Root `AGENTS.md` and `GEMINI.md`.
+- **Repository Rule Router:** `.agents/rules/ai-team-router.md` (`trigger: always_on`).
+- **Custom Agent Definitions:** `.agents/agents/<name>.md` with YAML frontmatter (`name`, `description`, `mainAgent`, `subagent`, `model`).
+- **Role Profiles:** `.agents/roles/<name>.md` defining scope, ownership, and handoff boundaries.
+- **Skills:** `.agents/skills/asana-team-coordination/SKILL.md` for verified task coordination.
 
-**Branches are independent**. An existing branch without these files will not inherit them. Integrate this documentation commit into each approved working branch by merge/cherry-pick after checking conflicts; newly created branches from integrated bases will inherit the files.
+## 2. Codex Integration
+Codex operates with identical role definitions via:
+- **Repository Entrypoint:** Root `AGENTS.md`.
+- **Agent Definitions:** `.codex/agents/<name>.toml` with valid TOML syntax.
+- **Shared Contracts:** `docs/ai-team/TEAM.md`, `PROJECT_ASSIGNMENTS.md`, and `ASANA_POLICY.md`.
 
-**Smoke test**: Open a fresh Codex session from the repo root; ask it to identify the loaded `AGENTS.md`, the seven named roles and the active project's constraints without modifying anything. Open a fresh Antigravity session and list workspace custom agents (e.g. `/agents` where supported); ask for identical names and safeguards. Verify read-only before doing an actual implementation.
-
-Do not copy `GEMINI.md` as the single source of truth: it is only a pointer. Do not add repo-global always-on rules outside the scope of this project. Existing guidance and any stronger approval or CI restriction remain binding.
+## 3. Precedence & Boundaries
+- Repository-specific instructions (`CLAUDE.md`, `PROJECT_AGENT_GUIDANCE.md`), frozen UI rules, and explicit approval gates take strict precedence over generic team behavior.
+- Team definitions provide identity and routing; they do not authorize bypassing security, CI, or release gates.
