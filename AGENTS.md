@@ -20,3 +20,7 @@ When an item is implemented, mark it complete and optionally record the date and
 Updating `PROJECT_BOARD.md` as a side effect of another task is allowed and encouraged when a worthwhile discovery is made. Recording an idea is allowed; implementing unrelated ideas is not.
 
 Preserve all existing repository-specific instructions.
+
+## Named team bootstrap — Codex and Antigravity
+
+This repository includes a named team. For every new substantive task, load `docs/ai-team/TEAM.md` and `docs/ai-team/PROJECT_ASSIGNMENTS.md`, then select the matching profile in `.agents/roles/` (Eitan, Noam, Maya, Roni, Tomer, Yael, Dana). Codex and Antigravity must use the same role identity; platform is execution tooling, not a new person. Respect ALL existing project instructions above, any CLAUDE.md and project-specific safeguards. Asana reads when relevant; Asana WRITES only when the user explicitly requests. No autonomous background polling or cross-branch propagation; no auto-merge, releases or unnecessary CI. If the role cannot be selected safely, report the ambiguity; do not invent authority.
