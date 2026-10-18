@@ -90,13 +90,9 @@ public struct TorahSegmentDetailView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-panel")
         .task(id: focus.id) { await loadPanelData() }
-        .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { notification in
-            if let targetID = notification.userInfo?["selectionID"] as? String {
-                if targetID == selection.id {
-                    Task { await loadNotes() }
-                }
-            } else {
-                Task { await loadNotes() }
+        .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
+            Task { @MainActor in
+                await loadNotes()
             }
         }
     }
