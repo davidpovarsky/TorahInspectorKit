@@ -204,6 +204,21 @@ public final class TorahInspectorRepository {
         notesCache.removeValue(forKey: selection.id)
         inFlightNotes[selection.id]?.cancel()
         inFlightNotes.removeValue(forKey: selection.id)
+        NotificationCenter.default.post(
+            name: .torahInspectorNotesDidChange,
+            object: self,
+            userInfo: ["selectionID": selection.id]
+        )
+    }
+
+    public func invalidateAllNotes() {
+        notesCache.removeAll()
+        for task in inFlightNotes.values { task.cancel() }
+        inFlightNotes.removeAll()
+        NotificationCenter.default.post(
+            name: .torahInspectorNotesDidChange,
+            object: self
+        )
     }
 
     private static func touchRelationship(_ key: String, lru: inout [String]) {
@@ -216,4 +231,8 @@ public final class TorahInspectorRepository {
             cache.removeValue(forKey: lru.removeFirst())
         }
     }
+}
+
+extension Notification.Name {
+    public static let torahInspectorNotesDidChange = Notification.Name("TorahInspectorNotesDidChangeNotification")
 }
