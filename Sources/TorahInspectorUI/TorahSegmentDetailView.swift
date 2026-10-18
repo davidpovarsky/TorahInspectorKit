@@ -531,6 +531,7 @@ public struct TorahSegmentDetailView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("torah-inspector-note-\(note.id)")
+                    .accessibilityLabel(note.note)
                     .contextMenu {
                         if let onDeleteNote = actions.onDeleteNote {
                             Button(role: .destructive) {
@@ -708,6 +709,7 @@ public struct TorahSegmentDetailView: View {
 
     private func notesDidChange() {
         Task { @MainActor in
+            repository.invalidateNotes(for: selection)
             await loadNotes()
         }
     }
