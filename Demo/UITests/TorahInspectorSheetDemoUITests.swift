@@ -8,7 +8,7 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
             app.launchArguments = ["--detent", detent]
             app.launch()
 
-            let identifier = detent == "peek" ? "torah-inspector-peek" : "torah-inspector-panel"
+            let identifier = "torah-inspector-sheet-\(detent)"
             XCTAssertTrue(
                 app.descendants(matching: .any)[identifier].waitForExistence(timeout: 30),
                 "The native Torah sheet must appear at the \(detent) detent"

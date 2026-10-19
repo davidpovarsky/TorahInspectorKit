@@ -67,6 +67,7 @@ jobs:
             -scheme TorahInspectorSheetDemo \
             -destination "platform=iOS Simulator,id=$DEVICE_ID" \
             -resultBundlePath results/TorahInspectorSheetDemo.xcresult \
+            -collect-test-diagnostics never \
             test 2>&1 | tee logs/ui-test.log
 
           APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*/Build/Products/Debug-iphonesimulator/TorahInspectorSheetDemo.app' -print -quit)"

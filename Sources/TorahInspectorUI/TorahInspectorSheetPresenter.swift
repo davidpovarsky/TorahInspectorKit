@@ -140,6 +140,8 @@ private struct TorahInspectorSheetContent: View {
                 )
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("torah-inspector-sheet-\(selectedDetent.rawValue)")
     }
 }
 
