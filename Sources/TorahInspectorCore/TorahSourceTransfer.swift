@@ -19,6 +19,7 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
     public let text: String
     public let versionTitle: String?
     public let license: String?
+    public let direction: String?
     public let rawProviderPayload: String
     public let retrievedAt: Date
 
@@ -30,6 +31,7 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
         text: String,
         versionTitle: String? = nil,
         license: String? = nil,
+        direction: String? = nil,
         rawProviderPayload: String = "{}",
         retrievedAt: Date = Date()
     ) {
@@ -40,6 +42,7 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
         self.text = text
         self.versionTitle = versionTitle
         self.license = license
+        self.direction = direction
         self.rawProviderPayload = rawProviderPayload
         self.retrievedAt = retrievedAt
     }
@@ -53,6 +56,7 @@ public struct TorahSourceTransfer: Codable, Hashable, Sendable, Identifiable {
             text: segment.text,
             versionTitle: document.version.versionTitle,
             license: document.version.license,
+            direction: document.version.direction,
             rawProviderPayload: document.rawProviderPayload
         )
     }

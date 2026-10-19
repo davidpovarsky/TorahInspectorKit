@@ -281,6 +281,7 @@ struct InspectorIdentityTests {
         let transfer = TorahSourceTransfer(segment: makeDocument().segments[0], document: makeDocument())
         let decoded = try JSONDecoder().decode(TorahSourceTransfer.self, from: JSONEncoder().encode(transfer))
         #expect(decoded == transfer)
+        #expect(decoded.direction == "rtl")
         #expect(UTType.torahSource.identifier == "com.gloiiire.pinkha.torahSource")
     }
 #endif
