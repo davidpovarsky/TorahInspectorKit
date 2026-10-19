@@ -40,7 +40,7 @@ jobs:
           cd Demo
           xcodegen generate
 
-      - name: Run iPadOS 27 UI tests
+      - name: Select and boot iPadOS 27 simulator
         run: |
           set -euo pipefail
           mkdir -p logs results screenshots
@@ -59,17 +59,68 @@ jobs:
           print(matches[0]["udid"])
           PY
           )"
+          echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
           xcrun simctl boot "$DEVICE_ID" || true
           xcrun simctl bootstatus "$DEVICE_ID" -b
-          set -o pipefail
-          xcodebuild \
-            -project Demo/TorahInspectorSheetDemo.xcodeproj \
-            -scheme TorahInspectorSheetDemo \
-            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
-            -resultBundlePath results/TorahInspectorSheetDemo.xcresult \
-            -collect-test-diagnostics never \
-            test 2>&1 | tee logs/ui-test.log
 
+      - name: Run iPadOS 27 UI tests
+        id: ui_tests
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          import os
+          import signal
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          command = [
+              'xcodebuild',
+              '-project', 'Demo/TorahInspectorSheetDemo.xcodeproj',
+              '-scheme', 'TorahInspectorSheetDemo',
+              '-destination', f"platform=iOS Simulator,id={os.environ['DEVICE_ID']}",
+              '-resultBundlePath', 'results/TorahInspectorSheetDemo.xcresult',
+              '-collect-test-diagnostics', 'never',
+              'test',
+          ]
+          log_path = Path('logs/ui-test.log')
+          timed_out = False
+          with log_path.open('w', encoding='utf-8') as log:
+              process = subprocess.Popen(
+                  command,
+                  stdout=log,
+                  stderr=subprocess.STDOUT,
+                  text=True,
+                  start_new_session=True,
+              )
+              try:
+                  return_code = process.wait(timeout=300)
+              except subprocess.TimeoutExpired:
+                  timed_out = True
+                  os.killpg(process.pid, signal.SIGTERM)
+                  try:
+                      return_code = process.wait(timeout=10)
+                  except subprocess.TimeoutExpired:
+                      os.killpg(process.pid, signal.SIGKILL)
+                      return_code = process.wait()
+
+          output = log_path.read_text(encoding='utf-8', errors='replace')
+          sys.stdout.write(output)
+          suite_passed = (
+              "Test Suite 'All tests' passed" in output
+              and 'Executed 1 test, with 0 failures' in output
+          )
+          if timed_out and suite_passed:
+              print('xcodebuild watchdog: suite passed before the runner process stalled; accepting test evidence.')
+              raise SystemExit(0)
+          if return_code != 0 or not suite_passed:
+              raise SystemExit(return_code or 1)
+          PY
+
+      - name: Capture three Hebrew RTL detents
+        if: always()
+        run: |
+          set -euo pipefail
           APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*/Build/Products/Debug-iphonesimulator/TorahInspectorSheetDemo.app' -print -quit)"
           test -n "$APP_PATH"
           xcrun simctl install "$DEVICE_ID" "$APP_PATH"
@@ -81,6 +132,7 @@ jobs:
           done
 
       - name: Upload screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: TorahInspectorKit-iPadOS27-Hebrew-RTL-Screenshots
@@ -102,3 +154,9 @@ jobs:
           name: TorahInspectorKit-iPadOS27-Logs
           if-no-files-found: error
           path: logs/
+
+      - name: Enforce UI test outcome after publishing evidence
+        if: always() && steps.ui_tests.outcome != 'success'
+        run: |
+          echo 'The UI test did not produce verified passing-suite evidence.'
+          exit 1
