@@ -6,13 +6,16 @@ public final class TorahInspectorRepository {
     public typealias LinksFetcher = @Sendable (String, String?) async throws -> [TorahLinkedSource]
     public typealias TopicsFetcher = @Sendable (String, String?) async throws -> [TorahLinkedTopic]
     public typealias NotesFetcher = @Sendable (TorahInspectorSelection) async throws -> [TorahInspectorNote]
+    public typealias SnippetsFetcher = @Sendable ([TorahLinkedSource]) async throws -> [TorahLinkedSource.ID: String]
 
     private let textFetcher: TextFetcher
     private let linksFetcher: LinksFetcher
     private let topicsFetcher: TopicsFetcher
     private let notesFetcher: NotesFetcher
+    private let snippetsFetcher: SnippetsFetcher
     public let documentCapacity: Int
     public let relationshipCapacity: Int
+    public let snippetCapacity: Int
 
     private var documentCache: [String: TorahTextDocument] = [:]
     private var documentLRU: [String] = []
@@ -26,21 +29,27 @@ public final class TorahInspectorRepository {
     private var inFlightTopics: [String: Task<[TorahLinkedTopic], Error>] = [:]
     private var notesCache: [String: [TorahInspectorNote]] = [:]
     private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
+    private var snippetsCache: [TorahLinkedSource.ID: String] = [:]
+    private var snippetsLRU: [TorahLinkedSource.ID] = []
 
     public init(
         documentCapacity: Int = 30,
         relationshipCapacity: Int = 50,
+        snippetCapacity: Int = 200,
         textFetcher: @escaping TextFetcher,
         linksFetcher: @escaping LinksFetcher = { _, _ in [] },
         topicsFetcher: @escaping TopicsFetcher = { _, _ in [] },
-        notesFetcher: @escaping NotesFetcher = { _ in [] }
+        notesFetcher: @escaping NotesFetcher = { _ in [] },
+        snippetsFetcher: @escaping SnippetsFetcher = { _ in [:] }
     ) {
         self.textFetcher = textFetcher
         self.linksFetcher = linksFetcher
         self.topicsFetcher = topicsFetcher
         self.notesFetcher = notesFetcher
+        self.snippetsFetcher = snippetsFetcher
         self.documentCapacity = max(0, documentCapacity)
         self.relationshipCapacity = max(0, relationshipCapacity)
+        self.snippetCapacity = max(0, snippetCapacity)
     }
 
     public convenience init(
@@ -212,6 +221,42 @@ public final class TorahInspectorRepository {
 
     public func invalidateAllNotes() {
         invalidateNotes()
+    }
+
+    public func cachedSnippet(for sourceID: TorahLinkedSource.ID) -> String? {
+        snippetsCache[sourceID]
+    }
+
+    public func fetchSnippets(for sources: [TorahLinkedSource]) async throws -> [TorahLinkedSource.ID: String] {
+        var needed: [TorahLinkedSource] = []
+        var results: [TorahLinkedSource.ID: String] = [:]
+        for source in sources {
+            if let cached = snippetsCache[source.id] {
+                Self.touchRelationship(source.id, lru: &snippetsLRU)
+                results[source.id] = cached
+            } else if let inline = source.hebrewText ?? source.englishText, !inline.isEmpty {
+                snippetsCache[source.id] = inline
+                Self.touchRelationship(source.id, lru: &snippetsLRU)
+                results[source.id] = inline
+            } else {
+                needed.append(source)
+            }
+        }
+        guard !needed.isEmpty else { return results }
+
+        let fetched = try await snippetsFetcher(needed)
+        for (id, text) in fetched {
+            snippetsCache[id] = text
+            Self.touchRelationship(id, lru: &snippetsLRU)
+            results[id] = text
+        }
+        Self.evictRelationships(cache: &snippetsCache, lru: &snippetsLRU, capacity: snippetCapacity)
+        return results
+    }
+
+    public func invalidateSnippets() {
+        snippetsCache.removeAll()
+        snippetsLRU.removeAll()
     }
 
     private static func touchRelationship(_ key: String, lru: inout [String]) {

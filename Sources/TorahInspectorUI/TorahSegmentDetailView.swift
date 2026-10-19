@@ -24,6 +24,9 @@ public struct TorahSegmentDetailView: View {
     @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedCommentaryGroupIDs: Set<TorahSourceGroup.ID> = []
     @State private var cachedGroups: TorahRelationshipGroups?
+    @State private var snippetTexts: [TorahLinkedSource.ID: String] = [:]
+    @State private var loadingSnippetIDs: Set<TorahLinkedSource.ID> = []
+    @State private var snippetErrors: [TorahLinkedSource.ID: String] = [:]
     @Environment(\.locale) private var locale
 
     public init(
@@ -264,6 +267,16 @@ public struct TorahSegmentDetailView: View {
         .accessibilityElement(children: .contain)
     }
 
+    private func resolvedSnippet(for source: TorahLinkedSource) -> String? {
+        if let text = snippetTexts[source.id], !text.isEmpty {
+            return text
+        }
+        if let cached = repository.cachedSnippet(for: source.id), !cached.isEmpty {
+            return cached
+        }
+        return TorahInspectorPresentation.linkedText(source, locale: locale)
+    }
+
     @ViewBuilder
     private func sourceBodyContent(source: TorahLinkedSource, isCommentary: Bool) -> some View {
         let isExpanded = expandedSourceIDs.contains(source.id)
@@ -292,19 +305,32 @@ public struct TorahSegmentDetailView: View {
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .environment(\.layoutDirection, layoutDirection(for: fullText))
-            } else if let snippet = TorahInspectorPresentation.linkedText(source, locale: locale) {
+            } else if let snippet = resolvedSnippet(for: source) {
                 Text(snippet)
                     .font(isCommentary ? .system(size: 15) : .caption)
                     .lineSpacing(isCommentary ? 4 : 2)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-        } else if let snippet = TorahInspectorPresentation.linkedText(source, locale: locale) {
+        } else if let snippet = resolvedSnippet(for: source) {
             Text(snippet)
                 .font(isCommentary ? .system(size: 15) : .caption)
                 .lineSpacing(isCommentary ? 4 : 2)
                 .lineLimit(isCommentary ? 5 : 2)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(isCommentary ? .primary : .secondary)
+        } else if loadingSnippetIDs.contains(source.id) {
+            ProgressView()
+                .padding(.vertical, 4)
+        } else if let snippetError = snippetErrors[source.id] {
+            HStack(spacing: 6) {
+                Text(snippetError)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Button(TorahStrings.retry) {
+                    Task { await loadSnippet(source) }
+                }
+                .font(.caption2.weight(.semibold))
+            }
         }
     }
 
@@ -435,7 +461,7 @@ public struct TorahSegmentDetailView: View {
                 }
                 #if canImport(UIKit)
                 Button(TorahStrings.copy, systemImage: "doc.on.doc") {
-                    let textToCopy = expandedSourceText[source.id] ?? TorahInspectorPresentation.linkedText(source, locale: locale) ?? ""
+                    let textToCopy = expandedSourceText[source.id] ?? resolvedSnippet(for: source) ?? ""
                     UIPasteboard.general.string = textToCopy
                 }
                 #endif
@@ -449,6 +475,39 @@ public struct TorahSegmentDetailView: View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .task(id: source.id) {
+            if resolvedSnippet(for: source) == nil {
+                await loadSnippet(source)
+            }
+        }
+    }
+
+    @MainActor
+    private func loadSnippet(_ source: TorahLinkedSource) async {
+        guard resolvedSnippet(for: source) == nil,
+              !loadingSnippetIDs.contains(source.id) else { return }
+        loadingSnippetIDs.insert(source.id)
+        snippetErrors.removeValue(forKey: source.id)
+        do {
+            let fetched = try await repository.fetchSnippets(for: [source])
+            guard !Task.isCancelled else {
+                loadingSnippetIDs.remove(source.id)
+                return
+            }
+            if let text = fetched[source.id] {
+                snippetTexts[source.id] = text
+            }
+            loadingSnippetIDs.remove(source.id)
+        } catch is CancellationError {
+            loadingSnippetIDs.remove(source.id)
+        } catch {
+            guard !Task.isCancelled else {
+                loadingSnippetIDs.remove(source.id)
+                return
+            }
+            loadingSnippetIDs.remove(source.id)
+            snippetErrors[source.id] = TorahStrings.retry
+        }
     }
 
     private func toggleExpansion(_ source: TorahLinkedSource) {
@@ -685,11 +744,32 @@ public struct TorahSegmentDetailView: View {
             guard !Task.isCancelled else { return }
             cachedGroups = computedGroups
             links = fetched
+            loadingLinks = false
+
+            // Pre-fetch snippets for the first batch of visible items
+            let initialBatch = Array(fetched.prefix(15))
+            if !initialBatch.isEmpty {
+                Task { @MainActor in
+                    let unhydrated = initialBatch.filter { resolvedSnippet(for: $0) == nil }
+                    if !unhydrated.isEmpty {
+                        for item in unhydrated { loadingSnippetIDs.insert(item.id) }
+                        do {
+                            let results = try await repository.fetchSnippets(for: unhydrated)
+                            for (id, text) in results {
+                                snippetTexts[id] = text
+                                loadingSnippetIDs.remove(id)
+                            }
+                        } catch {
+                            for item in unhydrated { loadingSnippetIDs.remove(item.id) }
+                        }
+                    }
+                }
+            }
         } catch is CancellationError {
         } catch {
             linksError = TorahStrings.couldNotLoadRelatedSources
+            loadingLinks = false
         }
-        loadingLinks = false
     }
 
     @MainActor

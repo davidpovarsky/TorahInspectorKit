@@ -327,3 +327,53 @@ struct ReaderNavigationStateTests {
         #expect(next.onScrollOffsetChanged(offsetY: 450, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true).shouldLoadNext)
     }
 }
+
+@Suite("Snippet hydration")
+struct SnippetHydrationTests {
+    @Test @MainActor func fetchSnippetsUsesInlineTextWhenAvailable() async throws {
+        let repo = TorahInspectorRepository(
+            textFetcher: { _, _ in makeDocument() },
+            snippetsFetcher: { _ in [:] }
+        )
+        let sourceWithInline = TorahLinkedSource(
+            sourceRef: "Ref:1",
+            category: "Commentary",
+            type: "commentary",
+            hebrewText: "פירוש ראשוני"
+        )
+        let results = try await repo.fetchSnippets(for: [sourceWithInline])
+        #expect(results[sourceWithInline.id] == "פירוש ראשוני")
+        #expect(repo.cachedSnippet(for: sourceWithInline.id) == "פירוש ראשוני")
+    }
+
+    @Test @MainActor func fetchSnippetsFetchesAndCachesUnhydratedSources() async throws {
+        let fetchCount = Counter()
+        let sourceUnhydrated = TorahLinkedSource(
+            sourceRef: "Ref:2",
+            category: "Commentary",
+            type: "commentary"
+        )
+        let repo = TorahInspectorRepository(
+            textFetcher: { _, _ in makeDocument() },
+            snippetsFetcher: { sources in
+                await fetchCount.increment()
+                return [sourceUnhydrated.id: "טקסט שנשלף"]
+            }
+        )
+        #expect(repo.cachedSnippet(for: sourceUnhydrated.id) == nil)
+        let results = try await repo.fetchSnippets(for: [sourceUnhydrated])
+        #expect(results[sourceUnhydrated.id] == "טקסט שנשלף")
+        #expect(repo.cachedSnippet(for: sourceUnhydrated.id) == "טקסט שנשלף")
+        #expect(await fetchCount.value() == 1)
+
+        // Second call should hit the cache without calling fetcher
+        let secondResults = try await repo.fetchSnippets(for: [sourceUnhydrated])
+        #expect(secondResults[sourceUnhydrated.id] == "טקסט שנשלף")
+        #expect(await fetchCount.value() == 1)
+
+        // Invalidating snippets clears cache
+        repo.invalidateSnippets()
+        #expect(repo.cachedSnippet(for: sourceUnhydrated.id) == nil)
+    }
+}
+
