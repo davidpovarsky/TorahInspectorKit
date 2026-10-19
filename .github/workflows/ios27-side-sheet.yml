@@ -1,0 +1,103 @@
+name: TorahInspectorKit iPadOS 27 Side Sheet
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/native-ios27-torah-side-sheet-2026-10-20
+
+permissions:
+  contents: read
+
+concurrency:
+  group: torah-inspector-kit-ios27-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package-and-native-sheet:
+    runs-on: xcode-27
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Apple toolchain
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+          swift --version
+
+      - name: Run package tests
+        run: |
+          mkdir -p logs
+          set -o pipefail
+          swift test 2>&1 | tee logs/swift-test.log
+
+      - name: Generate demonstration project
+        run: |
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+          cd Demo
+          xcodegen generate
+
+      - name: Run iPadOS 27 UI tests
+        run: |
+          set -euo pipefail
+          mkdir -p logs results screenshots
+          DEVICE_ID="$(python3 - <<'PY'
+          import json, subprocess
+          data = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"]))
+          matches = [
+              device
+              for runtime, devices in data["devices"].items()
+              if "iOS-27" in runtime
+              for device in devices
+              if device["name"].startswith("iPad")
+          ]
+          if not matches:
+              raise SystemExit("No available iPadOS 27 simulator")
+          print(matches[0]["udid"])
+          PY
+          )"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          set -o pipefail
+          xcodebuild \
+            -project Demo/TorahInspectorSheetDemo.xcodeproj \
+            -scheme TorahInspectorSheetDemo \
+            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
+            -resultBundlePath results/TorahInspectorSheetDemo.xcresult \
+            test 2>&1 | tee logs/ui-test.log
+
+          APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*/Build/Products/Debug-iphonesimulator/TorahInspectorSheetDemo.app' -print -quit)"
+          test -n "$APP_PATH"
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+          for DETENT in peek medium large; do
+            xcrun simctl launch --terminate-running-process "$DEVICE_ID" \
+              com.davidpovarsky.TorahInspectorSheetDemo --detent "$DETENT"
+            sleep 3
+            xcrun simctl io "$DEVICE_ID" screenshot "screenshots/torah-inspector-${DETENT}-hebrew-rtl.png"
+          done
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspectorKit-iPadOS27-Hebrew-RTL-Screenshots
+          if-no-files-found: error
+          path: screenshots/*.png
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspectorKit-iPadOS27-Test-Results
+          if-no-files-found: error
+          path: results/
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspectorKit-iPadOS27-Logs
+          if-no-files-found: error
+          path: logs/

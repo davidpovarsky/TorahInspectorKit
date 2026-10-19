@@ -12,6 +12,7 @@ public enum TorahStrings {
     public static var studyTools: String { text("Study Tools") }
     public static var selectedSegment: String { text("Selected Segment") }
     public static var addNote: String { text("Add Note") }
+    public static var expand: String { text("Expand") }
 
     public static func message(for error: Error) -> String {
         guard let torah = error as? TorahError else { return text("Could not load source") }

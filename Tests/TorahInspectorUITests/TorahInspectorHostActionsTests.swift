@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Testing
 import TorahInspectorCore
 @testable import TorahInspectorUI
@@ -21,6 +22,58 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahStudyTool.links.localizedTitle(locale: Locale(identifier: "he_IL")) == "קישורים")
         #expect(TorahStudyTool.notes.localizedTitle(locale: Locale(identifier: "he_IL")) == "הערות")
         #expect(TorahStrings.text("Add Note", locale: Locale(identifier: "he_IL")) == "הוסף הערה")
+        #expect(TorahStrings.text("Expand", locale: Locale(identifier: "he_IL")) == "הרחב")
+    }
+
+    @Test func sheetDetentsMapToNativePresentationDetents() {
+        for detent in TorahInspectorSheetDetent.allCases {
+            #expect(TorahInspectorSheetDetent(presentationDetent: detent.presentationDetent) == detent)
+        }
+    }
+
+    @Test func physicalRightPlacementAccountsForLayoutDirection() {
+        #expect(TorahInspectorSheetPlacementResolver.physicalRightEdge(for: .leftToRight) == .trailing)
+        #expect(TorahInspectorSheetPlacementResolver.physicalRightEdge(for: .rightToLeft) == .leading)
+    }
+
+    @Test func peekUsesExactSegmentAndNeverSubstitutesAnotherSegment() {
+        let first = TorahTextSegment(canonicalRef: "Genesis 1:1", text: "First", ordinal: 1)
+        let second = TorahTextSegment(canonicalRef: "Genesis 1:2", text: "Second", ordinal: 2)
+        let document = TorahTextDocument(
+            providerID: "sefaria",
+            requestedRef: "Genesis 1",
+            canonicalRef: "Genesis 1",
+            sectionRef: "Genesis 1",
+            segments: [first, second],
+            version: TorahTextVersionMetadata(language: "en", versionTitle: "Fixture")
+        )
+
+        #expect(TorahInspectorSheetPeekResolver.segment(
+            in: document,
+            selection: TorahInspectorSelection(
+                providerID: "sefaria",
+                canonicalRef: "Genesis 1",
+                preferredSegmentRef: "Genesis 1:2",
+                scope: .segment
+            )
+        ) == second)
+        #expect(TorahInspectorSheetPeekResolver.segment(
+            in: document,
+            selection: TorahInspectorSelection(
+                providerID: "sefaria",
+                canonicalRef: "Genesis 1",
+                preferredSegmentRef: "Genesis 1:99",
+                scope: .segment
+            )
+        ) == nil)
+        #expect(TorahInspectorSheetPeekResolver.segment(
+            in: document,
+            selection: TorahInspectorSelection(
+                providerID: "sefaria",
+                canonicalRef: "Genesis 1",
+                scope: .section
+            )
+        ) == first)
     }
 
     @Test func entryModesAreDistinct() {
