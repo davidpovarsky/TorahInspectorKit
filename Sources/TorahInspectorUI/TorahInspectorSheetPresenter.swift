@@ -283,7 +283,11 @@ enum TorahInspectorSheetPhysicalEdge: Equatable {
 
 enum TorahInspectorSheetPlacementResolver {
     static func physicalRightEdge(for layoutDirection: LayoutDirection) -> TorahInspectorSheetPhysicalEdge {
-        layoutDirection == .rightToLeft ? .leading : .trailing
+        // iPadOS 27's presentationPlacement edges are physical in the native
+        // side-sheet presentation. Simulator evidence in Hebrew RTL confirms
+        // that `.leading` is left and `.trailing` is right.
+        _ = layoutDirection
+        return .trailing
     }
 }
 

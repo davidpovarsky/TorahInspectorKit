@@ -31,9 +31,9 @@ struct TorahInspectorHostActionsTests {
         }
     }
 
-    @Test func physicalRightPlacementAccountsForLayoutDirection() {
+    @Test func physicalRightPlacementUsesEmpiricallyPhysicalTrailingEdge() {
         #expect(TorahInspectorSheetPlacementResolver.physicalRightEdge(for: .leftToRight) == .trailing)
-        #expect(TorahInspectorSheetPlacementResolver.physicalRightEdge(for: .rightToLeft) == .leading)
+        #expect(TorahInspectorSheetPlacementResolver.physicalRightEdge(for: .rightToLeft) == .trailing)
     }
 
     @Test func peekUsesExactSegmentAndNeverSubstitutesAnotherSegment() {
