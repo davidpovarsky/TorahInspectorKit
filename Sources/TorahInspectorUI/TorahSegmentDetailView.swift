@@ -23,6 +23,7 @@ public struct TorahSegmentDetailView: View {
     @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
     @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedCommentaryGroupIDs: Set<TorahSourceGroup.ID> = []
+    @State private var cachedGroups: TorahRelationshipGroups?
     @Environment(\.locale) private var locale
 
     public init(
@@ -59,7 +60,7 @@ public struct TorahSegmentDetailView: View {
     private var selection: TorahInspectorSelection { focus.selection }
     private var providerID: String { selection.providerID }
 
-    private var groups: TorahRelationshipGroups { TorahRelationshipGroups(sources: links) }
+    private var groups: TorahRelationshipGroups { cachedGroups ?? TorahRelationshipGroups(sources: links) }
 
     @ViewBuilder
     public var body: some View {
@@ -93,6 +94,11 @@ public struct TorahSegmentDetailView: View {
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
             Task { @MainActor in
                 await loadNotes()
+            }
+        }
+        .onChange(of: links) { _, newLinks in
+            if cachedGroups == nil {
+                cachedGroups = TorahRelationshipGroups(sources: newLinks)
             }
         }
     }
@@ -667,7 +673,18 @@ public struct TorahSegmentDetailView: View {
         loadingLinks = true
         linksError = nil
         do {
-            links = try await repository.links(for: selection.relationshipRef, providerID: providerID)
+            let fetched = try await repository.links(for: selection.relationshipRef, providerID: providerID)
+            let computedGroups: TorahRelationshipGroups
+            if fetched.isEmpty {
+                computedGroups = TorahRelationshipGroups(sources: [])
+            } else {
+                computedGroups = await Task.detached(priority: .userInitiated) {
+                    TorahRelationshipGroups(sources: fetched)
+                }.value
+            }
+            guard !Task.isCancelled else { return }
+            cachedGroups = computedGroups
+            links = fetched
         } catch is CancellationError {
         } catch {
             linksError = TorahStrings.couldNotLoadRelatedSources
