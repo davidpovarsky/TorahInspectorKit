@@ -272,7 +272,14 @@ public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
         self.scope = scope ?? (preferredSegmentRef == nil ? .section : .segment)
     }
 
-    public var relationshipRef: String { preferredSegmentRef ?? canonicalRef }
+    public var relationshipRef: String {
+        switch scope {
+        case .section:
+            return canonicalRef
+        case .segment:
+            return preferredSegmentRef ?? canonicalRef
+        }
+    }
 
     public func prefers(_ segment: TorahTextSegment) -> Bool {
         preferredSegmentRef == segment.canonicalRef

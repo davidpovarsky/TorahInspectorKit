@@ -26,6 +26,7 @@ public struct TorahSegmentDetailView: View {
     @State private var cachedGroups: TorahRelationshipGroups?
     @State private var snippetTexts: [TorahLinkedSource.ID: String] = [:]
     @State private var loadingSnippetIDs: Set<TorahLinkedSource.ID> = []
+    @State private var unavailableSnippetIDs: Set<TorahLinkedSource.ID> = []
     @State private var snippetErrors: [TorahLinkedSource.ID: String] = [:]
     @Environment(\.locale) private var locale
 
@@ -476,7 +477,9 @@ public struct TorahSegmentDetailView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .task(id: source.id) {
-            if resolvedSnippet(for: source) == nil {
+            if resolvedSnippet(for: source) == nil,
+               !unavailableSnippetIDs.contains(source.id),
+               !loadingSnippetIDs.contains(source.id) {
                 await loadSnippet(source)
             }
         }
@@ -485,27 +488,22 @@ public struct TorahSegmentDetailView: View {
     @MainActor
     private func loadSnippet(_ source: TorahLinkedSource) async {
         guard resolvedSnippet(for: source) == nil,
+              !unavailableSnippetIDs.contains(source.id),
               !loadingSnippetIDs.contains(source.id) else { return }
         loadingSnippetIDs.insert(source.id)
         snippetErrors.removeValue(forKey: source.id)
+        defer { loadingSnippetIDs.remove(source.id) }
         do {
             let fetched = try await repository.fetchSnippets(for: [source])
-            guard !Task.isCancelled else {
-                loadingSnippetIDs.remove(source.id)
-                return
-            }
-            if let text = fetched[source.id] {
+            guard !Task.isCancelled else { return }
+            if let text = fetched[source.id], !text.isEmpty {
                 snippetTexts[source.id] = text
+            } else if resolvedSnippet(for: source) == nil {
+                unavailableSnippetIDs.insert(source.id)
             }
-            loadingSnippetIDs.remove(source.id)
         } catch is CancellationError {
-            loadingSnippetIDs.remove(source.id)
         } catch {
-            guard !Task.isCancelled else {
-                loadingSnippetIDs.remove(source.id)
-                return
-            }
-            loadingSnippetIDs.remove(source.id)
+            guard !Task.isCancelled else { return }
             snippetErrors[source.id] = TorahStrings.retry
         }
     }
@@ -721,6 +719,10 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func loadPanelData() async {
+        loadingSnippetIDs.removeAll()
+        unavailableSnippetIDs.removeAll()
+        snippetTexts.removeAll()
+        snippetErrors.removeAll()
         async let loadedLinks: Void = loadLinks()
         async let loadedTopics: Void = loadTopics()
         async let loadedNotes: Void = loadNotes()
@@ -731,6 +733,7 @@ public struct TorahSegmentDetailView: View {
     private func loadLinks() async {
         loadingLinks = true
         linksError = nil
+        defer { loadingLinks = false }
         do {
             let fetched = try await repository.links(for: selection.relationshipRef, providerID: providerID)
             let computedGroups: TorahRelationshipGroups
@@ -744,23 +747,38 @@ public struct TorahSegmentDetailView: View {
             guard !Task.isCancelled else { return }
             cachedGroups = computedGroups
             links = fetched
-            loadingLinks = false
 
             // Pre-fetch snippets for the first batch of visible items
             let initialBatch = Array(fetched.prefix(15))
             if !initialBatch.isEmpty {
                 Task { @MainActor in
-                    let unhydrated = initialBatch.filter { resolvedSnippet(for: $0) == nil }
+                    let unhydrated = initialBatch.filter {
+                        resolvedSnippet(for: $0) == nil &&
+                        !unavailableSnippetIDs.contains($0.id) &&
+                        !loadingSnippetIDs.contains($0.id)
+                    }
                     if !unhydrated.isEmpty {
-                        for item in unhydrated { loadingSnippetIDs.insert(item.id) }
+                        let batchIDs = Set(unhydrated.map(\.id))
+                        loadingSnippetIDs.formUnion(batchIDs)
+                        defer {
+                            loadingSnippetIDs.subtract(batchIDs)
+                        }
                         do {
                             let results = try await repository.fetchSnippets(for: unhydrated)
-                            for (id, text) in results {
-                                snippetTexts[id] = text
-                                loadingSnippetIDs.remove(id)
+                            for item in unhydrated {
+                                if let text = results[item.id], !text.isEmpty {
+                                    snippetTexts[item.id] = text
+                                } else if resolvedSnippet(for: item) == nil {
+                                    unavailableSnippetIDs.insert(item.id)
+                                }
                             }
+                        } catch is CancellationError {
                         } catch {
-                            for item in unhydrated { loadingSnippetIDs.remove(item.id) }
+                            for item in unhydrated {
+                                if resolvedSnippet(for: item) == nil {
+                                    snippetErrors[item.id] = TorahStrings.retry
+                                }
+                            }
                         }
                     }
                 }
@@ -768,7 +786,6 @@ public struct TorahSegmentDetailView: View {
         } catch is CancellationError {
         } catch {
             linksError = TorahStrings.couldNotLoadRelatedSources
-            loadingLinks = false
         }
     }
 
@@ -776,26 +793,26 @@ public struct TorahSegmentDetailView: View {
     private func loadTopics() async {
         loadingTopics = true
         topicsError = nil
+        defer { loadingTopics = false }
         do {
             topics = try await repository.topics(for: selection.relationshipRef, providerID: providerID)
         } catch is CancellationError {
         } catch {
             topicsError = TorahStrings.couldNotLoadRelatedSources
         }
-        loadingTopics = false
     }
 
     @MainActor
     private func loadNotes() async {
         loadingNotes = true
         notesError = nil
+        defer { loadingNotes = false }
         do {
             notes = try await repository.notes(for: selection)
         } catch is CancellationError {
         } catch {
             notesError = TorahStrings.text("Could not load notes")
         }
-        loadingNotes = false
     }
 
     @MainActor

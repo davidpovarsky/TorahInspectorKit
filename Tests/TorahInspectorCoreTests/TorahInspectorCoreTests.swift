@@ -137,6 +137,26 @@ struct InspectorIdentityTests {
         #expect(segment.scope == .segment)
         #expect(segment.relationshipRef == "Genesis 1:1")
         #expect(section.id != segment.id)
+
+        // Verify that section scope always returns canonicalRef even when preferredSegmentRef is present
+        let sectionWithSegmentRef = TorahInspectorSelection(
+            providerID: "otzaria",
+            canonicalRef: "otzaria:unit:v1:1:ch1:1:50",
+            preferredSegmentRef: "otzaria:v1:1:1",
+            scope: .section
+        )
+        #expect(sectionWithSegmentRef.scope == .section)
+        #expect(sectionWithSegmentRef.relationshipRef == "otzaria:unit:v1:1:ch1:1:50")
+
+        // Verify that segment scope falls back to canonicalRef when preferredSegmentRef is nil
+        let segmentWithoutPreferred = TorahInspectorSelection(
+            providerID: "otzaria",
+            canonicalRef: "otzaria:v1:1:5",
+            preferredSegmentRef: nil,
+            scope: .segment
+        )
+        #expect(segmentWithoutPreferred.scope == .segment)
+        #expect(segmentWithoutPreferred.relationshipRef == "otzaria:v1:1:5")
     }
 
     @Test func preferredSegmentUsesStableReferenceIdentity() {
