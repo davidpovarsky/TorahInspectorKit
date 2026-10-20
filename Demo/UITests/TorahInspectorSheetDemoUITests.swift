@@ -18,6 +18,11 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
                 XCTAssertTrue(app.descendants(matching: .any)["torah-inspector-peek-tools"].exists)
                 XCTAssertTrue(app.buttons["torah-inspector-expand-medium"].exists)
                 XCTAssertFalse(app.buttons["torah-inspector-peek-insert"].exists)
+                app.descendants(matching: .any)["torah-inspector-peek-tools"].tap()
+                XCTAssertTrue(
+                    app.descendants(matching: .any)["torah-inspector-sheet-medium"].waitForExistence(timeout: 5),
+                    "Tapping the selected Peek tool must expand the native sheet to medium"
+                )
             }
 
             let screenshot = XCUIScreen.main.screenshot()

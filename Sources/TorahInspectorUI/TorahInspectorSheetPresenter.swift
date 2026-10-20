@@ -57,6 +57,33 @@ public struct TorahInspectorSheetPresenter: ViewModifier {
         self.actions = actions
     }
 
+    public init(
+        selection: Binding<TorahInspectorSelection?>,
+        repository: TorahInspectorRepository,
+        entryMode: TorahInspectorEntryMode = .sourceReader,
+        selectedTool: Binding<TorahStudyTool>,
+        selectedDetent: Binding<TorahInspectorSheetDetent>,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) {
+        let toolID = Binding<TorahStudyToolID>(
+            get: { selectedTool.wrappedValue.toolID },
+            set: { value in
+                if let legacy = TorahStudyTool(rawValue: value.rawValue) {
+                    selectedTool.wrappedValue = legacy
+                }
+            }
+        )
+        self.init(
+            selection: selection,
+            repository: repository,
+            entryMode: entryMode,
+            selectedTool: toolID,
+            selectedDetent: selectedDetent,
+            configuration: .legacy,
+            actions: actions
+        )
+    }
+
     public func body(content: Content) -> some View {
         content.sheet(item: $selection, onDismiss: actions.onClose) { presentedSelection in
             TorahInspectorSheetContent(
@@ -231,6 +258,7 @@ private struct TorahInspectorSheetPeekView: View {
             }
             .pickerStyle(.segmented)
             .onChange(of: selectedTool) { _, _ in selectedDetent = .medium }
+            .simultaneousGesture(TapGesture().onEnded { selectedDetent = .medium })
             .accessibilityIdentifier("torah-inspector-peek-tools")
         }
         .padding(.horizontal, 16)

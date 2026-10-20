@@ -126,11 +126,14 @@ struct TorahInspectorHostActionsTests {
 
     @Test @MainActor func configurationKeepsLegacyAndAnytypeToolSetsDistinct() {
         #expect(TorahInspectorConfiguration.legacy.availableTools == [.commentaries, .links, .notes])
+        #expect(!TorahInspectorConfiguration.legacy.allowsInlineFullSourceNavigation)
         let anytype = TorahInspectorConfiguration(
-            availableTools: [.commentaries, .links, .relatedDocuments]
+            availableTools: [.commentaries, .links, .relatedDocuments],
+            allowsInlineFullSourceNavigation: true
         )
         #expect(anytype.availableTools == [.commentaries, .links, .relatedDocuments])
         #expect(!anytype.availableTools.contains(.notes))
+        #expect(anytype.allowsInlineFullSourceNavigation)
     }
 
     @Test func relationshipEntryResolvesTheRequestedRealSegment() {

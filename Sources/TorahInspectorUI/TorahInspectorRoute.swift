@@ -37,7 +37,7 @@ public struct TorahInspectorConfiguration {
 
     public init(
         availableTools: [TorahStudyToolID] = [.commentaries, .links, .notes],
-        allowsInlineFullSourceNavigation: Bool = true,
+        allowsInlineFullSourceNavigation: Bool = false,
         theme: TorahInspectorTheme = .native
     ) {
         self.availableTools = availableTools.isEmpty ? [.commentaries] : availableTools
