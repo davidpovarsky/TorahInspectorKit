@@ -107,7 +107,7 @@ public struct TorahSegmentDetailView: View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(TorahStrings.studyTools)
+                    Text(TorahStrings.text("Study Tools", locale: locale))
                         .font(.title3.weight(.semibold))
                     Text(segmentDisplayRef)
                         .font(.caption2)
@@ -123,16 +123,16 @@ public struct TorahSegmentDetailView: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.close)
+                    .accessibilityLabel(TorahStrings.text("Close", locale: locale))
                     .accessibilityIdentifier("torah-inspector-close")
                 }
             }
 
             selectedSegmentCard
 
-            Picker(TorahStrings.studyTools, selection: $selectedTool) {
+            Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
                 ForEach(TorahStudyTool.allCases) { tool in
-                    Text(tool.localizedTitle).tag(tool)
+                    Text(tool.localizedTitle(locale: locale)).tag(tool)
                 }
             }
             .pickerStyle(.segmented)
@@ -160,7 +160,7 @@ public struct TorahSegmentDetailView: View {
 
     private var selectedSegmentCard: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Text(TorahStrings.selectedSegment)
+            Text(TorahStrings.text("Selected Segment", locale: locale))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             if let text = focus.text, !text.isEmpty {
@@ -189,7 +189,7 @@ public struct TorahSegmentDetailView: View {
         } else if let linksError {
             retryCard(linksError) { Task { await loadLinks() } }
         } else if groups.commentaryGroups.isEmpty && groups.quotingCommentaryGroups.isEmpty {
-            emptyRow(TorahStrings.text("No results"))
+            emptyRow(TorahStrings.text("No results", locale: locale))
         } else {
             if !groups.commentaryGroups.isEmpty {
                 ForEach(groups.commentaryGroups) { group in
@@ -228,7 +228,7 @@ public struct TorahSegmentDetailView: View {
                 if group.works.count > 1 {
                     ForEach(group.works) { work in
                         VStack(alignment: .leading, spacing: 6) {
-                            Text(work.hebrewTitle ?? work.title)
+                            Text(TorahInspectorPresentation.workTitle(work, locale: locale))
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 4)
@@ -280,7 +280,7 @@ public struct TorahSegmentDetailView: View {
                     Text(errorMsg)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Button(TorahStrings.retry) {
+                    Button(TorahStrings.text("Retry", locale: locale)) {
                         Task { await loadFullSource(source) }
                     }
                     .font(.caption.weight(.semibold))
@@ -327,7 +327,7 @@ public struct TorahSegmentDetailView: View {
                     Button {
                         openInReader(source)
                     } label: {
-                        Label(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square")
+                        Label(TorahStrings.text("Open in new tab", locale: locale), systemImage: "arrow.up.right.square")
                             .font(.caption2)
                     }
                     .buttonStyle(.borderless)
@@ -347,7 +347,7 @@ public struct TorahSegmentDetailView: View {
         } else if let linksError {
             retryCard(linksError) { Task { await loadLinks() } }
         } else if groups.linkedSources.isEmpty && topics.isEmpty && !loadingTopics {
-            emptyRow(TorahStrings.text("No results"))
+            emptyRow(TorahStrings.text("No results", locale: locale))
         } else {
             ForEach(groups.linkedSources) { source in
                 expandableSourceRow(source, commentary: false)
@@ -377,7 +377,7 @@ public struct TorahSegmentDetailView: View {
                     Button {
                         openInReader(source)
                     } label: {
-                        Label(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square")
+                        Label(TorahStrings.text("Open in new tab", locale: locale), systemImage: "arrow.up.right.square")
                             .font(.caption2)
                     }
                     .buttonStyle(.borderless)
@@ -424,17 +424,17 @@ public struct TorahSegmentDetailView: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("torah-inspector-source-\(source.id)")
             .accessibilityLabel("\(displayReference(source)), \(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))")
-            .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
+            .accessibilityValue(TorahStrings.text(isExpanded ? "Expanded" : "Collapsed", locale: locale))
             .accessibilityAction { toggleExpansion(source) }
-            .accessibilityAction(named: Text(TorahStrings.openInNewTab)) {
+            .accessibilityAction(named: Text(TorahStrings.text("Open in new tab", locale: locale))) {
                 openInReader(source)
             }
             .contextMenu {
-                Button(TorahStrings.openInNewTab, systemImage: "arrow.up.right.square") {
+                Button(TorahStrings.text("Open in new tab", locale: locale), systemImage: "arrow.up.right.square") {
                     openInReader(source)
                 }
                 #if canImport(UIKit)
-                Button(TorahStrings.copy, systemImage: "doc.on.doc") {
+                Button(TorahStrings.text("Copy", locale: locale), systemImage: "doc.on.doc") {
                     let textToCopy = expandedSourceText[source.id] ?? TorahInspectorPresentation.linkedText(source, locale: locale) ?? ""
                     UIPasteboard.general.string = textToCopy
                 }
@@ -489,7 +489,7 @@ public struct TorahSegmentDetailView: View {
             expandedSourceText[source.id] = text
         } catch is CancellationError {
         } catch {
-            expandedSourceErrors[source.id] = TorahStrings.message(for: error)
+            expandedSourceErrors[source.id] = TorahStrings.message(for: error, locale: locale)
         }
     }
 
@@ -501,7 +501,7 @@ public struct TorahSegmentDetailView: View {
             retryCard(topicsError) { Task { await loadTopics() } }
         } else if !topics.isEmpty {
             VStack(alignment: .leading, spacing: 9) {
-                Text(TorahStrings.text("Topics"))
+                Text(TorahStrings.text("Topics", locale: locale))
                     .font(.headline)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 8)], alignment: .leading, spacing: 8) {
                     ForEach(topics) { topic in
@@ -525,7 +525,7 @@ public struct TorahSegmentDetailView: View {
             Button {
                 onAddNote(selection, notesDidChange)
             } label: {
-                Label(TorahStrings.addNote, systemImage: "plus")
+                Label(TorahStrings.text("Add Note", locale: locale), systemImage: "plus")
                     .font(.body.weight(.medium))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 14)
@@ -542,7 +542,7 @@ public struct TorahSegmentDetailView: View {
         } else if let notesError {
             retryCard(notesError) { Task { await refreshNotes() } }
         } else if notes.isEmpty {
-            emptyRow(TorahStrings.text("No notes"))
+            emptyRow(TorahStrings.text("No notes", locale: locale))
         } else {
             VStack(spacing: 0) {
                 ForEach(notes) { note in
@@ -559,7 +559,7 @@ public struct TorahSegmentDetailView: View {
                             Button(role: .destructive) {
                                 onDeleteNote(note, selection, notesDidChange)
                             } label: {
-                                Label(TorahStrings.text("Delete"), systemImage: "trash")
+                                Label(TorahStrings.text("Delete", locale: locale), systemImage: "trash")
                             }
                         }
                     }
@@ -611,7 +611,7 @@ public struct TorahSegmentDetailView: View {
     private func retryCard(_ message: String, action: @escaping () -> Void) -> some View {
         VStack(spacing: 8) {
             Text(message).font(.caption).foregroundStyle(.secondary)
-            Button(TorahStrings.retry, action: action)
+            Button(TorahStrings.text("Retry", locale: locale), action: action)
         }
         .frame(maxWidth: .infinity)
         .padding(16)
@@ -687,7 +687,7 @@ public struct TorahSegmentDetailView: View {
             links = fetched
         } catch is CancellationError {
         } catch {
-            linksError = TorahStrings.couldNotLoadRelatedSources
+            linksError = TorahStrings.text("Could not load related sources", locale: locale)
         }
         loadingLinks = false
     }
@@ -700,7 +700,7 @@ public struct TorahSegmentDetailView: View {
             topics = try await repository.topics(for: selection.relationshipRef, providerID: providerID)
         } catch is CancellationError {
         } catch {
-            topicsError = TorahStrings.couldNotLoadRelatedSources
+            topicsError = TorahStrings.text("Could not load related sources", locale: locale)
         }
         loadingTopics = false
     }
@@ -713,7 +713,7 @@ public struct TorahSegmentDetailView: View {
             notes = try await repository.notes(for: selection)
         } catch is CancellationError {
         } catch {
-            notesError = TorahStrings.text("Could not load notes")
+            notesError = TorahStrings.text("Could not load notes", locale: locale)
         }
         loadingNotes = false
     }

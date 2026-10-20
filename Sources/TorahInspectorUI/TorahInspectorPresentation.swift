@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import TorahInspectorCore
 
 enum TorahInspectorPresentation {
@@ -33,6 +34,12 @@ enum TorahInspectorPresentation {
         return preferred ?? fallback ?? topic.slug
     }
 
+    static func workTitle(_ work: TorahWorkGroup, locale: Locale) -> String {
+        let preferred = prefersHebrew(locale) ? work.hebrewTitle : work.title
+        let fallback = prefersHebrew(locale) ? work.title : work.hebrewTitle
+        return preferred ?? fallback ?? work.title
+    }
+
     static func categoryTitle(_ category: TorahSourceCategory, locale: Locale) -> String {
         let key: String
         switch category {
@@ -46,5 +53,17 @@ enum TorahInspectorPresentation {
         case .other: key = "Other"
         }
         return TorahStrings.text(key, locale: locale)
+    }
+
+    static func layoutDirection(for text: String) -> LayoutDirection {
+        for scalar in text.unicodeScalars {
+            switch scalar.value {
+            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
+                return .rightToLeft
+            default:
+                if CharacterSet.letters.contains(scalar) { return .leftToRight }
+            }
+        }
+        return .leftToRight
     }
 }

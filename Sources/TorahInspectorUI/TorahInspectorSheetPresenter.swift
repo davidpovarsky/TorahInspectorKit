@@ -173,7 +173,7 @@ private struct TorahInspectorSheetPeekView: View {
                         .frame(width: 30, height: 30)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(TorahStrings.expand)
+                .accessibilityLabel(TorahStrings.text("Expand", locale: locale))
                 .accessibilityIdentifier("torah-inspector-expand-medium")
 
                 if let onClose = actions.onClose {
@@ -182,7 +182,7 @@ private struct TorahInspectorSheetPeekView: View {
                             .frame(width: 30, height: 30)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.close)
+                    .accessibilityLabel(TorahStrings.text("Close", locale: locale))
                     .accessibilityIdentifier("torah-inspector-peek-close")
                 }
             }
@@ -191,7 +191,7 @@ private struct TorahInspectorSheetPeekView: View {
                 Button {
                     onInsertSegment(transfer)
                 } label: {
-                    Label(TorahStrings.insertIntoDocument, systemImage: "arrow.down.doc")
+                    Label(TorahStrings.text("Insert into document", locale: locale), systemImage: "arrow.down.doc")
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
@@ -209,7 +209,7 @@ private struct TorahInspectorSheetPeekView: View {
     @ViewBuilder
     private var peekBody: some View {
         if let errorMessage {
-            Button(TorahStrings.retry) { Task { await load() } }
+            Button(TorahStrings.text("Retry", locale: locale)) { Task { await load() } }
                 .font(.caption)
                 .accessibilityHint(errorMessage)
         } else if let segment {
@@ -259,7 +259,7 @@ private struct TorahInspectorSheetPeekView: View {
             )
         } catch is CancellationError {
         } catch {
-            errorMessage = TorahStrings.message(for: error)
+            errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
 }

@@ -48,7 +48,7 @@ public struct TorahDragPreview: View {
         .padding(.vertical, 8)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
         .frame(maxWidth: 240, alignment: .leading)
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, TorahInspectorPresentation.layoutDirection(for: text))
     }
 }
 
@@ -89,11 +89,11 @@ public struct TorahSourceReaderView: View {
                 ProgressView()
             } else if let error = errorMessage, sections.isEmpty {
                 ContentUnavailableView {
-                    Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                    Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
                 } description: {
                     Text(error)
                 } actions: {
-                    Button(TorahStrings.retry) { Task { await initialLoad() } }
+                    Button(TorahStrings.text("Retry", locale: locale)) { Task { await initialLoad() } }
                 }
             } else {
                 readerContent
@@ -105,7 +105,7 @@ public struct TorahSourceReaderView: View {
             if let onClose = actions.onClose {
                 ToolbarItem {
                     Button(action: onClose) { Image(systemName: "xmark").foregroundStyle(.secondary) }
-                        .accessibilityLabel(TorahStrings.close)
+                        .accessibilityLabel(TorahStrings.text("Close", locale: locale))
                 }
             }
         }
@@ -187,14 +187,14 @@ public struct TorahSourceReaderView: View {
         .contextMenu {
             if let onInsertSegment = actions.onInsertSegment {
                 Button { onInsertSegment(transfer) } label: {
-                    Label(TorahStrings.insertIntoDocument, systemImage: "arrow.down.doc")
+                    Label(TorahStrings.text("Insert into document", locale: locale), systemImage: "arrow.down.doc")
                 }
             }
             Button { TorahPlatformClipboard.copy(segment.text) } label: {
-                Label(TorahStrings.copy, systemImage: "doc.on.doc")
+                Label(TorahStrings.text("Copy", locale: locale), systemImage: "doc.on.doc")
             }
             NavigationLink(value: TorahInspectorRoute.segment(segment)) {
-                Label(TorahStrings.viewDetails, systemImage: "info.circle")
+                Label(TorahStrings.text("View details", locale: locale), systemImage: "info.circle")
             }
         } preview: {
             TorahSegmentPreviewCard(segment: segment, section: section)
@@ -239,7 +239,7 @@ public struct TorahSourceReaderView: View {
             if decision.shouldLoadNext { await loadNext() }
         } catch is CancellationError {
         } catch {
-            errorMessage = TorahStrings.message(for: error)
+            errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
 

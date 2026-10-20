@@ -14,16 +14,16 @@ public enum TorahStrings {
     public static var addNote: String { text("Add Note") }
     public static var expand: String { text("Expand") }
 
-    public static func message(for error: Error) -> String {
-        guard let torah = error as? TorahError else { return text("Could not load source") }
+    public static func message(for error: Error, locale: Locale = .autoupdatingCurrent) -> String {
+        guard let torah = error as? TorahError else { return text("Could not load source", locale: locale) }
         switch torah {
-        case .invalidReference: return text("The reference is not valid.")
-        case .referenceTooBroad: return text("Choose a more specific source.")
-        case .noText: return text("No text is available for this source.")
-        case .missingProvider: return text("No Torah provider is available.")
-        case .noResults: return text("No results")
-        case .malformedResponse, .network: return text("Could not load source")
-        case .storage: return text("Torah storage is unavailable.")
+        case .invalidReference: return text("The reference is not valid.", locale: locale)
+        case .referenceTooBroad: return text("Choose a more specific source.", locale: locale)
+        case .noText: return text("No text is available for this source.", locale: locale)
+        case .missingProvider: return text("No Torah provider is available.", locale: locale)
+        case .noResults: return text("No results", locale: locale)
+        case .malformedResponse, .network: return text("Could not load source", locale: locale)
+        case .storage: return text("Torah storage is unavailable.", locale: locale)
         }
     }
 

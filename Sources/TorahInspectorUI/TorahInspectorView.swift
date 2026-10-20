@@ -155,6 +155,7 @@ private struct _InspectorLinkedSourceEntry: View {
 
     @State private var segment: TorahTextSegment?
     @State private var errorMessage: String?
+    @Environment(\.locale) private var locale
 
     var body: some View {
         Group {
@@ -172,11 +173,11 @@ private struct _InspectorLinkedSourceEntry: View {
                 )
             } else if let errorMessage {
                 ContentUnavailableView {
-                    Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                    Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
                 } description: {
                     Text(errorMessage)
                 } actions: {
-                    Button(TorahStrings.retry) { Task { await loadSegment() } }
+                    Button(TorahStrings.text("Retry", locale: locale)) { Task { await loadSegment() } }
                 }
             } else {
                 ProgressView()
@@ -202,7 +203,7 @@ private struct _InspectorLinkedSourceEntry: View {
             segment = resolved
         } catch is CancellationError {
         } catch {
-            errorMessage = TorahStrings.message(for: error)
+            errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
 }
@@ -243,6 +244,7 @@ private struct _InspectorRelationshipsEntry: View {
     @State private var path: [TorahInspectorRoute] = []
     @State private var focus: TorahInspectorFocus?
     @State private var errorMessage: String?
+    @Environment(\.locale) private var locale
 
     init(
         selection: TorahInspectorSelection,
@@ -271,11 +273,11 @@ private struct _InspectorRelationshipsEntry: View {
                     )
                 } else if let errorMessage {
                     ContentUnavailableView {
-                        Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                        Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
                     } description: {
                         Text(errorMessage)
                     } actions: {
-                        Button(TorahStrings.retry) { Task { await loadSegment() } }
+                        Button(TorahStrings.text("Retry", locale: locale)) { Task { await loadSegment() } }
                     }
                 } else {
                     ProgressView()
@@ -324,7 +326,7 @@ private struct _InspectorRelationshipsEntry: View {
             }
         } catch is CancellationError {
         } catch {
-            errorMessage = TorahStrings.message(for: error)
+            errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
 }

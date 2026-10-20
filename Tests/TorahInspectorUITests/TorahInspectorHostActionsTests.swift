@@ -23,6 +23,8 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahStudyTool.notes.localizedTitle(locale: Locale(identifier: "he_IL")) == "הערות")
         #expect(TorahStrings.text("Add Note", locale: Locale(identifier: "he_IL")) == "הוסף הערה")
         #expect(TorahStrings.text("Expand", locale: Locale(identifier: "he_IL")) == "הרחב")
+        #expect(TorahStrings.text("Delete", locale: Locale(identifier: "he_IL")) == "מחק")
+        #expect(TorahStrings.message(for: TorahError.noText, locale: Locale(identifier: "he_IL")) == "אין טקסט זמין למקור זה.")
     }
 
     @Test func sheetDetentsMapToNativePresentationDetents() {
@@ -191,5 +193,15 @@ struct TorahInspectorHostActionsTests {
         ) == source.sourceRef)
         #expect(TorahInspectorPresentation.linkedText(source, locale: Locale(identifier: "he_IL")) == "בראשית")
         #expect(TorahInspectorPresentation.linkedText(source, locale: Locale(identifier: "en_US")) == "In the beginning")
+        let work = TorahWorkGroup(
+            id: "rashi",
+            title: "Rashi",
+            hebrewTitle: "רש״י",
+            entries: [source]
+        )
+        #expect(TorahInspectorPresentation.workTitle(work, locale: Locale(identifier: "he_IL")) == "רש״י")
+        #expect(TorahInspectorPresentation.workTitle(work, locale: Locale(identifier: "en_US")) == "Rashi")
+        #expect(TorahInspectorPresentation.layoutDirection(for: "בראשית") == .rightToLeft)
+        #expect(TorahInspectorPresentation.layoutDirection(for: "Genesis") == .leftToRight)
     }
 }
