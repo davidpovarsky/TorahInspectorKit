@@ -110,7 +110,7 @@ public extension View {
                 }
             }
         )
-        modifier(TorahInspectorSheetPresenter(
+        return modifier(TorahInspectorSheetPresenter(
             selection: selection,
             repository: repository,
             entryMode: entryMode,
