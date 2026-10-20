@@ -58,10 +58,18 @@ private struct ScrollOffsetInfo: Equatable {
     let containerHeight: CGFloat
 }
 
+private struct SegmentFramePreferenceKey: PreferenceKey {
+    static var defaultValue: [String: CGRect] = [:]
+    static func reduce(value: inout [String: CGRect], nextValue: () -> [String: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+    }
+}
+
 public struct TorahSourceReaderView: View {
     public let selection: TorahInspectorSelection
     public let repository: TorahInspectorRepository
     public let actions: TorahInspectorHostActions
+    public let session: TorahReaderSessionState
 
     @State private var sections: [TorahTextDocument] = []
     @State private var isLoading = false
@@ -70,17 +78,21 @@ public struct TorahSourceReaderView: View {
     @State private var errorMessage: String?
     @State private var stateMachine = TorahReaderScrollStateMachine()
     @Environment(\.locale) private var locale
+    @State private var viewportHeight: CGFloat = 1
+    @State private var pendingViewport: TorahReaderViewport?
 
     private static let maximumSectionWindow = 7
 
     public init(
         selection: TorahInspectorSelection,
         repository: TorahInspectorRepository,
-        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+        actions: TorahInspectorHostActions = TorahInspectorHostActions(),
+        session: TorahReaderSessionState = TorahReaderSessionState()
     ) {
         self.selection = selection
         self.repository = repository
         self.actions = actions
+        self.session = session
     }
 
     public var body: some View {
@@ -133,10 +145,19 @@ public struct TorahSourceReaderView: View {
                             containerHeight: geometry.containerSize.height
                         )
                     } action: { _, newValue in
+                        viewportHeight = max(newValue.containerHeight, 1)
                         handleScrollChange(newValue, proxy: proxy)
                     }
+                    .onPreferenceChange(SegmentFramePreferenceKey.self) { frames in
+                        recordViewport(from: frames)
+                    }
+                    .task(id: pendingViewport) { await restorePendingViewport(proxy: proxy) }
             } else {
                 readerScrollView
+                    .onPreferenceChange(SegmentFramePreferenceKey.self) { frames in
+                        recordViewport(from: frames)
+                    }
+                    .task(id: pendingViewport) { await restorePendingViewport(proxy: proxy) }
             }
         }
     }
@@ -164,6 +185,7 @@ public struct TorahSourceReaderView: View {
             }
             .padding()
         }
+        .coordinateSpace(name: "torah-reader-viewport")
     }
 
     @ViewBuilder
@@ -183,6 +205,14 @@ public struct TorahSourceReaderView: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .background {
+            GeometryReader { geometry in
+                Color.clear.preference(
+                    key: SegmentFramePreferenceKey.self,
+                    value: [segment.id: geometry.frame(in: .named("torah-reader-viewport"))]
+                )
+            }
+        }
         .environment(\.layoutDirection, section.version.direction == "rtl" ? .rightToLeft : .leftToRight)
         .contextMenu {
             if let onInsertSegment = actions.onInsertSegment {
@@ -229,8 +259,27 @@ public struct TorahSourceReaderView: View {
         errorMessage = nil
         defer { isLoading = false }
         do {
+            if let snapshot = session.snapshot(for: selection) {
+                sections = snapshot.sections
+                pendingViewport = snapshot.viewport
+                _ = stateMachine.onInitialLoadComplete(
+                    hasPrevious: sections.first?.previousSectionRef != nil,
+                    hasNext: sections.last?.nextSectionRef != nil,
+                    isUnderfilled: false
+                )
+                return
+            }
             let document = try await repository.document(for: selection.canonicalRef, providerID: selection.providerID)
             sections = [document]
+            if let preferred = selection.preferredSegmentRef {
+                pendingViewport = TorahReaderViewport(
+                    providerID: selection.providerID,
+                    sectionReference: document.sectionRef,
+                    segmentReference: preferred,
+                    relativePosition: 0.18,
+                    loadedSectionReferences: [document.sectionRef]
+                )
+            }
             let decision = stateMachine.onInitialLoadComplete(
                 hasPrevious: document.previousSectionRef != nil,
                 hasNext: document.nextSectionRef != nil,
@@ -247,7 +296,7 @@ public struct TorahSourceReaderView: View {
         guard !loadingPrevious, let reference = sections.first?.previousSectionRef else { return }
         loadingPrevious = true
         defer { loadingPrevious = false }
-        let anchorSegmentID = sections.first?.segments.first?.id
+        let anchorViewport = currentViewportSnapshot()
         do {
             let document = try await repository.document(for: reference, providerID: selection.providerID)
             guard !sections.contains(where: { $0.sectionRef == document.sectionRef }) else {
@@ -258,8 +307,12 @@ public struct TorahSourceReaderView: View {
             sections.insert(document, at: 0)
             trimFromEnd()
             stateMachine.onPreviousLoadCompleted()
-            if let anchorSegmentID { proxy.scrollTo(anchorSegmentID, anchor: .top) }
-            stateMachine.onAnchorRestorationCompleted()
+            if let anchorViewport {
+                pendingViewport = anchorViewport
+                await restorePendingViewport(proxy: proxy)
+            } else {
+                stateMachine.onAnchorRestorationCompleted()
+            }
         } catch {
             stateMachine.onPreviousLoadFailed()
         }
@@ -293,5 +346,60 @@ public struct TorahSourceReaderView: View {
         if sections.count > Self.maximumSectionWindow {
             sections.removeFirst(sections.count - Self.maximumSectionWindow)
         }
+    }
+
+    private func recordViewport(from frames: [String: CGRect]) {
+        guard !stateMachine.isRestoringAnchor,
+              let visible = frames
+                .filter({ $0.value.maxY > 0 && $0.value.minY < viewportHeight })
+                .min(by: { abs($0.value.minY) < abs($1.value.minY) }),
+              let section = sections.first(where: { section in
+                  section.segments.contains(where: { $0.id == visible.key })
+              }) else { return }
+        let relative = Double(min(max(visible.value.minY / max(viewportHeight, 1), 0), 1))
+        let viewport = TorahReaderViewport(
+            providerID: selection.providerID,
+            sectionReference: section.sectionRef,
+            segmentReference: visible.key,
+            relativePosition: relative,
+            loadedSectionReferences: sections.map(\.sectionRef)
+        )
+        pendingViewport = nil
+        session.save(selection: selection, sections: sections, viewport: viewport)
+    }
+
+    private func currentViewportSnapshot() -> TorahReaderViewport? {
+        session.snapshot(for: selection)?.viewport
+            ?? selection.preferredSegmentRef.map {
+                TorahReaderViewport(
+                    providerID: selection.providerID,
+                    sectionReference: sections.first?.sectionRef ?? selection.canonicalRef,
+                    segmentReference: $0,
+                    relativePosition: 0.18,
+                    loadedSectionReferences: sections.map(\.sectionRef)
+                )
+            }
+    }
+
+    private func restorePendingViewport(proxy: ScrollViewProxy) async {
+        guard let viewport = pendingViewport,
+              sections.contains(where: { section in
+                  section.segments.contains(where: { $0.id == viewport.segmentReference })
+              }) else { return }
+        await Task.yield()
+        proxy.scrollTo(
+            viewport.segmentReference,
+            anchor: UnitPoint(x: 0.5, y: viewport.relativePosition)
+        )
+        pendingViewport = nil
+        stateMachine.onAnchorRestorationCompleted()
+        let restoredViewport = TorahReaderViewport(
+            providerID: viewport.providerID,
+            sectionReference: viewport.sectionReference,
+            segmentReference: viewport.segmentReference,
+            relativePosition: viewport.relativePosition,
+            loadedSectionReferences: sections.map(\.sectionRef)
+        )
+        session.save(selection: selection, sections: sections, viewport: restoredViewport)
     }
 }

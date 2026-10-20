@@ -29,11 +29,12 @@ public enum TorahInspectorSheetDetent: String, CaseIterable, Identifiable, Senda
 
 public struct TorahInspectorSheetPresenter: ViewModifier {
     @Binding private var selection: TorahInspectorSelection?
-    @Binding private var selectedTool: TorahStudyTool
+    @Binding private var selectedTool: TorahStudyToolID
     @Binding private var selectedDetent: TorahInspectorSheetDetent
 
     private let repository: TorahInspectorRepository
     private let entryMode: TorahInspectorEntryMode
+    private let configuration: TorahInspectorConfiguration
     private let actions: TorahInspectorHostActions
 
     @Environment(\.layoutDirection) private var layoutDirection
@@ -42,8 +43,9 @@ public struct TorahInspectorSheetPresenter: ViewModifier {
         selection: Binding<TorahInspectorSelection?>,
         repository: TorahInspectorRepository,
         entryMode: TorahInspectorEntryMode = .sourceReader,
-        selectedTool: Binding<TorahStudyTool>,
+        selectedTool: Binding<TorahStudyToolID>,
         selectedDetent: Binding<TorahInspectorSheetDetent>,
+        configuration: TorahInspectorConfiguration = .legacy,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self._selection = selection
@@ -51,6 +53,7 @@ public struct TorahInspectorSheetPresenter: ViewModifier {
         self.entryMode = entryMode
         self._selectedTool = selectedTool
         self._selectedDetent = selectedDetent
+        self.configuration = configuration
         self.actions = actions
     }
 
@@ -62,6 +65,7 @@ public struct TorahInspectorSheetPresenter: ViewModifier {
                 entryMode: entryMode,
                 selectedTool: $selectedTool,
                 selectedDetent: $selectedDetent,
+                configuration: configuration,
                 actions: presentedActions
             )
             .presentationDetents(
@@ -98,12 +102,42 @@ public extension View {
         selectedDetent: Binding<TorahInspectorSheetDetent>,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) -> some View {
+        let toolID = Binding<TorahStudyToolID>(
+            get: { selectedTool.wrappedValue.toolID },
+            set: { value in
+                if let legacy = TorahStudyTool(rawValue: value.rawValue) {
+                    selectedTool.wrappedValue = legacy
+                }
+            }
+        )
+        modifier(TorahInspectorSheetPresenter(
+            selection: selection,
+            repository: repository,
+            entryMode: entryMode,
+            selectedTool: toolID,
+            selectedDetent: selectedDetent,
+            configuration: .legacy,
+            actions: actions
+        ))
+    }
+
+
+    func torahInspectorSheet(
+        selection: Binding<TorahInspectorSelection?>,
+        repository: TorahInspectorRepository,
+        entryMode: TorahInspectorEntryMode = .sourceReader,
+        selectedTool: Binding<TorahStudyToolID>,
+        selectedDetent: Binding<TorahInspectorSheetDetent>,
+        configuration: TorahInspectorConfiguration,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) -> some View {
         modifier(TorahInspectorSheetPresenter(
             selection: selection,
             repository: repository,
             entryMode: entryMode,
             selectedTool: selectedTool,
             selectedDetent: selectedDetent,
+            configuration: configuration,
             actions: actions
         ))
     }
@@ -113,64 +147,67 @@ private struct TorahInspectorSheetContent: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
     let entryMode: TorahInspectorEntryMode
-    @Binding var selectedTool: TorahStudyTool
+    @Binding var selectedTool: TorahStudyToolID
     @Binding var selectedDetent: TorahInspectorSheetDetent
+    let configuration: TorahInspectorConfiguration
     let actions: TorahInspectorHostActions
+    @State private var hasExpanded = false
 
     var body: some View {
         ZStack {
-            TorahInspectorView(
+            if hasExpanded || selectedDetent != .peek {
+                TorahInspectorView(
                 repository: repository,
                 selection: selection,
                 entryMode: entryMode,
                 chrome: .embeddedSheet,
                 selectedTool: $selectedTool,
+                configuration: configuration,
                 actions: actions
             )
-            .opacity(selectedDetent == .peek ? 0 : 1)
-            .allowsHitTesting(selectedDetent != .peek)
-            .accessibilityHidden(selectedDetent == .peek)
+                .opacity(selectedDetent == .peek ? 0 : 1)
+                .allowsHitTesting(selectedDetent != .peek)
+                .accessibilityHidden(selectedDetent == .peek)
+            }
 
             if selectedDetent == .peek {
                 TorahInspectorSheetPeekView(
                     selection: selection,
-                    repository: repository,
+                    selectedTool: $selectedTool,
                     selectedDetent: $selectedDetent,
+                    configuration: configuration,
                     actions: actions
                 )
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-sheet-\(selectedDetent.rawValue)")
+        .onChange(of: selectedDetent) { _, detent in
+            if detent != .peek { hasExpanded = true }
+        }
     }
 }
 
 private struct TorahInspectorSheetPeekView: View {
     let selection: TorahInspectorSelection
-    let repository: TorahInspectorRepository
+    @Binding var selectedTool: TorahStudyToolID
     @Binding var selectedDetent: TorahInspectorSheetDetent
+    let configuration: TorahInspectorConfiguration
     let actions: TorahInspectorHostActions
-
-    @State private var document: TorahTextDocument?
-    @State private var errorMessage: String?
     @Environment(\.locale) private var locale
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 10) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(displayReference)
-                        .font(.headline)
-                        .lineLimit(1)
-                    peekBody
-                }
+                configuration.theme.text(selection.relationshipRef, role: .heading)
+                    .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button {
                     selectedDetent = .medium
                 } label: {
                     Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .frame(width: 30, height: 30)
+                        .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(TorahStrings.text("Expand", locale: locale))
@@ -179,7 +216,7 @@ private struct TorahInspectorSheetPeekView: View {
                 if let onClose = actions.onClose {
                     Button(action: onClose) {
                         Image(systemName: "xmark")
-                            .frame(width: 30, height: 30)
+                            .frame(width: 44, height: 44)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(TorahStrings.text("Close", locale: locale))
@@ -187,80 +224,24 @@ private struct TorahInspectorSheetPeekView: View {
                 }
             }
 
-            if let transfer, let onInsertSegment = actions.onInsertSegment {
-                Button {
-                    onInsertSegment(transfer)
-                } label: {
-                    Label(TorahStrings.text("Insert into document", locale: locale), systemImage: "arrow.down.doc")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+            Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
+                ForEach(configuration.availableTools) { tool in
+                    Text(tool.localizedTitle(locale: locale)).tag(tool)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
-                .accessibilityIdentifier("torah-inspector-peek-insert")
             }
+            .pickerStyle(.segmented)
+            .onChange(of: selectedTool) { _, _ in selectedDetent = .medium }
+            .accessibilityIdentifier("torah-inspector-peek-tools")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .task(id: selection.id) { await load() }
+        .onAppear {
+            if !configuration.availableTools.contains(selectedTool),
+               let first = configuration.availableTools.first {
+                selectedTool = first
+            }
+        }
         .accessibilityIdentifier("torah-inspector-peek")
-    }
-
-    @ViewBuilder
-    private var peekBody: some View {
-        if let errorMessage {
-            Button(TorahStrings.text("Retry", locale: locale)) { Task { await load() } }
-                .font(.caption)
-                .accessibilityHint(errorMessage)
-        } else if let segment {
-            Text(segment.text)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .environment(\.layoutDirection, textLayoutDirection)
-        } else {
-            ProgressView()
-                .controlSize(.small)
-        }
-    }
-
-    private var segment: TorahTextSegment? {
-        guard let document else { return nil }
-        return TorahInspectorSheetPeekResolver.segment(in: document, selection: selection)
-    }
-
-    private var displayReference: String {
-        guard let document else { return selection.relationshipRef }
-        let resolvedSegment = segment
-        return TorahInspectorPresentation.reference(
-            canonical: resolvedSegment?.canonicalRef ?? document.sectionRef,
-            hebrew: resolvedSegment?.hebrewRef ?? document.hebrewSectionRef,
-            locale: locale
-        )
-    }
-
-    private var textLayoutDirection: LayoutDirection {
-        document?.version.direction == "rtl" ? .rightToLeft : .leftToRight
-    }
-
-    private var transfer: TorahSourceTransfer? {
-        guard let document, let segment else { return nil }
-        return TorahSourceTransfer(segment: segment, document: document)
-    }
-
-    @MainActor
-    private func load() async {
-        document = nil
-        errorMessage = nil
-        do {
-            document = try await repository.document(
-                for: selection.canonicalRef,
-                providerID: selection.providerID
-            )
-        } catch is CancellationError {
-        } catch {
-            errorMessage = TorahStrings.message(for: error, locale: locale)
-        }
     }
 }
 

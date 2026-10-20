@@ -325,6 +325,85 @@ public struct TorahInspectorNote: Identifiable, Hashable, Sendable {
     }
 }
 
+public enum TorahRelatedDocumentKind: String, Hashable, Codable, Sendable {
+    case document
+    case note
+}
+
+public struct TorahRelatedDocument: Identifiable, Hashable, Sendable {
+    public let id: String
+    public let spaceID: String
+    public let objectID: String
+    public let title: String
+    public let snippet: String?
+    public let sourceReference: String
+    public let kind: TorahRelatedDocumentKind
+
+    public init(
+        id: String,
+        spaceID: String,
+        objectID: String,
+        title: String,
+        snippet: String? = nil,
+        sourceReference: String,
+        kind: TorahRelatedDocumentKind = .document
+    ) {
+        self.id = id
+        self.spaceID = spaceID
+        self.objectID = objectID
+        self.title = title
+        self.snippet = snippet
+        self.sourceReference = sourceReference
+        self.kind = kind
+    }
+}
+
+public enum TorahRelatedDocumentsCoverage: String, Hashable, Codable, Sendable {
+    case spaceWide
+    case currentDocumentOnly
+}
+
+public struct TorahRelatedDocumentsSnapshot: Equatable, Sendable {
+    public let documents: [TorahRelatedDocument]
+    public let coverage: TorahRelatedDocumentsCoverage
+
+    public init(
+        documents: [TorahRelatedDocument],
+        coverage: TorahRelatedDocumentsCoverage
+    ) {
+        self.documents = documents
+        self.coverage = coverage
+    }
+
+    public static let unavailable = TorahRelatedDocumentsSnapshot(
+        documents: [],
+        coverage: .currentDocumentOnly
+    )
+}
+
+public struct TorahReaderViewport: Hashable, Sendable {
+    public let providerID: String
+    public let sectionReference: String
+    public let segmentReference: String
+    /// The visible segment's normalized vertical position in the viewport.
+    public let relativePosition: Double
+    public let loadedSectionReferences: [String]
+
+    public init(
+        providerID: String,
+        sectionReference: String,
+        segmentReference: String,
+        relativePosition: Double,
+        loadedSectionReferences: [String]
+    ) {
+        self.providerID = providerID
+        self.sectionReference = sectionReference
+        self.segmentReference = segmentReference
+        self.relativePosition = min(max(relativePosition, 0), 1)
+        self.loadedSectionReferences = loadedSectionReferences
+    }
+}
+
 public struct TorahWorkGroup: Identifiable, Equatable, Sendable {
     public let id: String
     public let title: String

@@ -37,3 +37,9 @@
 "Expanded" = "מורחב";
 "Collapsed" = "מכווץ";
 "Delete" = "מחק";
+"In Documents" = "במסמכים";
+"Open full source" = "פתח מקור מלא";
+"Space-wide backlinks are unavailable" = "קישורים חוזרים מכל המרחב אינם זמינים. מוצגים רק קישורים מהמסמך הנוכחי.";
+"No current-document links" = "אין קישורים מהמסמך הנוכחי";
+"Could not load related documents" = "לא ניתן לטעון מסמכים קשורים";
+"Unlink" = "בטל קישור";

@@ -115,6 +115,43 @@ struct RepositoryBoundaryTests {
         let refreshedFetchCount = await count.value()
         #expect(refreshedFetchCount == 2)
     }
+
+    @Test @MainActor func relatedDocumentsExposeCoverageAndRefreshTypedObjects() async throws {
+        let selection = TorahInspectorSelection(
+            providerID: "fixture",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:1"
+        )
+        let count = Counter()
+        let repository = TorahInspectorRepository(
+            textFetcher: { reference, _ in makeDocument(reference: reference) },
+            relatedDocumentsFetcher: { _ in
+                await count.increment()
+                return TorahRelatedDocumentsSnapshot(
+                    documents: [TorahRelatedDocument(
+                        id: "association-1",
+                        spaceID: "space",
+                        objectID: "object",
+                        title: "Study note",
+                        sourceReference: "Genesis 1:1",
+                        kind: .note
+                    )],
+                    coverage: .currentDocumentOnly
+                )
+            }
+        )
+        let first = try await repository.relatedDocuments(for: selection)
+        let cached = try await repository.relatedDocuments(for: selection)
+        #expect(first == cached)
+        #expect(first.coverage == .currentDocumentOnly)
+        #expect(first.documents.first?.objectID == "object")
+        let cachedCount = await count.value()
+        #expect(cachedCount == 1)
+        repository.invalidateRelatedDocuments(for: selection)
+        _ = try await repository.relatedDocuments(for: selection)
+        let refreshedCount = await count.value()
+        #expect(refreshedCount == 2)
+    }
 }
 
 @Suite("Inspector identity and relationships")
@@ -326,5 +363,31 @@ struct ReaderNavigationStateTests {
         _ = next.onInitialLoadComplete(hasPrevious: true, hasNext: true, isUnderfilled: false)
         _ = next.onScrollOffsetChanged(offsetY: 399, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true)
         #expect(next.onScrollOffsetChanged(offsetY: 450, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true).shouldLoadNext)
+    }
+
+
+    @Test func viewportClampsRelativePositionAndPreservesWindowIdentity() {
+        let viewport = TorahReaderViewport(
+            providerID: "sefaria",
+            sectionReference: "Genesis 1",
+            segmentReference: "Genesis 1:7",
+            relativePosition: 2,
+            loadedSectionReferences: ["Genesis 1", "Genesis 2"]
+        )
+        #expect(viewport.relativePosition == 1)
+        #expect(viewport.segmentReference == "Genesis 1:7")
+        #expect(viewport.loadedSectionReferences == ["Genesis 1", "Genesis 2"])
+    }
+
+    @Test func toolSelectorUsesHysteresisAndKeepsShortContentStable() {
+        var machine = TorahToolSelectorStateMachine(collapseDistance: 50, revealDistance: 20)
+        #expect(machine.update(offset: 80, contentHeight: 400, viewportHeight: 380) == .visible)
+        #expect(machine.update(offset: 30, contentHeight: 1_000, viewportHeight: 400) == .visible)
+        #expect(machine.update(offset: 90, contentHeight: 1_000, viewportHeight: 400) == .collapsed)
+        #expect(machine.update(offset: 82, contentHeight: 1_000, viewportHeight: 400) == .collapsed)
+        #expect(machine.update(offset: 60, contentHeight: 1_000, viewportHeight: 400) == .visible)
+        _ = machine.update(offset: 120, contentHeight: 1_000, viewportHeight: 400)
+        machine.revealManually()
+        #expect(machine.visibility == .visible)
     }
 }

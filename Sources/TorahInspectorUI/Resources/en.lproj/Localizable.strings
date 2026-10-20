@@ -37,3 +37,9 @@
 "Expanded" = "Expanded";
 "Collapsed" = "Collapsed";
 "Delete" = "Delete";
+"In Documents" = "In Documents";
+"Open full source" = "Open full source";
+"Space-wide backlinks are unavailable" = "Space-wide backlinks are unavailable. Showing current-document links only.";
+"No current-document links" = "No current-document links";
+"Could not load related documents" = "Could not load related documents";
+"Unlink" = "Unlink";

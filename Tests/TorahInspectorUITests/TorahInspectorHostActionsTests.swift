@@ -14,6 +14,8 @@ struct TorahInspectorHostActionsTests {
         #expect(actions.onAddNote == nil)
         #expect(actions.onOpenNote == nil)
         #expect(actions.onDeleteNote == nil)
+        #expect(actions.onOpenRelatedDocument == nil)
+        #expect(actions.onUnlinkRelatedDocument == nil)
         #expect(!actions.showsCloseButton)
     }
 
@@ -21,6 +23,7 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahStudyTool.commentaries.localizedTitle(locale: Locale(identifier: "en_US")) == "Commentaries")
         #expect(TorahStudyTool.links.localizedTitle(locale: Locale(identifier: "he_IL")) == "קישורים")
         #expect(TorahStudyTool.notes.localizedTitle(locale: Locale(identifier: "he_IL")) == "הערות")
+        #expect(TorahStudyToolID.relatedDocuments.localizedTitle(locale: Locale(identifier: "he_IL")) == "במסמכים")
         #expect(TorahStrings.text("Add Note", locale: Locale(identifier: "he_IL")) == "הוסף הערה")
         #expect(TorahStrings.text("Expand", locale: Locale(identifier: "he_IL")) == "הרחב")
         #expect(TorahStrings.text("Delete", locale: Locale(identifier: "he_IL")) == "מחק")
@@ -118,6 +121,16 @@ struct TorahInspectorHostActionsTests {
         let sel1 = TorahInspectorSelection(providerID: "p1", canonicalRef: "Gen 1")
         let sel2 = TorahInspectorSelection(providerID: "p1", canonicalRef: "Gen 1")
         #expect(TorahInspectorRoute.source(sel1) == TorahInspectorRoute.source(sel2))
+        #expect(TorahInspectorRoute.fullSource(sel1) == TorahInspectorRoute.fullSource(sel2))
+    }
+
+    @Test @MainActor func configurationKeepsLegacyAndAnytypeToolSetsDistinct() {
+        #expect(TorahInspectorConfiguration.legacy.availableTools == [.commentaries, .links, .notes])
+        let anytype = TorahInspectorConfiguration(
+            availableTools: [.commentaries, .links, .relatedDocuments]
+        )
+        #expect(anytype.availableTools == [.commentaries, .links, .relatedDocuments])
+        #expect(!anytype.availableTools.contains(.notes))
     }
 
     @Test func relationshipEntryResolvesTheRequestedRealSegment() {

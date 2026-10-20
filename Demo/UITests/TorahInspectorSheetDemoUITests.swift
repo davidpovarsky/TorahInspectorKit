@@ -14,6 +14,12 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
                 "The native Torah sheet must appear at the \(detent) detent"
             )
 
+            if detent == "peek" {
+                XCTAssertTrue(app.descendants(matching: .any)["torah-inspector-peek-tools"].exists)
+                XCTAssertTrue(app.buttons["torah-inspector-expand-medium"].exists)
+                XCTAssertFalse(app.buttons["torah-inspector-peek-insert"].exists)
+            }
+
             let screenshot = XCUIScreen.main.screenshot()
             let attachment = XCTAttachment(screenshot: screenshot)
             attachment.name = String(format: "%02d-torah-inspector-%@-hebrew-rtl", index + 1, detent)

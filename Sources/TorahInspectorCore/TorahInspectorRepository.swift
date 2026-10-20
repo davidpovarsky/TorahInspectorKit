@@ -6,11 +6,13 @@ public final class TorahInspectorRepository {
     public typealias LinksFetcher = @Sendable (String, String?) async throws -> [TorahLinkedSource]
     public typealias TopicsFetcher = @Sendable (String, String?) async throws -> [TorahLinkedTopic]
     public typealias NotesFetcher = @Sendable (TorahInspectorSelection) async throws -> [TorahInspectorNote]
+    public typealias RelatedDocumentsFetcher = @Sendable (TorahInspectorSelection) async throws -> TorahRelatedDocumentsSnapshot
 
     private let textFetcher: TextFetcher
     private let linksFetcher: LinksFetcher
     private let topicsFetcher: TopicsFetcher
     private let notesFetcher: NotesFetcher
+    private let relatedDocumentsFetcher: RelatedDocumentsFetcher
     public let documentCapacity: Int
     public let relationshipCapacity: Int
 
@@ -26,6 +28,8 @@ public final class TorahInspectorRepository {
     private var inFlightTopics: [String: Task<[TorahLinkedTopic], Error>] = [:]
     private var notesCache: [String: [TorahInspectorNote]] = [:]
     private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
+    private var relatedDocumentsCache: [String: TorahRelatedDocumentsSnapshot] = [:]
+    private var inFlightRelatedDocuments: [String: Task<TorahRelatedDocumentsSnapshot, Error>] = [:]
 
     public init(
         documentCapacity: Int = 30,
@@ -33,12 +37,14 @@ public final class TorahInspectorRepository {
         textFetcher: @escaping TextFetcher,
         linksFetcher: @escaping LinksFetcher = { _, _ in [] },
         topicsFetcher: @escaping TopicsFetcher = { _, _ in [] },
-        notesFetcher: @escaping NotesFetcher = { _ in [] }
+        notesFetcher: @escaping NotesFetcher = { _ in [] },
+        relatedDocumentsFetcher: @escaping RelatedDocumentsFetcher = { _ in .unavailable }
     ) {
         self.textFetcher = textFetcher
         self.linksFetcher = linksFetcher
         self.topicsFetcher = topicsFetcher
         self.notesFetcher = notesFetcher
+        self.relatedDocumentsFetcher = relatedDocumentsFetcher
         self.documentCapacity = max(0, documentCapacity)
         self.relationshipCapacity = max(0, relationshipCapacity)
     }
@@ -212,6 +218,37 @@ public final class TorahInspectorRepository {
 
     public func invalidateAllNotes() {
         invalidateNotes()
+    }
+
+    public func relatedDocuments(
+        for selection: TorahInspectorSelection
+    ) async throws -> TorahRelatedDocumentsSnapshot {
+        let key = selection.id
+        if let cached = relatedDocumentsCache[key] { return cached }
+        if let inFlight = inFlightRelatedDocuments[key] { return try await inFlight.value }
+        let fetcher = relatedDocumentsFetcher
+        let task = Task<TorahRelatedDocumentsSnapshot, Error> { try await fetcher(selection) }
+        inFlightRelatedDocuments[key] = task
+        do {
+            let snapshot = try await task.value
+            inFlightRelatedDocuments.removeValue(forKey: key)
+            relatedDocumentsCache[key] = snapshot
+            return snapshot
+        } catch {
+            inFlightRelatedDocuments.removeValue(forKey: key)
+            throw error
+        }
+    }
+
+    public func invalidateRelatedDocuments(for selection: TorahInspectorSelection? = nil) {
+        if let selection {
+            relatedDocumentsCache.removeValue(forKey: selection.id)
+            inFlightRelatedDocuments.removeValue(forKey: selection.id)?.cancel()
+        } else {
+            relatedDocumentsCache.removeAll()
+            for task in inFlightRelatedDocuments.values { task.cancel() }
+            inFlightRelatedDocuments.removeAll()
+        }
     }
 
     private static func touchRelationship(_ key: String, lru: inout [String]) {

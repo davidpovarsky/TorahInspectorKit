@@ -7,17 +7,22 @@ public struct TorahSegmentDetailView: View {
     public let repository: TorahInspectorRepository
     public let actions: TorahInspectorHostActions
     public let chrome: TorahInspectorChrome
-    @Binding private var selectedTool: TorahStudyTool
+    public let configuration: TorahInspectorConfiguration
+    @Binding private var selectedTool: TorahStudyToolID
 
     @State private var links: [TorahLinkedSource] = []
     @State private var topics: [TorahLinkedTopic] = []
     @State private var notes: [TorahInspectorNote] = []
+    @State private var relatedDocuments: TorahRelatedDocumentsSnapshot?
     @State private var linksError: String?
     @State private var topicsError: String?
     @State private var notesError: String?
     @State private var loadingLinks = true
     @State private var loadingTopics = true
     @State private var loadingNotes = true
+    @State private var loadingRelatedDocuments = true
+    @State private var relatedDocumentsError: String?
+    @State private var selectorState = TorahToolSelectorStateMachine()
     @State private var expandedSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
     @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
@@ -29,15 +34,42 @@ public struct TorahSegmentDetailView: View {
     public init(
         focus: TorahInspectorFocus,
         repository: TorahInspectorRepository,
-        selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
+        selectedTool: Binding<TorahStudyToolID>,
         chrome: TorahInspectorChrome = .floatingPanel,
+        configuration: TorahInspectorConfiguration,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.focus = focus
         self.repository = repository
         self._selectedTool = selectedTool
         self.chrome = chrome
+        self.configuration = configuration
         self.actions = actions
+    }
+
+    public init(
+        focus: TorahInspectorFocus,
+        repository: TorahInspectorRepository,
+        selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
+        chrome: TorahInspectorChrome = .floatingPanel,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) {
+        let bridged = Binding<TorahStudyToolID>(
+            get: { selectedTool.wrappedValue.toolID },
+            set: { value in
+                if let legacy = TorahStudyTool(rawValue: value.rawValue) {
+                    selectedTool.wrappedValue = legacy
+                }
+            }
+        )
+        self.init(
+            focus: focus,
+            repository: repository,
+            selectedTool: bridged,
+            chrome: chrome,
+            configuration: .legacy,
+            actions: actions
+        )
     }
 
     public init(
@@ -57,6 +89,25 @@ public struct TorahSegmentDetailView: View {
         )
     }
 
+    public init(
+        segment: TorahTextSegment,
+        providerID: String,
+        repository: TorahInspectorRepository,
+        selectedTool: Binding<TorahStudyToolID>,
+        chrome: TorahInspectorChrome = .floatingPanel,
+        configuration: TorahInspectorConfiguration,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) {
+        self.init(
+            focus: TorahInspectorFocus(segment: segment, providerID: providerID),
+            repository: repository,
+            selectedTool: selectedTool,
+            chrome: chrome,
+            configuration: configuration,
+            actions: actions
+        )
+    }
+
     private var selection: TorahInspectorSelection { focus.selection }
     private var providerID: String { selection.providerID }
 
@@ -67,10 +118,10 @@ public struct TorahSegmentDetailView: View {
         switch chrome {
         case .embeddedSheet:
             panelContent
-                .background(.regularMaterial)
+                .background(configuration.theme.background)
         case .floatingPanel:
             panelContent
-                .background(.regularMaterial)
+                .background(configuration.theme.background)
                 .compositingGroup()
                 .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                 .overlay {
@@ -91,6 +142,8 @@ public struct TorahSegmentDetailView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-panel")
         .task(id: focus.id) { await loadPanelData() }
+        .onAppear { ensureValidSelectedTool() }
+        .onChange(of: configuration.availableTools) { _, _ in ensureValidSelectedTool() }
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
             Task { @MainActor in
                 await loadNotes()
@@ -104,22 +157,36 @@ public struct TorahSegmentDetailView: View {
     }
 
     private var panelHeader: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(TorahStrings.text("Study Tools", locale: locale))
-                        .font(.title3.weight(.semibold))
-                    Text(segmentDisplayRef)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                configuration.theme.text(segmentDisplayRef, role: .heading)
+                    .lineLimit(1)
                 Spacer(minLength: 8)
+                if selectorState.visibility == .collapsed {
+                    Button {
+                        selectorState.revealManually()
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(TorahStrings.text("Study Tools", locale: locale))
+                    .accessibilityIdentifier("torah-inspector-show-tools")
+                }
+                if configuration.allowsInlineFullSourceNavigation {
+                    NavigationLink(value: TorahInspectorRoute.fullSource(selection)) {
+                        Image(systemName: "book.closed")
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(TorahStrings.text("Open full source", locale: locale))
+                    .accessibilityIdentifier("torah-inspector-open-full-source")
+                }
                 if actions.showsCloseButton, let onClose = actions.onClose {
                     Button(action: onClose) {
                         Image(systemName: "xmark")
                             .foregroundStyle(.secondary)
-                            .frame(width: 30, height: 30)
+                            .frame(width: 44, height: 44)
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
@@ -128,15 +195,15 @@ public struct TorahSegmentDetailView: View {
                 }
             }
 
-            selectedSegmentCard
-
-            Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
-                ForEach(TorahStudyTool.allCases) { tool in
-                    Text(tool.localizedTitle(locale: locale)).tag(tool)
+            if selectorState.visibility == .visible {
+                Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
+                    ForEach(configuration.availableTools) { tool in
+                        Text(tool.localizedTitle(locale: locale)).tag(tool)
+                    }
                 }
+                .pickerStyle(.segmented)
+                .accessibilityIdentifier("torah-inspector-tools")
             }
-            .pickerStyle(.segmented)
-            .accessibilityIdentifier("torah-inspector-tools")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
@@ -152,34 +219,15 @@ public struct TorahSegmentDetailView: View {
                     linksContent
                 case .notes:
                     notesContent
+                case .relatedDocuments:
+                    relatedDocumentsContent
+                default:
+                    emptyRow(TorahStrings.text("No results", locale: locale))
                 }
             }
             .padding(14)
         }
-    }
-
-    private var selectedSegmentCard: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            Text(TorahStrings.text("Selected Segment", locale: locale))
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            if let text = focus.text, !text.isEmpty {
-                Text(text)
-                    .font(.subheadline)
-                    .lineLimit(2)
-                    .lineSpacing(3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            Text(segmentDisplayRef)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
-        .environment(\.layoutDirection, segmentLayoutDirection)
-        .padding(12)
-        .background(Color.accentColor.opacity(0.06))
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("torah-inspector-selected-segment")
+        .modifier(TorahSelectorScrollObserver(state: $selectorState))
     }
 
     @ViewBuilder
@@ -323,7 +371,7 @@ public struct TorahSegmentDetailView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 Spacer()
-                if isExpanded {
+                if isExpanded, actions.onOpenInNewTab != nil {
                     Button {
                         openInReader(source)
                     } label: {
@@ -374,6 +422,14 @@ public struct TorahSegmentDetailView: View {
                     .foregroundStyle(.secondary)
                 sourceBodyContent(source: source, isCommentary: false)
                 if isExpanded {
+                    NavigationLink(value: TorahInspectorRoute.source(sourceSelection(source))) {
+                        Label(TorahStrings.text("View details", locale: locale), systemImage: "chevron.forward")
+                            .font(.caption2)
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityIdentifier("torah-inspector-view-source-\(source.id)")
+                }
+                if isExpanded, actions.onOpenInNewTab != nil {
                     Button {
                         openInReader(source)
                     } label: {
@@ -414,7 +470,11 @@ public struct TorahSegmentDetailView: View {
                     .onEnded { value in
                         switch value {
                         case .first:
-                            openInReader(source)
+                            if actions.onOpenInNewTab != nil {
+                                openInReader(source)
+                            } else {
+                                toggleExpansion(source)
+                            }
                         case .second:
                             toggleExpansion(source)
                         }
@@ -426,12 +486,11 @@ public struct TorahSegmentDetailView: View {
             .accessibilityLabel("\(displayReference(source)), \(TorahInspectorPresentation.categoryTitle(source.semanticCategory, locale: locale))")
             .accessibilityValue(TorahStrings.text(isExpanded ? "Expanded" : "Collapsed", locale: locale))
             .accessibilityAction { toggleExpansion(source) }
-            .accessibilityAction(named: Text(TorahStrings.text("Open in new tab", locale: locale))) {
-                openInReader(source)
-            }
             .contextMenu {
-                Button(TorahStrings.text("Open in new tab", locale: locale), systemImage: "arrow.up.right.square") {
-                    openInReader(source)
+                if actions.onOpenInNewTab != nil {
+                    Button(TorahStrings.text("Open in new tab", locale: locale), systemImage: "arrow.up.right.square") {
+                        openInReader(source)
+                    }
                 }
                 #if canImport(UIKit)
                 Button(TorahStrings.text("Copy", locale: locale), systemImage: "doc.on.doc") {
@@ -460,13 +519,15 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func openInReader(_ source: TorahLinkedSource) {
-        actions.onOpenInNewTab?(
-            TorahInspectorSelection(
-                providerID: providerID,
-                canonicalRef: source.sourceRef,
-                preferredSegmentRef: source.sourceRef,
-                scope: .segment
-            )
+        actions.onOpenInNewTab?(sourceSelection(source))
+    }
+
+    private func sourceSelection(_ source: TorahLinkedSource) -> TorahInspectorSelection {
+        TorahInspectorSelection(
+            providerID: providerID,
+            canonicalRef: source.sourceRef,
+            preferredSegmentRef: source.sourceRef,
+            scope: .segment
         )
     }
 
@@ -573,6 +634,74 @@ public struct TorahSegmentDetailView: View {
         }
     }
 
+    @ViewBuilder
+    private var relatedDocumentsContent: some View {
+        if let onAddNote = actions.onAddNote {
+            Button {
+                onAddNote(selection, relatedDocumentsDidChange)
+            } label: {
+                Label(TorahStrings.text("Add Note", locale: locale), systemImage: "plus")
+                    .font(.body.weight(.medium))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .accessibilityIdentifier("torah-inspector-related-add-note")
+        }
+        if loadingRelatedDocuments {
+            loadingRow
+        } else if let relatedDocumentsError {
+            retryCard(relatedDocumentsError) { Task { await loadRelatedDocuments() } }
+        } else if let snapshot = relatedDocuments {
+            if snapshot.coverage != .spaceWide {
+                Label(
+                    TorahStrings.text("Space-wide backlinks are unavailable", locale: locale),
+                    systemImage: "info.circle"
+                )
+                .font(.caption)
+                .foregroundStyle(configuration.theme.secondaryText)
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(configuration.theme.elevatedSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .accessibilityIdentifier("torah-inspector-related-documents-unavailable")
+            }
+            if snapshot.documents.isEmpty {
+                emptyRow(TorahStrings.text("No current-document links", locale: locale))
+            } else {
+                ForEach(snapshot.documents) { document in
+                    Button {
+                        actions.onOpenRelatedDocument?(document)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 5) {
+                            configuration.theme.text(document.title, role: .body)
+                            if let snippet = document.snippet, !snippet.isEmpty {
+                                configuration.theme.text(snippet, role: .caption)
+                                    .foregroundStyle(configuration.theme.secondaryText)
+                                    .lineLimit(2)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(13)
+                        .background(configuration.theme.elevatedSurface)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(actions.onOpenRelatedDocument == nil)
+                    .contextMenu {
+                        if let onUnlink = actions.onUnlinkRelatedDocument {
+                            Button(role: .destructive) {
+                                onUnlink(document, selection, relatedDocumentsDidChange)
+                            } label: {
+                                Label(TorahStrings.text("Unlink", locale: locale), systemImage: "link.badge.minus")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private func noteRow(_ note: TorahInspectorNote) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(note.selectedText)
@@ -665,7 +794,8 @@ public struct TorahSegmentDetailView: View {
         async let loadedLinks: Void = loadLinks()
         async let loadedTopics: Void = loadTopics()
         async let loadedNotes: Void = loadNotes()
-        _ = await (loadedLinks, loadedTopics, loadedNotes)
+        async let loadedRelatedDocuments: Void = loadRelatedDocuments()
+        _ = await (loadedLinks, loadedTopics, loadedNotes, loadedRelatedDocuments)
     }
 
     @MainActor
@@ -728,6 +858,63 @@ public struct TorahSegmentDetailView: View {
         Task { @MainActor in
             repository.invalidateNotes(for: selection)
             await loadNotes()
+        }
+    }
+
+    @MainActor
+    private func loadRelatedDocuments() async {
+        loadingRelatedDocuments = true
+        relatedDocumentsError = nil
+        do {
+            relatedDocuments = try await repository.relatedDocuments(for: selection)
+        } catch is CancellationError {
+        } catch {
+            relatedDocumentsError = TorahStrings.text("Could not load related documents", locale: locale)
+        }
+        loadingRelatedDocuments = false
+    }
+
+    private func relatedDocumentsDidChange() {
+        Task { @MainActor in
+            repository.invalidateRelatedDocuments(for: selection)
+            await loadRelatedDocuments()
+        }
+    }
+
+    private func ensureValidSelectedTool() {
+        guard !configuration.availableTools.contains(selectedTool),
+              let first = configuration.availableTools.first else { return }
+        selectedTool = first
+    }
+}
+
+private struct TorahSelectorScrollInfo: Equatable {
+    let offset: CGFloat
+    let contentHeight: CGFloat
+    let viewportHeight: CGFloat
+}
+
+private struct TorahSelectorScrollObserver: ViewModifier {
+    @Binding var state: TorahToolSelectorStateMachine
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, macOS 15.0, *) {
+            content.onScrollGeometryChange(for: TorahSelectorScrollInfo.self) { geometry in
+                TorahSelectorScrollInfo(
+                    offset: geometry.contentOffset.y,
+                    contentHeight: geometry.contentSize.height,
+                    viewportHeight: geometry.containerSize.height
+                )
+            } action: { _, info in
+                _ = state.update(
+                    offset: info.offset,
+                    contentHeight: info.contentHeight,
+                    viewportHeight: info.viewportHeight
+                )
+            }
+        } else {
+            content
         }
     }
 }

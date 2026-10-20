@@ -9,6 +9,8 @@ public struct TorahInspectorHostActions {
     public var onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
+    public var onOpenRelatedDocument: ((TorahRelatedDocument) -> Void)?
+    public var onUnlinkRelatedDocument: ((TorahRelatedDocument, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var showsCloseButton: Bool
 
     public init(
@@ -18,6 +20,8 @@ public struct TorahInspectorHostActions {
         onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
+        onOpenRelatedDocument: ((TorahRelatedDocument) -> Void)? = nil,
+        onUnlinkRelatedDocument: ((TorahRelatedDocument, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         showsCloseButton: Bool? = nil
     ) {
         self.onClose = onClose
@@ -26,6 +30,8 @@ public struct TorahInspectorHostActions {
         self.onAddNote = onAddNote
         self.onOpenNote = onOpenNote
         self.onDeleteNote = onDeleteNote
+        self.onOpenRelatedDocument = onOpenRelatedDocument
+        self.onUnlinkRelatedDocument = onUnlinkRelatedDocument
         self.showsCloseButton = showsCloseButton ?? (onClose != nil)
     }
 }

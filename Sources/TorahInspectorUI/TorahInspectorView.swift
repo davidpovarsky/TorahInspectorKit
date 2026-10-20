@@ -19,8 +19,11 @@ public struct TorahInspectorView: View {
     private let actions: TorahInspectorHostActions
     private let entryMode: TorahInspectorEntryMode
     private let chrome: TorahInspectorChrome
+    private let configuration: TorahInspectorConfiguration
     private let externalSelectedTool: Binding<TorahStudyTool>?
-    @State private var localSelectedTool: TorahStudyTool = .commentaries
+    private let externalSelectedToolID: Binding<TorahStudyToolID>?
+    @State private var localSelectedToolID: TorahStudyToolID = .commentaries
+    @State private var readerSession = TorahReaderSessionState()
 
     public init(
         repository: TorahInspectorRepository,
@@ -28,13 +31,35 @@ public struct TorahInspectorView: View {
         entryMode: TorahInspectorEntryMode = .sourceReader,
         chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
+        configuration: TorahInspectorConfiguration = .legacy,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.repository = repository
         self.selection = selection
         self.entryMode = entryMode
         self.chrome = chrome
+        self.configuration = configuration
         self.externalSelectedTool = selectedTool
+        self.externalSelectedToolID = nil
+        self.actions = actions
+    }
+
+    public init(
+        repository: TorahInspectorRepository,
+        selection: TorahInspectorSelection,
+        entryMode: TorahInspectorEntryMode = .sourceReader,
+        chrome: TorahInspectorChrome = .floatingPanel,
+        selectedTool: Binding<TorahStudyToolID>,
+        configuration: TorahInspectorConfiguration,
+        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+    ) {
+        self.repository = repository
+        self.selection = selection
+        self.entryMode = entryMode
+        self.chrome = chrome
+        self.configuration = configuration
+        self.externalSelectedTool = nil
+        self.externalSelectedToolID = selectedTool
         self.actions = actions
     }
 
@@ -44,6 +69,7 @@ public struct TorahInspectorView: View {
         entryMode: TorahInspectorEntryMode = .sourceReader,
         chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
+        configuration: TorahInspectorConfiguration = .legacy,
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
         onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil,
@@ -58,6 +84,7 @@ public struct TorahInspectorView: View {
             entryMode: entryMode,
             chrome: chrome,
             selectedTool: selectedTool,
+            configuration: configuration,
             actions: TorahInspectorHostActions(
                 onClose: onClose,
                 onInsertSegment: onInsertSegment,
@@ -78,6 +105,8 @@ public struct TorahInspectorView: View {
                 repository: repository,
                 selectedTool: selectedToolBinding,
                 chrome: chrome,
+                configuration: configuration,
+                readerSession: readerSession,
                 actions: actions
             )
         case .relationships, .segmentRelationships:
@@ -86,19 +115,28 @@ public struct TorahInspectorView: View {
                 repository: repository,
                 selectedTool: selectedToolBinding,
                 chrome: chrome,
+                configuration: configuration,
+                readerSession: readerSession,
                 actions: actions
             )
         }
     }
 
-    private var selectedToolBinding: Binding<TorahStudyTool> {
+    private var selectedToolBinding: Binding<TorahStudyToolID> {
         Binding(
-            get: { externalSelectedTool?.wrappedValue ?? localSelectedTool },
+            get: {
+                externalSelectedToolID?.wrappedValue
+                    ?? externalSelectedTool?.wrappedValue.toolID
+                    ?? localSelectedToolID
+            },
             set: { newValue in
-                if let externalSelectedTool {
-                    externalSelectedTool.wrappedValue = newValue
+                if let externalSelectedToolID {
+                    externalSelectedToolID.wrappedValue = newValue
+                } else if let externalSelectedTool,
+                          let legacy = TorahStudyTool(rawValue: newValue.rawValue) {
+                    externalSelectedTool.wrappedValue = legacy
                 } else {
-                    localSelectedTool = newValue
+                    localSelectedToolID = newValue
                 }
             }
         )
@@ -111,8 +149,10 @@ public struct TorahInspectorView: View {
 private struct _InspectorNavigationDestinations: ViewModifier {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
-    @Binding var selectedTool: TorahStudyTool
+    @Binding var selectedTool: TorahStudyToolID
     let chrome: TorahInspectorChrome
+    let configuration: TorahInspectorConfiguration
+    let readerSession: TorahReaderSessionState
     let actions: TorahInspectorHostActions
 
     func body(content: Content) -> some View {
@@ -128,6 +168,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     repository: repository,
                     selectedTool: $selectedTool,
                     chrome: chrome,
+                    configuration: configuration,
                     actions: actions
                 )
             case .source(let nextSelection):
@@ -136,7 +177,15 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     repository: repository,
                     selectedTool: $selectedTool,
                     chrome: chrome,
+                    configuration: configuration,
                     actions: actions
+                )
+            case .fullSource(let nextSelection):
+                TorahSourceReaderView(
+                    selection: nextSelection,
+                    repository: repository,
+                    actions: actions,
+                    session: readerSession
                 )
             }
         }
@@ -149,8 +198,9 @@ private struct _InspectorNavigationDestinations: ViewModifier {
 private struct _InspectorLinkedSourceEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
-    @Binding var selectedTool: TorahStudyTool
+    @Binding var selectedTool: TorahStudyToolID
     let chrome: TorahInspectorChrome
+    let configuration: TorahInspectorConfiguration
     let actions: TorahInspectorHostActions
 
     @State private var segment: TorahTextSegment?
@@ -169,6 +219,7 @@ private struct _InspectorLinkedSourceEntry: View {
                     repository: repository,
                     selectedTool: $selectedTool,
                     chrome: chrome,
+                    configuration: configuration,
                     actions: actions
                 )
             } else if let errorMessage {
@@ -212,19 +263,23 @@ private struct _InspectorLinkedSourceEntry: View {
 private struct _InspectorSourceReaderEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
-    @Binding var selectedTool: TorahStudyTool
+    @Binding var selectedTool: TorahStudyToolID
     let chrome: TorahInspectorChrome
+    let configuration: TorahInspectorConfiguration
+    let readerSession: TorahReaderSessionState
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
 
     var body: some View {
         NavigationStack(path: $path) {
-            TorahSourceReaderView(selection: selection, repository: repository, actions: actions)
+            TorahSourceReaderView(selection: selection, repository: repository, actions: actions, session: readerSession)
                 .modifier(_InspectorNavigationDestinations(
                     selection: selection,
                     repository: repository,
                     selectedTool: $selectedTool,
                     chrome: chrome,
+                    configuration: configuration,
+                    readerSession: readerSession,
                     actions: actions
                 ))
         }
@@ -238,8 +293,10 @@ private struct _InspectorSourceReaderEntry: View {
 private struct _InspectorRelationshipsEntry: View {
     let selection: TorahInspectorSelection
     let repository: TorahInspectorRepository
-    @Binding var selectedTool: TorahStudyTool
+    @Binding var selectedTool: TorahStudyToolID
     let chrome: TorahInspectorChrome
+    let configuration: TorahInspectorConfiguration
+    let readerSession: TorahReaderSessionState
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
     @State private var focus: TorahInspectorFocus?
@@ -249,14 +306,18 @@ private struct _InspectorRelationshipsEntry: View {
     init(
         selection: TorahInspectorSelection,
         repository: TorahInspectorRepository,
-        selectedTool: Binding<TorahStudyTool>,
+        selectedTool: Binding<TorahStudyToolID>,
         chrome: TorahInspectorChrome,
+        configuration: TorahInspectorConfiguration,
+        readerSession: TorahReaderSessionState,
         actions: TorahInspectorHostActions
     ) {
         self.selection = selection
         self.repository = repository
         self._selectedTool = selectedTool
         self.chrome = chrome
+        self.configuration = configuration
+        self.readerSession = readerSession
         self.actions = actions
     }
 
@@ -269,6 +330,7 @@ private struct _InspectorRelationshipsEntry: View {
                         repository: repository,
                         selectedTool: $selectedTool,
                         chrome: chrome,
+                        configuration: configuration,
                         actions: actions
                     )
                 } else if let errorMessage {
@@ -288,6 +350,8 @@ private struct _InspectorRelationshipsEntry: View {
                 repository: repository,
                 selectedTool: $selectedTool,
                 chrome: chrome,
+                configuration: configuration,
+                readerSession: readerSession,
                 actions: actions
             ))
             .task(id: selection.id) { await loadSegment() }

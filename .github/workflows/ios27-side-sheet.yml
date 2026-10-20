@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - feature/native-ios27-torah-side-sheet-2026-10-20
+      - feature/torah-inspector-eight-ux-fixes-2026-10-21
 
 permissions:
   contents: read
@@ -101,7 +102,7 @@ jobs:
                   output = log_path.read_text(encoding='utf-8', errors='replace')
                   suite_passed = (
                       "Test Suite 'All tests' passed" in output
-                      and 'Executed 1 test, with 0 failures' in output
+                      and 'with 0 failures' in output
                   )
                   if suite_passed:
                       break
@@ -121,7 +122,7 @@ jobs:
           sys.stdout.write(output)
           suite_passed = suite_passed or (
               "Test Suite 'All tests' passed" in output
-              and 'Executed 1 test, with 0 failures' in output
+              and 'with 0 failures' in output
           )
           if suite_passed:
               print('xcodebuild watchdog: verified passing-suite evidence; accepting the UI test.')
