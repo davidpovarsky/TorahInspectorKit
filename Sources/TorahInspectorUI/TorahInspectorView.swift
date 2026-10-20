@@ -185,7 +185,8 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     selection: nextSelection,
                     repository: repository,
                     actions: actions,
-                    session: readerSession
+                    session: readerSession,
+                    theme: configuration.theme
                 )
             }
         }
@@ -272,7 +273,13 @@ private struct _InspectorSourceReaderEntry: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            TorahSourceReaderView(selection: selection, repository: repository, actions: actions, session: readerSession)
+            TorahSourceReaderView(
+                selection: selection,
+                repository: repository,
+                actions: actions,
+                session: readerSession,
+                theme: configuration.theme
+            )
                 .modifier(_InspectorNavigationDestinations(
                     selection: selection,
                     repository: repository,
