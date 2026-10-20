@@ -123,8 +123,10 @@ jobs:
           set -euo pipefail
           APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*/Build/Products/Debug-iphonesimulator/TorahInspectorSheetDemo.app' -print -quit)"
           test -n "$APP_PATH"
-          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
           for DETENT in peek medium large; do
+            xcrun simctl boot "$DEVICE_ID" || true
+            xcrun simctl bootstatus "$DEVICE_ID" -b
+            xcrun simctl install "$DEVICE_ID" "$APP_PATH"
             xcrun simctl launch --terminate-running-process "$DEVICE_ID" \
               com.davidpovarsky.TorahInspectorSheetDemo --detent "$DETENT"
             sleep 3
