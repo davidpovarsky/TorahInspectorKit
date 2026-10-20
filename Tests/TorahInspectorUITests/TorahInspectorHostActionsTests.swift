@@ -136,6 +136,46 @@ struct TorahInspectorHostActionsTests {
         #expect(anytype.allowsInlineFullSourceNavigation)
     }
 
+    @Test @MainActor func readerSessionRestoresExactCanonicalViewportAndWindow() {
+        let selection = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:7"
+        )
+        let segment = TorahTextSegment(
+            canonicalRef: "Genesis 1:7",
+            text: "ויהי",
+            ordinal: 7
+        )
+        let document = TorahTextDocument(
+            providerID: "sefaria",
+            requestedRef: "Genesis 1",
+            canonicalRef: "Genesis 1",
+            sectionRef: "Genesis 1",
+            segments: [segment],
+            version: TorahTextVersionMetadata(
+                language: "he",
+                versionTitle: "fixture",
+                direction: "rtl"
+            )
+        )
+        let viewport = TorahReaderViewport(
+            providerID: "sefaria",
+            sectionReference: "Genesis 1",
+            segmentReference: "Genesis 1:7",
+            relativePosition: 0.31,
+            loadedSectionReferences: ["Genesis 1"]
+        )
+        let session = TorahReaderSessionState()
+
+        session.save(selection: selection, sections: [document], viewport: viewport)
+
+        let restored = session.snapshot(for: selection)
+        #expect(restored?.sections.map(\.sectionRef) == ["Genesis 1"])
+        #expect(restored?.viewport.segmentReference == "Genesis 1:7")
+        #expect(restored?.viewport.relativePosition == 0.31)
+    }
+
     @Test func relationshipEntryResolvesTheRequestedRealSegment() {
         let first = TorahTextSegment(canonicalRef: "Genesis 1:1", text: "In the beginning", ordinal: 1)
         let requested = TorahTextSegment(canonicalRef: "Genesis 1:2", text: "And the earth", ordinal: 2)
