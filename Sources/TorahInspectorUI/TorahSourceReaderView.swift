@@ -318,7 +318,7 @@ public struct TorahSourceReaderView: View {
             hasNext: sections.last?.nextSectionRef != nil
         )
         if decision.shouldLoadPrevious { Task { await loadPrevious(proxy: proxy) } }
-        if decision.shouldLoadNext { Task { await loadNext() } }
+        if decision.shouldLoadNext { Task { await loadNext(proxy: proxy) } }
     }
 
     private func handleFallbackScrollChange(proxy: ScrollViewProxy) {
@@ -397,19 +397,27 @@ public struct TorahSourceReaderView: View {
         }
     }
 
-    private func loadNext() async {
+    private func loadNext(proxy: ScrollViewProxy? = nil) async {
         guard !loadingNext, let reference = sections.last?.nextSectionRef else { return }
         loadingNext = true
         defer { loadingNext = false }
+        let anchorViewport = currentViewportSnapshot()
         do {
             let document = try await repository.document(for: reference, providerID: selection.providerID)
             guard !sections.contains(where: { $0.sectionRef == document.sectionRef }) else {
                 stateMachine.onNextLoadCompleted()
                 return
             }
+            let requiresAnchorRestoration = sections.count >= Self.maximumSectionWindow
             sections.append(document)
             trimFromStart()
-            stateMachine.onNextLoadCompleted()
+            stateMachine.onNextLoadCompleted(requiresAnchorRestoration: requiresAnchorRestoration)
+            if requiresAnchorRestoration, let anchorViewport, let proxy {
+                pendingViewport = anchorViewport
+                await restorePendingViewport(proxy: proxy)
+            } else if requiresAnchorRestoration {
+                stateMachine.onAnchorRestorationCompleted()
+            }
         } catch {
             stateMachine.onNextLoadFailed()
         }

@@ -379,6 +379,29 @@ struct ReaderNavigationStateTests {
         #expect(viewport.loadedSectionReferences == ["Genesis 1", "Genesis 2"])
     }
 
+    @Test @MainActor func trimmingAfterNextLoadSuppressesTriggersUntilAnchorRestores() {
+        let machine = TorahReaderScrollStateMachine()
+        _ = machine.onInitialLoadComplete(hasPrevious: true, hasNext: true, isUnderfilled: false)
+        _ = machine.onScrollOffsetChanged(
+            offsetY: 900,
+            contentHeight: 1_100,
+            containerHeight: 400,
+            hasPrevious: true,
+            hasNext: true
+        )
+        machine.onNextLoadCompleted(requiresAnchorRestoration: true)
+        #expect(machine.isRestoringAnchor)
+        #expect(machine.onScrollOffsetChanged(
+            offsetY: 0,
+            contentHeight: 1_100,
+            containerHeight: 400,
+            hasPrevious: true,
+            hasNext: true
+        ) == .idle)
+        machine.onAnchorRestorationCompleted()
+        #expect(!machine.isRestoringAnchor)
+    }
+
     @Test func toolSelectorUsesHysteresisAndKeepsShortContentStable() {
         var machine = TorahToolSelectorStateMachine(collapseDistance: 50, revealDistance: 20)
         #expect(machine.update(offset: 80, contentHeight: 400, viewportHeight: 380) == .visible)

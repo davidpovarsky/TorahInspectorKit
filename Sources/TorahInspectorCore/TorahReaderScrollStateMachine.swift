@@ -73,6 +73,9 @@ public final class TorahReaderScrollStateMachine {
     public func onPreviousLoadCompleted() { isLoadingPrevious = false; isRestoringAnchor = true }
     public func onAnchorRestorationCompleted() { isRestoringAnchor = false; isTopTriggerArmed = false }
     public func onPreviousLoadFailed() { isLoadingPrevious = false; isRestoringAnchor = false; isTopTriggerArmed = false }
-    public func onNextLoadCompleted() { isLoadingNext = false }
+    public func onNextLoadCompleted(requiresAnchorRestoration: Bool = false) {
+        isLoadingNext = false
+        isRestoringAnchor = requiresAnchorRestoration
+    }
     public func onNextLoadFailed() { isLoadingNext = false }
 }
