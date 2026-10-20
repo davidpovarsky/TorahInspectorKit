@@ -226,7 +226,22 @@ public struct TorahSegmentDetailView: View {
                 }
             }
             .padding(14)
+            .background {
+                GeometryReader { geometry in
+                    Color.clear.preference(
+                        key: TorahSelectorFallbackContentPreferenceKey.self,
+                        value: TorahSelectorFallbackContentInfo(
+                            offset: max(
+                                0,
+                                -geometry.frame(in: .named(torahSelectorScrollCoordinateSpace)).minY
+                            ),
+                            contentHeight: geometry.size.height
+                        )
+                    )
+                }
+            }
         }
+        .coordinateSpace(name: torahSelectorScrollCoordinateSpace)
         .modifier(TorahSelectorScrollObserver(state: $selectorState))
     }
 
@@ -894,8 +909,38 @@ private struct TorahSelectorScrollInfo: Equatable {
     let viewportHeight: CGFloat
 }
 
+private let torahSelectorScrollCoordinateSpace = "torah-inspector-tool-scroll"
+
+private struct TorahSelectorFallbackContentInfo: Equatable, Sendable {
+    let offset: CGFloat
+    let contentHeight: CGFloat
+
+    static let zero = Self(offset: 0, contentHeight: 0)
+}
+
+private struct TorahSelectorFallbackContentPreferenceKey: PreferenceKey {
+    static let defaultValue = TorahSelectorFallbackContentInfo.zero
+
+    static func reduce(
+        value: inout TorahSelectorFallbackContentInfo,
+        nextValue: () -> TorahSelectorFallbackContentInfo
+    ) {
+        value = nextValue()
+    }
+}
+
+private struct TorahSelectorFallbackViewportPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 private struct TorahSelectorScrollObserver: ViewModifier {
     @Binding var state: TorahToolSelectorStateMachine
+    @State private var fallbackContent = TorahSelectorFallbackContentInfo.zero
+    @State private var fallbackViewportHeight: CGFloat = 0
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -915,7 +960,32 @@ private struct TorahSelectorScrollObserver: ViewModifier {
             }
         } else {
             content
+                .background {
+                    GeometryReader { geometry in
+                        Color.clear.preference(
+                            key: TorahSelectorFallbackViewportPreferenceKey.self,
+                            value: geometry.size.height
+                        )
+                    }
+                }
+                .onPreferenceChange(TorahSelectorFallbackContentPreferenceKey.self) { info in
+                    fallbackContent = info
+                    updateFallbackState()
+                }
+                .onPreferenceChange(TorahSelectorFallbackViewportPreferenceKey.self) { height in
+                    fallbackViewportHeight = height
+                    updateFallbackState()
+                }
         }
+    }
+
+    private func updateFallbackState() {
+        guard fallbackContent.contentHeight > 0, fallbackViewportHeight > 0 else { return }
+        _ = state.update(
+            offset: fallbackContent.offset,
+            contentHeight: fallbackContent.contentHeight,
+            viewportHeight: fallbackViewportHeight
+        )
     }
 }
 
