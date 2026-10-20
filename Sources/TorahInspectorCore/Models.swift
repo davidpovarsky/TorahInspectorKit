@@ -211,20 +211,44 @@ public struct TorahLinkedSource: Identifiable, Hashable, Codable, Sendable {
 
     private static func inferRelationshipKind(category: String, type: String) -> TorahRelationshipKind {
         let tokens = "\(category) \(type)".lowercased()
-        if tokens.contains("quoting commentary") { return .quotingCommentary }
-        if tokens.contains("commentary") { return .commentary }
+        if tokens.contains("quoting commentary") || tokens.contains("ציטוט פירוש") { return .quotingCommentary }
+        if tokens.contains("commentary")
+            || tokens.contains("super_commentary")
+            || tokens.contains("parshanut")
+            || tokens.contains("dibur_hamatchil")
+            || tokens.contains("elucidation")
+            || tokens.contains("explication")
+            || tokens.contains("footnotes")
+            || tokens.contains("פירוש")
+            || tokens.contains("מפרש")
+            || tokens.contains("פרשנות")
+            || tokens.contains("ביאור") {
+            return .commentary
+        }
         return .link
     }
 
     private static func inferSemanticCategory(category: String, type: String) -> TorahSourceCategory {
         let tokens = "\(category) \(type)".lowercased()
-        if tokens.contains("quoting commentary") { return .quotingCommentary }
-        if tokens.contains("commentary") { return .commentary }
-        if tokens.contains("tanakh") { return .tanakh }
-        if tokens.contains("talmud") { return .talmud }
-        if tokens.contains("midrash") { return .midrash }
-        if tokens.contains("targum") { return .targum }
-        if tokens.contains("halakh") { return .halakhah }
+        if tokens.contains("quoting commentary") || tokens.contains("ציטוט פירוש") { return .quotingCommentary }
+        if tokens.contains("commentary")
+            || tokens.contains("super_commentary")
+            || tokens.contains("parshanut")
+            || tokens.contains("dibur_hamatchil")
+            || tokens.contains("elucidation")
+            || tokens.contains("explication")
+            || tokens.contains("footnotes")
+            || tokens.contains("פירוש")
+            || tokens.contains("מפרש")
+            || tokens.contains("פרשנות")
+            || tokens.contains("ביאור") {
+            return .commentary
+        }
+        if tokens.contains("tanakh") || tokens.contains("תנ״ך") || tokens.contains("תנ\"ך") || tokens.contains("תורה") || tokens.contains("נביאים") || tokens.contains("כתובים") { return .tanakh }
+        if tokens.contains("talmud") || tokens.contains("תלמוד") || tokens.contains("בבלי") || tokens.contains("ירושלמי") || tokens.contains("משנה") { return .talmud }
+        if tokens.contains("midrash") || tokens.contains("מדרש") { return .midrash }
+        if tokens.contains("targum") || tokens.contains("תרגום") { return .targum }
+        if tokens.contains("halakh") || tokens.contains("הלכה") || tokens.contains("שולחן ערוך") || tokens.contains("משנה תורה") { return .halakhah }
         return .other
     }
 }

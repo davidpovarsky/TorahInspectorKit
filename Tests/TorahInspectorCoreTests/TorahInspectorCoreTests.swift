@@ -397,3 +397,88 @@ struct SnippetHydrationTests {
     }
 }
 
+@Suite("Relationship classification & grouping")
+struct RelationshipClassificationTests {
+    @Test func infersCommentaryFromHebrewAndEnglishTokens() {
+        let hebrewComm = TorahLinkedSource(
+            sourceRef: "Rashi on Genesis 7:1",
+            category: "תנ״ך / פירושים",
+            type: "פירוש"
+        )
+        #expect(hebrewComm.relationshipKind == .commentary)
+        #expect(hebrewComm.semanticCategory == .commentary)
+
+        let parshanut = TorahLinkedSource(
+            sourceRef: "Ibn Ezra on Genesis 7:1",
+            category: "Commentary",
+            type: "PARSHANUT"
+        )
+        #expect(parshanut.relationshipKind == .commentary)
+        #expect(parshanut.semanticCategory == .commentary)
+
+        let superComm = TorahLinkedSource(
+            sourceRef: "Gur Aryeh on Rashi",
+            category: "Commentary",
+            type: "SUPER_COMMENTARY"
+        )
+        #expect(superComm.relationshipKind == .commentary)
+
+        let dh = TorahLinkedSource(
+            sourceRef: "Tosafot on Berakhot 2a",
+            category: "Commentary",
+            type: "DIBUR_HAMATCHIL"
+        )
+        #expect(dh.relationshipKind == .commentary)
+
+        let crossRef = TorahLinkedSource(
+            sourceRef: "Genesis 1:1",
+            category: "תנ״ך",
+            type: "REFERENCE"
+        )
+        #expect(crossRef.relationshipKind == .link)
+        #expect(crossRef.semanticCategory == .tanakh)
+
+        let targum = TorahLinkedSource(
+            sourceRef: "Targum Onkelos",
+            category: "Targum",
+            type: "TARGUM"
+        )
+        #expect(targum.relationshipKind == .link)
+        #expect(targum.semanticCategory == .targum)
+    }
+
+    @Test func relationshipGroupsPartitionsCommentariesAndLinksAccurately() {
+        let rashi = TorahLinkedSource(
+            sourceRef: "Rashi on Genesis 7:1",
+            category: "Commentary",
+            type: "COMMENTARY",
+            commentatorID: "author:rashi",
+            commentatorName: "רש״י",
+            relationshipKind: .commentary
+        )
+        let ramban = TorahLinkedSource(
+            sourceRef: "Ramban on Genesis 7:1",
+            category: "Commentary",
+            type: "PARSHANUT",
+            commentatorID: "author:ramban",
+            commentatorName: "רמב״ן",
+            relationshipKind: .commentary
+        )
+        let ref = TorahLinkedSource(
+            sourceRef: "Psalms 28:1",
+            category: "Tanakh",
+            type: "REFERENCE",
+            relationshipKind: .link,
+            semanticCategory: .tanakh
+        )
+
+        let groups = TorahRelationshipGroups(sources: [rashi, ramban, ref])
+        #expect(groups.commentary.count == 2)
+        #expect(groups.commentaryGroups.count == 2)
+        #expect(groups.linkedSources.count == 1)
+        #expect(groups.linkedSourceGroups.count == 1)
+        #expect(groups.commentary.count + groups.quotingCommentary.count + groups.linkedSources.count == 3)
+    }
+}
+
+
