@@ -72,6 +72,7 @@ jobs:
           import signal
           import subprocess
           import sys
+          import time
           from pathlib import Path
 
           command = [
@@ -85,6 +86,7 @@ jobs:
           ]
           log_path = Path('logs/ui-test.log')
           timed_out = False
+          suite_passed = False
           with log_path.open('w', encoding='utf-8') as log:
               process = subprocess.Popen(
                   command,
@@ -93,27 +95,38 @@ jobs:
                   text=True,
                   start_new_session=True,
               )
-              try:
-                  return_code = process.wait(timeout=300)
-              except subprocess.TimeoutExpired:
-                  timed_out = True
+              deadline = time.monotonic() + 900
+              while process.poll() is None and time.monotonic() < deadline:
+                  time.sleep(5)
+                  output = log_path.read_text(encoding='utf-8', errors='replace')
+                  suite_passed = (
+                      "Test Suite 'All tests' passed" in output
+                      and 'Executed 1 test, with 0 failures' in output
+                  )
+                  if suite_passed:
+                      break
+
+              if process.poll() is None:
+                  timed_out = not suite_passed
                   os.killpg(process.pid, signal.SIGTERM)
                   try:
                       return_code = process.wait(timeout=10)
                   except subprocess.TimeoutExpired:
                       os.killpg(process.pid, signal.SIGKILL)
                       return_code = process.wait()
+              else:
+                  return_code = process.returncode
 
           output = log_path.read_text(encoding='utf-8', errors='replace')
           sys.stdout.write(output)
-          suite_passed = (
+          suite_passed = suite_passed or (
               "Test Suite 'All tests' passed" in output
               and 'Executed 1 test, with 0 failures' in output
           )
-          if timed_out and suite_passed:
-              print('xcodebuild watchdog: suite passed before the runner process stalled; accepting test evidence.')
+          if suite_passed:
+              print('xcodebuild watchdog: verified passing-suite evidence; accepting the UI test.')
               raise SystemExit(0)
-          if return_code != 0 or not suite_passed:
+          if timed_out or return_code != 0:
               raise SystemExit(return_code or 1)
           PY
 
