@@ -228,7 +228,7 @@ private struct TorahInspectorSheetPeekView: View {
             HStack(alignment: .center, spacing: 10) {
                 configuration.theme.text(selection.relationshipRef, role: .heading)
                     .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button {
                     selectedDetent = .medium
@@ -269,7 +269,6 @@ private struct TorahInspectorSheetPeekView: View {
                 selectedTool = first
             }
         }
-        .accessibilityIdentifier("torah-inspector-peek")
     }
 }
 
