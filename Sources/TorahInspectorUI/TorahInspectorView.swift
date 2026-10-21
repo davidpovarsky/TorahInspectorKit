@@ -368,19 +368,29 @@ private struct _InspectorRelationshipsEntry: View {
                     hasFocus: focus != nil,
                     allowsInlineFullSourceNavigation: configuration.allowsInlineFullSourceNavigation
                 ) {
+                    #if os(iOS)
                     ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            path.append(.fullSource(selection))
-                        } label: {
-                            Image(systemName: "book.closed")
-                                .frame(width: 44, height: 44)
-                        }
-                        .accessibilityLabel(TorahStrings.text("Open full source", locale: locale))
-                        .accessibilityIdentifier("torah-inspector-open-full-source")
+                        fullSourceButton
                     }
+                    #else
+                    ToolbarItem(placement: .navigation) {
+                        fullSourceButton
+                    }
+                    #endif
                 }
             }
         }
+    }
+
+    private var fullSourceButton: some View {
+        Button {
+            path.append(.fullSource(selection))
+        } label: {
+            Image(systemName: "book.closed")
+                .frame(width: 44, height: 44)
+        }
+        .accessibilityLabel(TorahStrings.text("Open full source", locale: locale))
+        .accessibilityIdentifier("torah-inspector-open-full-source")
     }
 
     private func loadSegment() async {
