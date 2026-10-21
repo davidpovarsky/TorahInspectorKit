@@ -22,6 +22,27 @@ enum TorahInspectorPresentation {
         return prefersHebrew(locale) ? (hebrew ?? canonical) : canonical
     }
 
+    /// Resolves an immediately displayable route title without exposing the
+    /// canonical English identifier while a Hebrew document is still loading.
+    static func reference(
+        selection: TorahInspectorSelection,
+        loadedHebrewReference: String? = nil,
+        locale: Locale
+    ) -> String {
+        if prefersHebrew(locale) {
+            return firstNonempty(
+                selection.displayMetadata?.hebrew,
+                loadedHebrewReference,
+                TorahStrings.text("Source", locale: locale)
+            )
+        }
+        return firstNonempty(
+            selection.displayMetadata?.english,
+            selection.canonicalRef,
+            TorahStrings.text("Source", locale: locale)
+        )
+    }
+
     static func linkedText(_ source: TorahLinkedSource, locale: Locale) -> String? {
         let preferred = prefersHebrew(locale) ? source.hebrewText : source.englishText
         let fallback = prefersHebrew(locale) ? source.englishText : source.hebrewText
@@ -65,5 +86,11 @@ enum TorahInspectorPresentation {
             }
         }
         return .leftToRight
+    }
+
+    private static func firstNonempty(_ values: String?...) -> String {
+        values.lazy
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first { !$0.isEmpty } ?? ""
     }
 }

@@ -226,7 +226,10 @@ private struct TorahInspectorSheetPeekView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 10) {
-                configuration.theme.text(selection.relationshipRef, role: .heading)
+                configuration.theme.text(
+                    TorahInspectorPresentation.reference(selection: selection, locale: locale),
+                    role: .heading
+                )
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
 

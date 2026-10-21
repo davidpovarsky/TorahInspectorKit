@@ -362,6 +362,24 @@ private struct _InspectorRelationshipsEntry: View {
                 actions: actions
             ))
             .task(id: selection.id) { await loadSegment() }
+            .toolbar {
+                if TorahInspectorNavigationChrome.showsFullSourceButton(
+                    pathIsEmpty: path.isEmpty,
+                    hasFocus: focus != nil,
+                    allowsInlineFullSourceNavigation: configuration.allowsInlineFullSourceNavigation
+                ) {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            path.append(.fullSource(selection))
+                        } label: {
+                            Image(systemName: "book.closed")
+                                .frame(width: 44, height: 44)
+                        }
+                        .accessibilityLabel(TorahStrings.text("Open full source", locale: locale))
+                        .accessibilityIdentifier("torah-inspector-open-full-source")
+                    }
+                }
+            }
         }
     }
 
@@ -399,6 +417,16 @@ private struct _InspectorRelationshipsEntry: View {
         } catch {
             errorMessage = TorahStrings.message(for: error, locale: locale)
         }
+    }
+}
+
+enum TorahInspectorNavigationChrome {
+    static func showsFullSourceButton(
+        pathIsEmpty: Bool,
+        hasFocus: Bool,
+        allowsInlineFullSourceNavigation: Bool
+    ) -> Bool {
+        pathIsEmpty && hasFocus && allowsInlineFullSourceNavigation
     }
 }
 

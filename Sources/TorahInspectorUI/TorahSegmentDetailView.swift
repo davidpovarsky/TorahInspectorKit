@@ -10,25 +10,17 @@ public struct TorahSegmentDetailView: View {
     public let configuration: TorahInspectorConfiguration
     @Binding private var selectedTool: TorahStudyToolID
 
-    @State private var links: [TorahLinkedSource] = []
-    @State private var topics: [TorahLinkedTopic] = []
-    @State private var notes: [TorahInspectorNote] = []
-    @State private var relatedDocuments: TorahRelatedDocumentsSnapshot?
-    @State private var linksError: String?
-    @State private var topicsError: String?
-    @State private var notesError: String?
-    @State private var loadingLinks = true
-    @State private var loadingTopics = true
-    @State private var loadingNotes = true
-    @State private var loadingRelatedDocuments = true
-    @State private var relatedDocumentsError: String?
+    @State private var linksState = TorahPanelLoadState<TorahLinksSnapshot>.idle
+    @State private var topicsState = TorahPanelLoadState<[TorahLinkedTopic]>.idle
+    @State private var notesState = TorahPanelLoadState<[TorahInspectorNote]>.idle
+    @State private var relatedDocumentsState = TorahPanelLoadState<TorahRelatedDocumentsSnapshot>.idle
+    @State private var loadedFocusID: String?
     @State private var selectorState = TorahToolSelectorStateMachine()
     @State private var expandedSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
     @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
     @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedCommentaryGroupIDs: Set<TorahSourceGroup.ID> = []
-    @State private var cachedGroups: TorahRelationshipGroups?
     @Environment(\.locale) private var locale
 
     public init(
@@ -110,8 +102,21 @@ public struct TorahSegmentDetailView: View {
 
     private var selection: TorahInspectorSelection { focus.selection }
     private var providerID: String { selection.providerID }
-
-    private var groups: TorahRelationshipGroups { cachedGroups ?? TorahRelationshipGroups(sources: links) }
+    private var links: [TorahLinkedSource] { linksState.value?.sources ?? [] }
+    private var groups: TorahRelationshipGroups {
+        linksState.value?.groups ?? TorahRelationshipGroups(sources: [])
+    }
+    private var topics: [TorahLinkedTopic] { topicsState.value ?? [] }
+    private var notes: [TorahInspectorNote] { notesState.value ?? [] }
+    private var relatedDocuments: TorahRelatedDocumentsSnapshot? { relatedDocumentsState.value }
+    private var linksError: String? { linksState.errorMessage }
+    private var topicsError: String? { topicsState.errorMessage }
+    private var notesError: String? { notesState.errorMessage }
+    private var relatedDocumentsError: String? { relatedDocumentsState.errorMessage }
+    private var loadingLinks: Bool { linksState.isLoadingWithoutValue }
+    private var loadingTopics: Bool { topicsState.isLoadingWithoutValue }
+    private var loadingNotes: Bool { notesState.isLoadingWithoutValue }
+    private var loadingRelatedDocuments: Bool { relatedDocumentsState.isLoadingWithoutValue }
 
     @ViewBuilder
     public var body: some View {
@@ -135,78 +140,68 @@ public struct TorahSegmentDetailView: View {
 
     private var panelContent: some View {
         VStack(spacing: 0) {
-            panelHeader
-            Divider().opacity(0.45)
+            if selectorState.visibility == .visible {
+                toolSelector
+                Divider().opacity(0.45)
+            }
             toolContent
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-panel")
-        .task(id: focus.id) { await loadPanelData() }
+        .navigationTitle(segmentDisplayRef)
+        .torahInlineNavigationTitle()
+        .toolbar { detailToolbar }
+        .task(id: TorahPanelLoadTaskID(focusID: focus.id, tool: selectedTool)) {
+            prepareForCurrentFocus()
+            await loadSelectedTool()
+        }
         .onAppear { ensureValidSelectedTool() }
         .onChange(of: configuration.availableTools) { _, _ in ensureValidSelectedTool() }
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
-            Task { @MainActor in
-                await loadNotes()
-            }
-        }
-        .onChange(of: links) { _, newLinks in
-            if cachedGroups == nil {
-                cachedGroups = TorahRelationshipGroups(sources: newLinks)
+            if selectedTool == .notes {
+                Task { @MainActor in await loadNotes(force: true) }
+            } else {
+                notesState.reset()
             }
         }
     }
 
-    private var panelHeader: some View {
-        VStack(spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 12) {
-                configuration.theme.text(segmentDisplayRef, role: .heading)
-                    .lineLimit(1)
-                Spacer(minLength: 8)
-                if selectorState.visibility == .collapsed {
-                    Button {
-                        selectorState.revealManually()
-                    } label: {
-                        Image(systemName: "slider.horizontal.3")
-                            .frame(width: 44, height: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.text("Study Tools", locale: locale))
-                    .accessibilityIdentifier("torah-inspector-show-tools")
-                }
-                if configuration.allowsInlineFullSourceNavigation {
-                    NavigationLink(value: TorahInspectorRoute.fullSource(selection)) {
-                        Image(systemName: "book.closed")
-                            .frame(width: 44, height: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.text("Open full source", locale: locale))
-                    .accessibilityIdentifier("torah-inspector-open-full-source")
-                }
-                if actions.showsCloseButton, let onClose = actions.onClose {
-                    Button(action: onClose) {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.secondary)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(TorahStrings.text("Close", locale: locale))
-                    .accessibilityIdentifier("torah-inspector-close")
-                }
-            }
-
-            if selectorState.visibility == .visible {
-                Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
-                    ForEach(configuration.availableTools) { tool in
-                        Text(tool.localizedTitle(locale: locale)).tag(tool)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .accessibilityIdentifier("torah-inspector-tools")
+    private var toolSelector: some View {
+        Picker(TorahStrings.text("Study Tools", locale: locale), selection: $selectedTool) {
+            ForEach(configuration.availableTools) { tool in
+                Text(tool.localizedTitle(locale: locale)).tag(tool)
             }
         }
+        .pickerStyle(.segmented)
+        .accessibilityIdentifier("torah-inspector-tools")
         .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.vertical, 10)
+    }
+
+    @ToolbarContentBuilder
+    private var detailToolbar: some ToolbarContent {
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            if selectorState.visibility == .collapsed {
+                Button {
+                    selectorState.revealManually()
+                } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .frame(width: 44, height: 44)
+                }
+                .accessibilityLabel(TorahStrings.text("Study Tools", locale: locale))
+                .accessibilityIdentifier("torah-inspector-show-tools")
+            }
+            if actions.showsCloseButton, let onClose = actions.onClose {
+                Button(action: onClose) {
+                    Image(systemName: "xmark")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityLabel(TorahStrings.text("Close", locale: locale))
+                .accessibilityIdentifier("torah-inspector-close")
+            }
+        }
     }
 
     private var toolContent: some View {
@@ -250,7 +245,7 @@ public struct TorahSegmentDetailView: View {
         if loadingLinks {
             loadingRow
         } else if let linksError {
-            retryCard(linksError) { Task { await loadLinks() } }
+            retryCard(linksError) { Task { await loadLinks(force: true) } }
         } else if groups.commentaryGroups.isEmpty && groups.quotingCommentaryGroups.isEmpty {
             emptyRow(TorahStrings.text("No results", locale: locale))
         } else {
@@ -405,17 +400,23 @@ public struct TorahSegmentDetailView: View {
 
     @ViewBuilder
     private var linksContent: some View {
-        if loadingLinks {
+        if loadingLinks && links.isEmpty {
             loadingRow
-        } else if let linksError {
-            retryCard(linksError) { Task { await loadLinks() } }
-        } else if groups.linkedSources.isEmpty && topics.isEmpty && !loadingTopics {
-            emptyRow(TorahStrings.text("No results", locale: locale))
         } else {
+            if let linksError {
+                retryCard(linksError) { Task { await loadLinks(force: true) } }
+            }
             ForEach(groups.linkedSources) { source in
                 expandableSourceRow(source, commentary: false)
             }
             topicsContent
+            if groups.linkedSources.isEmpty,
+               topics.isEmpty,
+               !loadingTopics,
+               linksError == nil,
+               topicsError == nil {
+                emptyRow(TorahStrings.text("No results", locale: locale))
+            }
         }
     }
 
@@ -542,7 +543,11 @@ public struct TorahSegmentDetailView: View {
             providerID: providerID,
             canonicalRef: source.sourceRef,
             preferredSegmentRef: source.sourceRef,
-            scope: .segment
+            scope: .segment,
+            displayMetadata: TorahReferenceDisplayMetadata(
+                english: source.sourceRef,
+                hebrew: source.sourceHebrewRef
+            )
         )
     }
 
@@ -574,7 +579,7 @@ public struct TorahSegmentDetailView: View {
         if loadingTopics {
             loadingRow
         } else if let topicsError {
-            retryCard(topicsError) { Task { await loadTopics() } }
+            retryCard(topicsError) { Task { await loadTopics(force: true) } }
         } else if !topics.isEmpty {
             VStack(alignment: .leading, spacing: 9) {
                 Text(TorahStrings.text("Topics", locale: locale))
@@ -666,7 +671,7 @@ public struct TorahSegmentDetailView: View {
         if loadingRelatedDocuments {
             loadingRow
         } else if let relatedDocumentsError {
-            retryCard(relatedDocumentsError) { Task { await loadRelatedDocuments() } }
+            retryCard(relatedDocumentsError) { Task { await loadRelatedDocuments(force: true) } }
         } else if let snapshot = relatedDocuments {
             if snapshot.coverage != .spaceWide {
                 Label(
@@ -805,94 +810,135 @@ public struct TorahSegmentDetailView: View {
         return .leftToRight
     }
 
-    private func loadPanelData() async {
-        async let loadedLinks: Void = loadLinks()
-        async let loadedTopics: Void = loadTopics()
-        async let loadedNotes: Void = loadNotes()
-        async let loadedRelatedDocuments: Void = loadRelatedDocuments()
-        _ = await (loadedLinks, loadedTopics, loadedNotes, loadedRelatedDocuments)
+    @MainActor
+    private func prepareForCurrentFocus() {
+        guard loadedFocusID != focus.id else { return }
+        loadedFocusID = focus.id
+        linksState.reset()
+        topicsState.reset()
+        notesState.reset()
+        relatedDocumentsState.reset()
+        expandedSourceIDs.removeAll()
+        expandedSourceText.removeAll()
+        expandedSourceErrors.removeAll()
+        loadingSourceIDs.removeAll()
+        expandedCommentaryGroupIDs.removeAll()
+    }
+
+    private func loadSelectedTool() async {
+        switch TorahPanelLoadDemand.demand(for: selectedTool) {
+        case .links:
+            await loadLinks()
+        case .linksAndTopics:
+            async let loadedLinks: Void = loadLinks()
+            async let loadedTopics: Void = loadTopics()
+            _ = await (loadedLinks, loadedTopics)
+        case .notes:
+            await loadNotes()
+        case .relatedDocuments:
+            await loadRelatedDocuments()
+        case .none:
+            break
+        }
     }
 
     @MainActor
-    private func loadLinks() async {
-        loadingLinks = true
-        linksError = nil
+    private func loadLinks(force: Bool = false) async {
+        if !force, case .loaded = linksState { return }
+        let request = linksState.begin(focusID: focus.id)
         do {
             let fetched = try await repository.links(for: selection.relationshipRef, providerID: providerID)
-            let computedGroups: TorahRelationshipGroups
-            if fetched.isEmpty {
-                computedGroups = TorahRelationshipGroups(sources: [])
-            } else {
-                computedGroups = await Task.detached(priority: .userInitiated) {
-                    TorahRelationshipGroups(sources: fetched)
-                }.value
-            }
-            guard !Task.isCancelled else { return }
-            cachedGroups = computedGroups
-            links = fetched
+            try Task.checkCancellation()
+            let snapshot = TorahLinksSnapshot(
+                sources: fetched,
+                groups: TorahRelationshipGroups(sources: fetched)
+            )
+            try Task.checkCancellation()
+            linksState.publish(snapshot, for: request)
         } catch is CancellationError {
+            linksState.cancel(request)
         } catch {
-            linksError = TorahStrings.text("Could not load related sources", locale: locale)
+            linksState.fail(
+                TorahStrings.text("Could not load related sources", locale: locale),
+                for: request
+            )
         }
-        loadingLinks = false
     }
 
     @MainActor
-    private func loadTopics() async {
-        loadingTopics = true
-        topicsError = nil
+    private func loadTopics(force: Bool = false) async {
+        if !force, case .loaded = topicsState { return }
+        let request = topicsState.begin(focusID: focus.id)
         do {
-            topics = try await repository.topics(for: selection.relationshipRef, providerID: providerID)
+            let fetched = try await repository.topics(
+                for: selection.relationshipRef,
+                providerID: providerID
+            )
+            try Task.checkCancellation()
+            topicsState.publish(fetched, for: request)
         } catch is CancellationError {
+            topicsState.cancel(request)
         } catch {
-            topicsError = TorahStrings.text("Could not load related sources", locale: locale)
+            topicsState.fail(
+                TorahStrings.text("Could not load related sources", locale: locale),
+                for: request
+            )
         }
-        loadingTopics = false
     }
 
     @MainActor
-    private func loadNotes() async {
-        loadingNotes = true
-        notesError = nil
+    private func loadNotes(force: Bool = false) async {
+        if !force, case .loaded = notesState { return }
+        let request = notesState.begin(focusID: focus.id)
         do {
-            notes = try await repository.notes(for: selection)
+            let fetched = try await repository.notes(for: selection)
+            try Task.checkCancellation()
+            notesState.publish(fetched, for: request)
         } catch is CancellationError {
+            notesState.cancel(request)
         } catch {
-            notesError = TorahStrings.text("Could not load notes", locale: locale)
+            notesState.fail(
+                TorahStrings.text("Could not load notes", locale: locale),
+                for: request
+            )
         }
-        loadingNotes = false
     }
 
     @MainActor
     private func refreshNotes() async {
         repository.invalidateNotes(for: selection)
-        await loadNotes()
+        await loadNotes(force: true)
     }
 
     private func notesDidChange() {
         Task { @MainActor in
             repository.invalidateNotes(for: selection)
-            await loadNotes()
+            await loadNotes(force: true)
         }
     }
 
     @MainActor
-    private func loadRelatedDocuments() async {
-        loadingRelatedDocuments = true
-        relatedDocumentsError = nil
+    private func loadRelatedDocuments(force: Bool = false) async {
+        if !force, case .loaded = relatedDocumentsState { return }
+        let request = relatedDocumentsState.begin(focusID: focus.id)
         do {
-            relatedDocuments = try await repository.relatedDocuments(for: selection)
+            let fetched = try await repository.relatedDocuments(for: selection)
+            try Task.checkCancellation()
+            relatedDocumentsState.publish(fetched, for: request)
         } catch is CancellationError {
+            relatedDocumentsState.cancel(request)
         } catch {
-            relatedDocumentsError = TorahStrings.text("Could not load related documents", locale: locale)
+            relatedDocumentsState.fail(
+                TorahStrings.text("Could not load related documents", locale: locale),
+                for: request
+            )
         }
-        loadingRelatedDocuments = false
     }
 
     private func relatedDocumentsDidChange() {
         Task { @MainActor in
             repository.invalidateRelatedDocuments(for: selection)
-            await loadRelatedDocuments()
+            await loadRelatedDocuments(force: true)
         }
     }
 

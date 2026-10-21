@@ -124,6 +124,24 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahInspectorRoute.fullSource(sel1) == TorahInspectorRoute.fullSource(sel2))
     }
 
+    @Test func fullSourceButtonOccupiesOnlyTheRelationshipRootBackSlot() {
+        #expect(TorahInspectorNavigationChrome.showsFullSourceButton(
+            pathIsEmpty: true,
+            hasFocus: true,
+            allowsInlineFullSourceNavigation: true
+        ))
+        #expect(!TorahInspectorNavigationChrome.showsFullSourceButton(
+            pathIsEmpty: false,
+            hasFocus: true,
+            allowsInlineFullSourceNavigation: true
+        ))
+        #expect(!TorahInspectorNavigationChrome.showsFullSourceButton(
+            pathIsEmpty: true,
+            hasFocus: true,
+            allowsInlineFullSourceNavigation: false
+        ))
+    }
+
     @Test @MainActor func configurationKeepsLegacyAndAnytypeToolSetsDistinct() {
         #expect(TorahInspectorConfiguration.legacy.availableTools == [.commentaries, .links, .notes])
         #expect(!TorahInspectorConfiguration.legacy.allowsInlineFullSourceNavigation)
@@ -259,5 +277,62 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahInspectorPresentation.workTitle(work, locale: Locale(identifier: "en_US")) == "Rashi")
         #expect(TorahInspectorPresentation.layoutDirection(for: "בראשית") == .rightToLeft)
         #expect(TorahInspectorPresentation.layoutDirection(for: "Genesis") == .leftToRight)
+    }
+
+    @Test func routePresentationUsesStoredHebrewAndNeverFlashesCanonicalEnglish() {
+        let localized = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:5",
+            scope: .segment,
+            displayMetadata: TorahReferenceDisplayMetadata(
+                english: "Genesis 1:5",
+                hebrew: "בראשית א׳:ה׳"
+            )
+        )
+        let unresolved = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            scope: .section
+        )
+
+        #expect(TorahInspectorPresentation.reference(
+            selection: localized,
+            locale: Locale(identifier: "he_IL")
+        ) == "בראשית א׳:ה׳")
+        #expect(TorahInspectorPresentation.reference(
+            selection: localized,
+            locale: Locale(identifier: "en_US")
+        ) == "Genesis 1:5")
+        #expect(TorahInspectorPresentation.reference(
+            selection: unresolved,
+            locale: Locale(identifier: "he_IL")
+        ) == "מקור")
+    }
+
+    @Test func panelLoadStateRejectsStaleResultsAndCancellationCannotStayLoading() {
+        var state = TorahPanelLoadState<[Int]>.idle
+        let first = state.begin(focusID: "Genesis 1:1")
+        let second = state.begin(focusID: "Genesis 1:2")
+
+        state.publish([1], for: first)
+        #expect(state.value == nil)
+        #expect(state.isLoadingWithoutValue)
+
+        state.cancel(second)
+        #expect(state.value == nil)
+        #expect(!state.isLoadingWithoutValue)
+
+        let third = state.begin(focusID: "Genesis 1:2")
+        state.publish([2], for: third)
+        #expect(state.value == [2])
+        #expect(!state.isLoadingWithoutValue)
+    }
+
+    @Test func panelDemandNeverStartsUnselectedResources() {
+        #expect(TorahPanelLoadDemand.demand(for: .commentaries) == .links)
+        #expect(TorahPanelLoadDemand.demand(for: .links) == .linksAndTopics)
+        #expect(TorahPanelLoadDemand.demand(for: .notes) == .notes)
+        #expect(TorahPanelLoadDemand.demand(for: .relatedDocuments) == .relatedDocuments)
     }
 }

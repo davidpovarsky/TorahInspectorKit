@@ -249,6 +249,20 @@ public enum TorahInspectorSelectionScope: String, Hashable, Codable, Sendable {
     case segment
 }
 
+/// Localized presentation data supplied by the host at the moment a route is
+/// created. It is deliberately separate from canonical provider identity so
+/// adding or refreshing a label never changes navigation equality or cache
+/// keys.
+public struct TorahReferenceDisplayMetadata: Hashable, Sendable {
+    public let english: String?
+    public let hebrew: String?
+
+    public init(english: String? = nil, hebrew: String? = nil) {
+        self.english = english
+        self.hebrew = hebrew
+    }
+}
+
 public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
     public var id: String {
         "\(providerID):\(scope.rawValue):\(canonicalRef):\(preferredSegmentRef ?? "")"
@@ -259,23 +273,40 @@ public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
     /// An exact segment reference. It is never synthesized for section scope.
     public let preferredSegmentRef: String?
     public let scope: TorahInspectorSelectionScope
+    public let displayMetadata: TorahReferenceDisplayMetadata?
 
     public init(
         providerID: String,
         canonicalRef: String,
         preferredSegmentRef: String? = nil,
-        scope: TorahInspectorSelectionScope? = nil
+        scope: TorahInspectorSelectionScope? = nil,
+        displayMetadata: TorahReferenceDisplayMetadata? = nil
     ) {
         self.providerID = providerID
         self.canonicalRef = canonicalRef
         self.preferredSegmentRef = preferredSegmentRef
         self.scope = scope ?? (preferredSegmentRef == nil ? .section : .segment)
+        self.displayMetadata = displayMetadata
     }
 
     public var relationshipRef: String { preferredSegmentRef ?? canonicalRef }
 
     public func prefers(_ segment: TorahTextSegment) -> Bool {
         preferredSegmentRef == segment.canonicalRef
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.providerID == rhs.providerID
+            && lhs.canonicalRef == rhs.canonicalRef
+            && lhs.preferredSegmentRef == rhs.preferredSegmentRef
+            && lhs.scope == rhs.scope
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(providerID)
+        hasher.combine(canonicalRef)
+        hasher.combine(preferredSegmentRef)
+        hasher.combine(scope)
     }
 }
 

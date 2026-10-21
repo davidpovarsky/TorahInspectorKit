@@ -85,6 +85,36 @@ struct RepositoryBoundaryTests {
         #expect(fetchCount == 1)
     }
 
+    @Test @MainActor func relationshipCacheIsReusedWhenToolsSwitchBack() async throws {
+        let linksCount = Counter()
+        let topicsCount = Counter()
+        let repository = TorahInspectorRepository(
+            textFetcher: { reference, _ in makeDocument(reference: reference) },
+            linksFetcher: { _, _ in
+                await linksCount.increment()
+                return [TorahLinkedSource(
+                    sourceRef: "Rashi on Genesis 1:1",
+                    category: "Commentary",
+                    type: "commentary"
+                )]
+            },
+            topicsFetcher: { _, _ in
+                await topicsCount.increment()
+                return [TorahLinkedTopic(slug: "creation")]
+            }
+        )
+
+        _ = try await repository.links(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.topics(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.links(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.topics(for: "Genesis 1:1", providerID: "fixture")
+
+        let finalLinksCount = await linksCount.value()
+        let finalTopicsCount = await topicsCount.value()
+        #expect(finalLinksCount == 1)
+        #expect(finalTopicsCount == 1)
+    }
+
     @Test @MainActor func optionalNotesProviderDefaultsToEmptyAndSupportsRefresh() async throws {
         let selection = TorahInspectorSelection(
             providerID: "fixture",
@@ -313,6 +343,25 @@ struct InspectorIdentityTests {
         #expect(groups.commentaryGroups.map(\.id) == ["author:ibn-ezra", "author:ibn-caspi"])
     }
 
+    @Test func relationshipGroupingKeepsLargeProviderSnapshotsComplete() {
+        let sources = (0..<2_000).map { index in
+            TorahLinkedSource(
+                sourceRef: "Commentary \(index) on Genesis 1:1",
+                category: index.isMultiple(of: 4) ? "Tanakh" : "Commentary",
+                type: index.isMultiple(of: 4) ? "reference" : "commentary",
+                commentatorID: "author:\(index % 20)",
+                commentatorName: "Commentator \(index % 20)",
+                canonicalBookID: "book:\(index % 50)"
+            )
+        }
+
+        let groups = TorahRelationshipGroups(sources: sources)
+
+        #expect(groups.commentary.count == 1_500)
+        #expect(groups.linkedSources.count == 500)
+        #expect(groups.commentaryGroups.count == 15)
+    }
+
 #if canImport(UniformTypeIdentifiers)
     @Test func transferPayloadKeepsPinkhaUTTypeAndRoundTrips() throws {
         let transfer = TorahSourceTransfer(segment: makeDocument().segments[0], document: makeDocument())
@@ -363,6 +412,30 @@ struct ReaderNavigationStateTests {
         _ = next.onInitialLoadComplete(hasPrevious: true, hasNext: true, isUnderfilled: false)
         _ = next.onScrollOffsetChanged(offsetY: 399, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true)
         #expect(next.onScrollOffsetChanged(offsetY: 450, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true).shouldLoadNext)
+    }
+
+    @Test func localizedDisplayMetadataDoesNotChangeSelectionIdentity() {
+        let canonical = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:5",
+            scope: .segment
+        )
+        let localized = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:5",
+            scope: .segment,
+            displayMetadata: TorahReferenceDisplayMetadata(
+                english: "Genesis 1:5",
+                hebrew: "בראשית א׳:ה׳"
+            )
+        )
+
+        #expect(canonical == localized)
+        #expect(canonical.id == localized.id)
+        #expect(Set([canonical, localized]).count == 1)
+        #expect(localized.displayMetadata?.hebrew == "בראשית א׳:ה׳")
     }
 
 

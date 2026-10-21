@@ -165,7 +165,16 @@ public struct TorahSourceReaderView: View {
     }
 
     private var displayTitle: String {
-        guard let section = sections.first else { return selection.canonicalRef }
+        guard let section = sections.first else {
+            return TorahInspectorPresentation.reference(selection: selection, locale: locale)
+        }
+        if TorahInspectorPresentation.prefersHebrew(locale) {
+            return TorahInspectorPresentation.reference(
+                selection: selection,
+                loadedHebrewReference: section.hebrewSectionRef,
+                locale: locale
+            )
+        }
         return TorahInspectorPresentation.reference(
             canonical: section.sectionRef,
             hebrew: section.hebrewSectionRef,
