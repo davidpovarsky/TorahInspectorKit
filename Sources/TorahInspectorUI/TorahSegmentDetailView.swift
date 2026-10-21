@@ -180,27 +180,38 @@ public struct TorahSegmentDetailView: View {
 
     @ToolbarContentBuilder
     private var detailToolbar: some ToolbarContent {
+        #if os(iOS)
         ToolbarItemGroup(placement: .topBarTrailing) {
-            if selectorState.visibility == .collapsed {
-                Button {
-                    selectorState.revealManually()
-                } label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel(TorahStrings.text("Study Tools", locale: locale))
-                .accessibilityIdentifier("torah-inspector-show-tools")
+            detailToolbarButtons
+        }
+        #else
+        ToolbarItemGroup(placement: .primaryAction) {
+            detailToolbarButtons
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private var detailToolbarButtons: some View {
+        if selectorState.visibility == .collapsed {
+            Button {
+                selectorState.revealManually()
+            } label: {
+                Image(systemName: "slider.horizontal.3")
+                    .frame(width: 44, height: 44)
             }
-            if actions.showsCloseButton, let onClose = actions.onClose {
-                Button(action: onClose) {
-                    Image(systemName: "xmark")
-                        .foregroundStyle(.secondary)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .accessibilityLabel(TorahStrings.text("Close", locale: locale))
-                .accessibilityIdentifier("torah-inspector-close")
+            .accessibilityLabel(TorahStrings.text("Study Tools", locale: locale))
+            .accessibilityIdentifier("torah-inspector-show-tools")
+        }
+        if actions.showsCloseButton, let onClose = actions.onClose {
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
+            .accessibilityLabel(TorahStrings.text("Close", locale: locale))
+            .accessibilityIdentifier("torah-inspector-close")
         }
     }
 
