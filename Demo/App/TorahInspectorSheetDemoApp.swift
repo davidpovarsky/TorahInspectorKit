@@ -122,6 +122,7 @@ private struct TorahInspectorSheetDemoSearchDestination: View {
                 .padding(16)
 
             Button {
+                isFocused = false
                 navigation.navigateToFullSource(TorahInspectorSheetDemoFixture.searchedSelection)
             } label: {
                 HStack {
@@ -141,6 +142,7 @@ private struct TorahInspectorSheetDemoSearchDestination: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("demo-search-destination")
         .onAppear { isFocused = true }
+        .onDisappear { isFocused = false }
     }
 }
 

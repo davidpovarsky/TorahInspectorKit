@@ -58,14 +58,15 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
         field.typeText("בראשית")
         app.buttons["demo-search-result-b"].tap()
 
-        XCTAssertTrue(app.staticTexts["וְאֵלֶּה שְׁמוֹת בְּנֵי יִשְׂרָאֵל"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["שמות א׳"].waitForExistence(timeout: 5))
         app.navigationBars.buttons.element(boundBy: 0).tap()
 
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         XCTAssertEqual(field.value as? String, "בראשית")
         app.navigationBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(search.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃"].exists)
+        XCTAssertTrue(app.navigationBars["בראשית א׳"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
     }
 
     func testPeekSearchPromotesTheSameSheetBeforeShowingSearch() throws {
