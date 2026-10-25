@@ -379,14 +379,14 @@ private struct _InspectorSourceReaderEntry: View {
 
     private func requestSearch() {
         guard actions.search != nil else { return }
-        onSearchPresentationChanged(true)
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        onSearchPresentationChanged(true)
     }
 
     private func consumePendingSearchRequest() {
         guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
-        pendingSearchRequest.wrappedValue = false
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        pendingSearchRequest.wrappedValue = false
     }
 
     private func searchPathDidChange(
@@ -512,14 +512,14 @@ private struct _InspectorRelationshipsEntry: View {
 
     private func requestSearch() {
         guard actions.search != nil else { return }
-        onSearchPresentationChanged(true)
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        onSearchPresentationChanged(true)
     }
 
     private func consumePendingSearchRequest() {
         guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
-        pendingSearchRequest.wrappedValue = false
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        pendingSearchRequest.wrappedValue = false
     }
 
     private func searchPathDidChange(

@@ -221,9 +221,9 @@ private struct TorahInspectorSheetContent: View {
 
     private func requestSearchFromPeek() {
         guard actions.search != nil else { return }
-        searchPresentationChanged(true)
         pendingSearchRequest = true
         hasExpanded = true
+        searchPresentationChanged(true)
     }
 
     private func searchPresentationChanged(_ isPresented: Bool) {
