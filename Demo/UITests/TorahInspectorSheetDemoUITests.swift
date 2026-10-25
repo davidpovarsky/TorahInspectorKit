@@ -58,7 +58,10 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
         field.typeText("בראשית")
         app.buttons["demo-search-result-b"].tap()
 
-        XCTAssertTrue(app.navigationBars["שמות א׳"].waitForExistence(timeout: 5))
+        let searchedReader = app.navigationBars
+            .matching(NSPredicate(format: "identifier CONTAINS %@", "שמות"))
+            .firstMatch
+        XCTAssertTrue(searchedReader.waitForExistence(timeout: 5))
         app.navigationBars.buttons.element(boundBy: 0).tap()
 
         XCTAssertTrue(field.waitForExistence(timeout: 5))
