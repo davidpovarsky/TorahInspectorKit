@@ -138,6 +138,7 @@ private struct TorahInspectorSheetDemoSearchDestination: View {
 
             Spacer()
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("demo-search-destination")
         .onAppear { isFocused = true }
     }

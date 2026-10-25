@@ -53,7 +53,7 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
         search.tap()
 
         XCTAssertTrue(app.descendants(matching: .any)["demo-search-destination"].waitForExistence(timeout: 5))
-        let field = app.textFields["demo-search-field"]
+        let field = app.descendants(matching: .any)["demo-search-field"]
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         field.typeText("בראשית")
         app.buttons["demo-search-result-b"].tap()
@@ -80,6 +80,6 @@ final class TorahInspectorSheetDemoUITests: XCTestCase {
 
         XCTAssertTrue(app.descendants(matching: .any)["torah-inspector-sheet-large"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["demo-search-destination"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.textFields["demo-search-field"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["demo-search-field"].exists)
     }
 }
