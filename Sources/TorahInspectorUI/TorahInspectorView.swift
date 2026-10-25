@@ -22,6 +22,8 @@ public struct TorahInspectorView: View {
     private let configuration: TorahInspectorConfiguration
     private let externalSelectedTool: Binding<TorahStudyTool>?
     private let externalSelectedToolID: Binding<TorahStudyToolID>?
+    private let pendingSearchRequest: Binding<Bool>?
+    private let onSearchPresentationChanged: (Bool) -> Void
     @State private var localSelectedToolID: TorahStudyToolID = .commentaries
     @State private var readerSession = TorahReaderSessionState()
 
@@ -41,6 +43,8 @@ public struct TorahInspectorView: View {
         self.configuration = configuration
         self.externalSelectedTool = selectedTool
         self.externalSelectedToolID = nil
+        self.pendingSearchRequest = nil
+        self.onSearchPresentationChanged = { _ in }
         self.actions = actions
     }
 
@@ -60,6 +64,31 @@ public struct TorahInspectorView: View {
         self.configuration = configuration
         self.externalSelectedTool = nil
         self.externalSelectedToolID = selectedTool
+        self.pendingSearchRequest = nil
+        self.onSearchPresentationChanged = { _ in }
+        self.actions = actions
+    }
+
+    init(
+        repository: TorahInspectorRepository,
+        selection: TorahInspectorSelection,
+        entryMode: TorahInspectorEntryMode,
+        chrome: TorahInspectorChrome,
+        selectedTool: Binding<TorahStudyToolID>,
+        configuration: TorahInspectorConfiguration,
+        actions: TorahInspectorHostActions,
+        pendingSearchRequest: Binding<Bool>,
+        onSearchPresentationChanged: @escaping (Bool) -> Void
+    ) {
+        self.repository = repository
+        self.selection = selection
+        self.entryMode = entryMode
+        self.chrome = chrome
+        self.configuration = configuration
+        self.externalSelectedTool = nil
+        self.externalSelectedToolID = selectedTool
+        self.pendingSearchRequest = pendingSearchRequest
+        self.onSearchPresentationChanged = onSearchPresentationChanged
         self.actions = actions
     }
 
@@ -98,27 +127,36 @@ public struct TorahInspectorView: View {
     }
 
     public var body: some View {
-        switch entryMode {
-        case .sourceReader:
-            _InspectorSourceReaderEntry(
-                selection: selection,
-                repository: repository,
-                selectedTool: selectedToolBinding,
-                chrome: chrome,
-                configuration: configuration,
-                readerSession: readerSession,
-                actions: actions
-            )
-        case .relationships, .segmentRelationships:
-            _InspectorRelationshipsEntry(
-                selection: selection,
-                repository: repository,
-                selectedTool: selectedToolBinding,
-                chrome: chrome,
-                configuration: configuration,
-                readerSession: readerSession,
-                actions: actions
-            )
+        Group {
+            switch entryMode {
+            case .sourceReader:
+                _InspectorSourceReaderEntry(
+                    selection: selection,
+                    repository: repository,
+                    selectedTool: selectedToolBinding,
+                    chrome: chrome,
+                    configuration: configuration,
+                    readerSession: readerSession,
+                    pendingSearchRequest: pendingSearchRequest,
+                    onSearchPresentationChanged: onSearchPresentationChanged,
+                    actions: actions
+                )
+            case .relationships, .segmentRelationships:
+                _InspectorRelationshipsEntry(
+                    selection: selection,
+                    repository: repository,
+                    selectedTool: selectedToolBinding,
+                    chrome: chrome,
+                    configuration: configuration,
+                    readerSession: readerSession,
+                    pendingSearchRequest: pendingSearchRequest,
+                    onSearchPresentationChanged: onSearchPresentationChanged,
+                    actions: actions
+                )
+            }
+        }
+        .background {
+            TorahInspectorCloseKeyboardShortcut(onClose: actions.onClose)
         }
     }
 
@@ -154,10 +192,22 @@ private struct _InspectorNavigationDestinations: ViewModifier {
     let configuration: TorahInspectorConfiguration
     let readerSession: TorahReaderSessionState
     let actions: TorahInspectorHostActions
+    @Binding var path: [TorahInspectorRoute]
 
     func body(content: Content) -> some View {
         content.navigationDestination(for: TorahInspectorRoute.self) { route in
             switch route {
+            case .search:
+                if let search = actions.search {
+                    search.destination(navigation: TorahInspectorSearchNavigation { nextSelection in
+                        TorahInspectorSearchRouteCoordinator.navigateToFullSource(
+                            nextSelection,
+                            path: &path
+                        )
+                    })
+                    .navigationTitle(TorahStrings.text("Search Torah sources"))
+                    .torahInlineNavigationTitle()
+                }
             case .segment(let segment):
                 TorahSegmentDetailView(
                     focus: TorahInspectorFocus(
@@ -169,7 +219,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     selectedTool: $selectedTool,
                     chrome: chrome,
                     configuration: configuration,
-                    actions: actions
+                    actions: destinationActions
                 )
             case .source(let nextSelection):
                 _InspectorLinkedSourceEntry(
@@ -178,18 +228,35 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     selectedTool: $selectedTool,
                     chrome: chrome,
                     configuration: configuration,
-                    actions: actions
+                    actions: destinationActions
                 )
             case .fullSource(let nextSelection):
                 TorahSourceReaderView(
                     selection: nextSelection,
                     repository: repository,
-                    actions: actions,
+                    actions: destinationActions,
                     session: readerSession,
                     theme: configuration.theme
                 )
+                .modifier(_InspectorNavigationDestinations(
+                    selection: nextSelection,
+                    repository: repository,
+                    selectedTool: $selectedTool,
+                    chrome: chrome,
+                    configuration: configuration,
+                    readerSession: readerSession,
+                    actions: actions,
+                    path: $path
+                ))
             }
         }
+    }
+
+    private var destinationActions: TorahInspectorHostActions {
+        var destinationActions = actions
+        destinationActions.onRequestSearch = nil
+        destinationActions.showsCloseButton = false
+        return destinationActions
     }
 }
 
@@ -268,6 +335,8 @@ private struct _InspectorSourceReaderEntry: View {
     let chrome: TorahInspectorChrome
     let configuration: TorahInspectorConfiguration
     let readerSession: TorahReaderSessionState
+    let pendingSearchRequest: Binding<Bool>?
+    let onSearchPresentationChanged: (Bool) -> Void
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
 
@@ -276,7 +345,7 @@ private struct _InspectorSourceReaderEntry: View {
             TorahSourceReaderView(
                 selection: selection,
                 repository: repository,
-                actions: actions,
+                actions: rootActions,
                 session: readerSession,
                 theme: configuration.theme
             )
@@ -287,8 +356,45 @@ private struct _InspectorSourceReaderEntry: View {
                     chrome: chrome,
                     configuration: configuration,
                     readerSession: readerSession,
-                    actions: actions
+                    actions: actions,
+                    path: $path
                 ))
+        }
+        .onAppear(perform: consumePendingSearchRequest)
+        .onChange(of: pendingSearchRequest?.wrappedValue ?? false) { _, requested in
+            if requested { consumePendingSearchRequest() }
+        }
+        .onChange(of: path) { oldPath, newPath in
+            searchPathDidChange(from: oldPath, to: newPath)
+        }
+    }
+
+    private var rootActions: TorahInspectorHostActions {
+        var rootActions = actions
+        if actions.search != nil {
+            rootActions.onRequestSearch = requestSearch
+        }
+        return rootActions
+    }
+
+    private func requestSearch() {
+        guard actions.search != nil else { return }
+        onSearchPresentationChanged(true)
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+    }
+
+    private func consumePendingSearchRequest() {
+        guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
+        pendingSearchRequest.wrappedValue = false
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+    }
+
+    private func searchPathDidChange(
+        from oldPath: [TorahInspectorRoute],
+        to newPath: [TorahInspectorRoute]
+    ) {
+        if TorahInspectorSearchRouteCoordinator.didLeaveSearch(from: oldPath, to: newPath) {
+            onSearchPresentationChanged(false)
         }
     }
 }
@@ -304,6 +410,8 @@ private struct _InspectorRelationshipsEntry: View {
     let chrome: TorahInspectorChrome
     let configuration: TorahInspectorConfiguration
     let readerSession: TorahReaderSessionState
+    let pendingSearchRequest: Binding<Bool>?
+    let onSearchPresentationChanged: (Bool) -> Void
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
     @State private var focus: TorahInspectorFocus?
@@ -317,6 +425,8 @@ private struct _InspectorRelationshipsEntry: View {
         chrome: TorahInspectorChrome,
         configuration: TorahInspectorConfiguration,
         readerSession: TorahReaderSessionState,
+        pendingSearchRequest: Binding<Bool>?,
+        onSearchPresentationChanged: @escaping (Bool) -> Void,
         actions: TorahInspectorHostActions
     ) {
         self.selection = selection
@@ -325,6 +435,8 @@ private struct _InspectorRelationshipsEntry: View {
         self.chrome = chrome
         self.configuration = configuration
         self.readerSession = readerSession
+        self.pendingSearchRequest = pendingSearchRequest
+        self.onSearchPresentationChanged = onSearchPresentationChanged
         self.actions = actions
     }
 
@@ -338,7 +450,7 @@ private struct _InspectorRelationshipsEntry: View {
                         selectedTool: $selectedTool,
                         chrome: chrome,
                         configuration: configuration,
-                        actions: actions
+                        actions: rootActions
                     )
                 } else if let errorMessage {
                     ContentUnavailableView {
@@ -359,7 +471,8 @@ private struct _InspectorRelationshipsEntry: View {
                 chrome: chrome,
                 configuration: configuration,
                 readerSession: readerSession,
-                actions: actions
+                actions: actions,
+                path: $path
             ))
             .task(id: selection.id) { await loadSegment() }
             .toolbar {
@@ -379,6 +492,42 @@ private struct _InspectorRelationshipsEntry: View {
                     #endif
                 }
             }
+        }
+        .onAppear(perform: consumePendingSearchRequest)
+        .onChange(of: pendingSearchRequest?.wrappedValue ?? false) { _, requested in
+            if requested { consumePendingSearchRequest() }
+        }
+        .onChange(of: path) { oldPath, newPath in
+            searchPathDidChange(from: oldPath, to: newPath)
+        }
+    }
+
+    private var rootActions: TorahInspectorHostActions {
+        var rootActions = actions
+        if actions.search != nil {
+            rootActions.onRequestSearch = requestSearch
+        }
+        return rootActions
+    }
+
+    private func requestSearch() {
+        guard actions.search != nil else { return }
+        onSearchPresentationChanged(true)
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+    }
+
+    private func consumePendingSearchRequest() {
+        guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
+        pendingSearchRequest.wrappedValue = false
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+    }
+
+    private func searchPathDidChange(
+        from oldPath: [TorahInspectorRoute],
+        to newPath: [TorahInspectorRoute]
+    ) {
+        if TorahInspectorSearchRouteCoordinator.didLeaveSearch(from: oldPath, to: newPath) {
+            onSearchPresentationChanged(false)
         }
     }
 
@@ -427,6 +576,30 @@ private struct _InspectorRelationshipsEntry: View {
         } catch {
             errorMessage = TorahStrings.message(for: error, locale: locale)
         }
+    }
+}
+
+enum TorahInspectorSearchRouteCoordinator {
+    static func showSearch(path: inout [TorahInspectorRoute]) {
+        guard !path.contains(.search) else { return }
+        path.append(.search)
+    }
+
+    static func navigateToFullSource(
+        _ selection: TorahInspectorSelection,
+        path: inout [TorahInspectorRoute]
+    ) {
+        guard path.contains(.search) else { return }
+        let destination = TorahInspectorRoute.fullSource(selection)
+        guard path.last != destination else { return }
+        path.append(destination)
+    }
+
+    static func didLeaveSearch(
+        from oldPath: [TorahInspectorRoute],
+        to newPath: [TorahInspectorRoute]
+    ) -> Bool {
+        oldPath.contains(.search) && !newPath.contains(.search)
     }
 }
 

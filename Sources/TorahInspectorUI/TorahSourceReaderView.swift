@@ -151,10 +151,18 @@ public struct TorahSourceReaderView: View {
         .navigationTitle(displayTitle)
         .torahInlineNavigationTitle()
         .toolbar {
-            if let onClose = actions.onClose {
+            if actions.onRequestSearch != nil {
+                ToolbarItem {
+                    TorahInspectorSearchButton(
+                        actions: actions,
+                        accessibilityIdentifier: "torah-inspector-search-entry"
+                    )
+                }
+            } else if actions.showsCloseButton, let onClose = actions.onClose {
                 ToolbarItem {
                     Button(action: onClose) { Image(systemName: "xmark").foregroundStyle(.secondary) }
                         .accessibilityLabel(TorahStrings.text("Close", locale: locale))
+                        .accessibilityIdentifier("torah-inspector-close")
                 }
             }
         }

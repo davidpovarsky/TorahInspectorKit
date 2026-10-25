@@ -19,9 +19,14 @@ struct TorahInspectorSheetDemoView: View {
     @State private var selectedTool: TorahStudyTool = .commentaries
     @State private var selectedDetent: TorahInspectorSheetDetent
     @State private var status = "מוכן לקריאה"
+    private let searchEnabled: Bool
 
     private let repository = TorahInspectorRepository(
-        textFetcher: { _, _ in TorahInspectorSheetDemoFixture.document },
+        textFetcher: { reference, _ in
+            reference.hasPrefix("Exodus")
+                ? TorahInspectorSheetDemoFixture.searchedDocument
+                : TorahInspectorSheetDemoFixture.document
+        },
         linksFetcher: { _, _ in TorahInspectorSheetDemoFixture.links },
         topicsFetcher: { _, _ in TorahInspectorSheetDemoFixture.topics },
         notesFetcher: { _ in TorahInspectorSheetDemoFixture.notes }
@@ -39,6 +44,7 @@ struct TorahInspectorSheetDemoView: View {
         } else {
             detent = .medium
         }
+        searchEnabled = arguments.contains("--search-enabled")
         _selectedDetent = State(initialValue: detent)
     }
 
@@ -93,8 +99,47 @@ struct TorahInspectorSheetDemoView: View {
             onDeleteNote: { _, _, notesDidChange in
                 status = "הקישור להערה הוסר"
                 notesDidChange()
-            }
+            },
+            search: searchEnabled ? TorahInspectorSearchCapability { navigation in
+                TorahInspectorSheetDemoSearchDestination(navigation: navigation)
+            } : nil
         )
+    }
+}
+
+@MainActor
+private struct TorahInspectorSheetDemoSearchDestination: View {
+    let navigation: TorahInspectorSearchNavigation
+    @State private var query = ""
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            TextField("חיפוש מקורות", text: $query)
+                .textFieldStyle(.roundedBorder)
+                .focused($isFocused)
+                .accessibilityIdentifier("demo-search-field")
+                .padding(16)
+
+            Button {
+                navigation.navigateToFullSource(TorahInspectorSheetDemoFixture.searchedSelection)
+            } label: {
+                HStack {
+                    Text("שמות א׳")
+                    Spacer()
+                    Image(systemName: "book.closed")
+                }
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("demo-search-result-b")
+            .padding(.horizontal, 16)
+
+            Spacer()
+        }
+        .accessibilityIdentifier("demo-search-destination")
+        .onAppear { isFocused = true }
     }
 }
 
@@ -104,6 +149,17 @@ enum TorahInspectorSheetDemoFixture {
         canonicalRef: "Genesis 1",
         preferredSegmentRef: "Genesis 1:1",
         scope: .segment
+    )
+
+    static let searchedSelection = TorahInspectorSelection(
+        providerID: "sefaria",
+        canonicalRef: "Exodus 1",
+        preferredSegmentRef: "Exodus 1:1",
+        scope: .segment,
+        displayMetadata: TorahReferenceDisplayMetadata(
+            english: "Exodus 1:1",
+            hebrew: "שמות א׳:א׳"
+        )
     )
 
     static let document = TorahTextDocument(
@@ -136,6 +192,30 @@ enum TorahInspectorSheetDemoFixture {
             direction: "rtl"
         ),
         rawProviderPayload: "{\"source\":\"sefaria-demo\"}"
+    )
+
+    static let searchedDocument = TorahTextDocument(
+        providerID: "sefaria",
+        requestedRef: "Exodus 1",
+        canonicalRef: "Exodus 1",
+        hebrewRef: "שמות א׳",
+        sectionRef: "Exodus 1",
+        hebrewSectionRef: "שמות א׳",
+        segments: [
+            TorahTextSegment(
+                canonicalRef: "Exodus 1:1",
+                hebrewRef: "שמות א׳:א׳",
+                text: "וְאֵלֶּה שְׁמוֹת בְּנֵי יִשְׂרָאֵל",
+                ordinal: 1
+            )
+        ],
+        version: TorahTextVersionMetadata(
+            language: "he",
+            actualLanguage: "he",
+            versionTitle: "מקרא על פי המסורה",
+            license: "Public Domain",
+            direction: "rtl"
+        )
     )
 
     static let links = [

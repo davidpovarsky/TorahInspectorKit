@@ -179,19 +179,23 @@ private struct TorahInspectorSheetContent: View {
     let configuration: TorahInspectorConfiguration
     let actions: TorahInspectorHostActions
     @State private var hasExpanded = false
+    @State private var pendingSearchRequest = false
+    @State private var searchDetentState = TorahInspectorSearchDetentState()
 
     var body: some View {
         ZStack {
             if hasExpanded || selectedDetent != .peek {
                 TorahInspectorView(
-                repository: repository,
-                selection: selection,
-                entryMode: entryMode,
-                chrome: .embeddedSheet,
-                selectedTool: $selectedTool,
-                configuration: configuration,
-                actions: actions
-            )
+                    repository: repository,
+                    selection: selection,
+                    entryMode: entryMode,
+                    chrome: .embeddedSheet,
+                    selectedTool: $selectedTool,
+                    configuration: configuration,
+                    actions: actions,
+                    pendingSearchRequest: $pendingSearchRequest,
+                    onSearchPresentationChanged: searchPresentationChanged
+                )
                 .opacity(selectedDetent == .peek ? 0 : 1)
                 .allowsHitTesting(selectedDetent != .peek)
                 .accessibilityHidden(selectedDetent == .peek)
@@ -203,7 +207,8 @@ private struct TorahInspectorSheetContent: View {
                     selectedTool: $selectedTool,
                     selectedDetent: $selectedDetent,
                     configuration: configuration,
-                    actions: actions
+                    actions: actions,
+                    onSearch: requestSearchFromPeek
                 )
             }
         }
@@ -211,6 +216,21 @@ private struct TorahInspectorSheetContent: View {
         .accessibilityIdentifier("torah-inspector-sheet-\(selectedDetent.rawValue)")
         .onChange(of: selectedDetent) { _, detent in
             if detent != .peek { hasExpanded = true }
+        }
+    }
+
+    private func requestSearchFromPeek() {
+        guard actions.search != nil else { return }
+        searchPresentationChanged(true)
+        pendingSearchRequest = true
+        hasExpanded = true
+    }
+
+    private func searchPresentationChanged(_ isPresented: Bool) {
+        if isPresented {
+            selectedDetent = searchDetentState.beginSearch(from: selectedDetent)
+        } else if let restoredDetent = searchDetentState.endSearch() {
+            selectedDetent = restoredDetent
         }
     }
 }
@@ -221,6 +241,7 @@ private struct TorahInspectorSheetPeekView: View {
     @Binding var selectedDetent: TorahInspectorSheetDetent
     let configuration: TorahInspectorConfiguration
     let actions: TorahInspectorHostActions
+    let onSearch: () -> Void
     @Environment(\.locale) private var locale
 
     var body: some View {
@@ -243,7 +264,12 @@ private struct TorahInspectorSheetPeekView: View {
                 .accessibilityLabel(TorahStrings.text("Expand", locale: locale))
                 .accessibilityIdentifier("torah-inspector-expand-medium")
 
-                if let onClose = actions.onClose {
+                if actions.search != nil {
+                    TorahInspectorSearchButton(
+                        actions: peekSearchActions,
+                        accessibilityIdentifier: "torah-inspector-search-entry-peek"
+                    )
+                } else if let onClose = actions.onClose {
                     Button(action: onClose) {
                         Image(systemName: "xmark")
                             .frame(width: 44, height: 44)
@@ -272,6 +298,28 @@ private struct TorahInspectorSheetPeekView: View {
                 selectedTool = first
             }
         }
+    }
+
+    private var peekSearchActions: TorahInspectorHostActions {
+        var peekSearchActions = actions
+        peekSearchActions.onRequestSearch = onSearch
+        return peekSearchActions
+    }
+}
+
+struct TorahInspectorSearchDetentState: Equatable {
+    private(set) var previousDetent: TorahInspectorSheetDetent?
+
+    mutating func beginSearch(from currentDetent: TorahInspectorSheetDetent) -> TorahInspectorSheetDetent {
+        if previousDetent == nil {
+            previousDetent = currentDetent
+        }
+        return .large
+    }
+
+    mutating func endSearch() -> TorahInspectorSheetDetent? {
+        defer { previousDetent = nil }
+        return previousDetent
     }
 }
 

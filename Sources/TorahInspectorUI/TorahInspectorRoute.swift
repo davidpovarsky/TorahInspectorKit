@@ -2,6 +2,7 @@ import Foundation
 import TorahInspectorCore
 
 public enum TorahInspectorRoute: Hashable, Sendable {
+    case search
     case segment(TorahTextSegment)
     case source(TorahInspectorSelection)
     case fullSource(TorahInspectorSelection)

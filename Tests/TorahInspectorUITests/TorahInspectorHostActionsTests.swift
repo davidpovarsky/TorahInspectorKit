@@ -16,6 +16,8 @@ struct TorahInspectorHostActionsTests {
         #expect(actions.onDeleteNote == nil)
         #expect(actions.onOpenRelatedDocument == nil)
         #expect(actions.onUnlinkRelatedDocument == nil)
+        #expect(actions.search == nil)
+        #expect(actions.onRequestSearch == nil)
         #expect(!actions.showsCloseButton)
     }
 
@@ -27,6 +29,7 @@ struct TorahInspectorHostActionsTests {
         #expect(TorahStrings.text("Add Note", locale: Locale(identifier: "he_IL")) == "הוסף הערה")
         #expect(TorahStrings.text("Expand", locale: Locale(identifier: "he_IL")) == "הרחב")
         #expect(TorahStrings.text("Delete", locale: Locale(identifier: "he_IL")) == "מחק")
+        #expect(TorahStrings.text("Search Torah sources", locale: Locale(identifier: "he_IL")) == "חיפוש מקורות")
         #expect(TorahStrings.message(for: TorahError.noText, locale: Locale(identifier: "he_IL")) == "אין טקסט זמין למקור זה.")
     }
 
@@ -122,6 +125,63 @@ struct TorahInspectorHostActionsTests {
         let sel2 = TorahInspectorSelection(providerID: "p1", canonicalRef: "Gen 1")
         #expect(TorahInspectorRoute.source(sel1) == TorahInspectorRoute.source(sel2))
         #expect(TorahInspectorRoute.fullSource(sel1) == TorahInspectorRoute.fullSource(sel2))
+        #expect(TorahInspectorRoute.search == .search)
+    }
+
+    @Test func embeddedSearchUsesOneStackAndRejectsDuplicateRoutes() {
+        let sourceB = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
+        var path: [TorahInspectorRoute] = []
+
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
+        #expect(path == [.search])
+
+        TorahInspectorSearchRouteCoordinator.navigateToFullSource(sourceB, path: &path)
+        TorahInspectorSearchRouteCoordinator.navigateToFullSource(sourceB, path: &path)
+        #expect(path == [.search, .fullSource(sourceB)])
+
+        let sourcePath = path
+        path.removeLast()
+        #expect(path == [.search])
+        #expect(!TorahInspectorSearchRouteCoordinator.didLeaveSearch(from: sourcePath, to: path))
+
+        let searchPath = path
+        path.removeLast()
+        #expect(path.isEmpty)
+        #expect(TorahInspectorSearchRouteCoordinator.didLeaveSearch(from: searchPath, to: path))
+    }
+
+    @Test func fullSourceNavigationRequiresAnActiveSearchRoute() {
+        let source = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 2")
+        var path: [TorahInspectorRoute] = []
+        TorahInspectorSearchRouteCoordinator.navigateToFullSource(source, path: &path)
+        #expect(path.isEmpty)
+    }
+
+    @Test func searchDetentPromotionRestoresTheExactPriorDetent() {
+        for initial in TorahInspectorSheetDetent.allCases {
+            var state = TorahInspectorSearchDetentState()
+            #expect(state.beginSearch(from: initial) == .large)
+            #expect(state.beginSearch(from: .medium) == .large)
+            #expect(state.previousDetent == initial)
+            #expect(state.endSearch() == initial)
+            #expect(state.previousDetent == nil)
+        }
+    }
+
+    @Test @MainActor func optionalSearchCapabilityNavigatesOnlyWhenHostContentRequestsIt() {
+        var navigatedSelection: TorahInspectorSelection?
+        let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3")
+        let capability = TorahInspectorSearchCapability { navigation in
+            Button("Open") { navigation.navigateToFullSource(selection) }
+        }
+        let actions = TorahInspectorHostActions(search: capability)
+        #expect(actions.search != nil)
+        #expect(navigatedSelection == nil)
+
+        let navigation = TorahInspectorSearchNavigation { navigatedSelection = $0 }
+        navigation.navigateToFullSource(selection)
+        #expect(navigatedSelection == selection)
     }
 
     @Test func fullSourceButtonOccupiesOnlyTheRelationshipRootBackSlot() {
