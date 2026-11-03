@@ -7,6 +7,8 @@ public struct TorahSegmentDetailView: View {
     public let repository: TorahInspectorRepository
     public let actions: TorahInspectorHostActions
     public let chrome: TorahInspectorChrome
+    public var showsStudyToolsTitle: Bool
+    public var showsSelectedSegmentTitle: Bool
     @Binding private var selectedTool: TorahStudyTool
 
     @State private var links: [TorahLinkedSource] = []
@@ -35,12 +37,16 @@ public struct TorahSegmentDetailView: View {
         repository: TorahInspectorRepository,
         selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
         chrome: TorahInspectorChrome = .floatingPanel,
+        showsStudyToolsTitle: Bool = true,
+        showsSelectedSegmentTitle: Bool = true,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.focus = focus
         self.repository = repository
         self._selectedTool = selectedTool
         self.chrome = chrome
+        self.showsStudyToolsTitle = showsStudyToolsTitle
+        self.showsSelectedSegmentTitle = showsSelectedSegmentTitle
         self.actions = actions
     }
 
@@ -50,6 +56,8 @@ public struct TorahSegmentDetailView: View {
         repository: TorahInspectorRepository,
         selectedTool: Binding<TorahStudyTool> = .constant(.commentaries),
         chrome: TorahInspectorChrome = .floatingPanel,
+        showsStudyToolsTitle: Bool = true,
+        showsSelectedSegmentTitle: Bool = true,
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.init(
@@ -57,6 +65,8 @@ public struct TorahSegmentDetailView: View {
             repository: repository,
             selectedTool: selectedTool,
             chrome: chrome,
+            showsStudyToolsTitle: showsStudyToolsTitle,
+            showsSelectedSegmentTitle: showsSelectedSegmentTitle,
             actions: actions
         )
     }
@@ -111,8 +121,10 @@ public struct TorahSegmentDetailView: View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(TorahStrings.studyTools)
-                        .font(.title3.weight(.semibold))
+                    if showsStudyToolsTitle {
+                        Text(TorahStrings.studyTools)
+                            .font(.title3.weight(.semibold))
+                    }
                     Text(segmentDisplayRef)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -164,9 +176,11 @@ public struct TorahSegmentDetailView: View {
 
     private var selectedSegmentCard: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Text(TorahStrings.selectedSegment)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+            if showsSelectedSegmentTitle {
+                Text(TorahStrings.selectedSegment)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
             if let text = focus.text, !text.isEmpty {
                 Text(text)
                     .font(.subheadline)
