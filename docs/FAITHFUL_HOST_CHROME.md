@@ -5,3 +5,5 @@ Owner request: 2026-11-04 Codex chat, executing `ChavrusaText_Faithful_UI_Rebuil
 `TorahInspectorView` now accepts `presentationOptions`. Its defaults retain both visual headings and the original material, padding and border. The faithful ChavrusaText iPad host opts out of the redundant “Study Tools” and “Selected Segment” headings and the outer material wrapper. The selected text, reference, close action, tool picker, comments, links and notes remain the same views and callbacks. No new sheet, navigation manager, data storage or host-specific model is introduced.
 
 This branch is a separate additive API change. It does not change other consumers or their pins. Source parsing alone is not runtime evidence; package CI and consuming-app screenshots are required before publishing the new app pin.
+
+The existing manual package workflow uses the verified `xcode-27` runner for this branch. The first attempt on `macos-15` ended cancelled without a runner assignment or test steps (`41855537940`); that run provides no package verification. Workflow triggers are unchanged.
