@@ -29,6 +29,7 @@ public struct TorahSegmentDetailView: View {
     @State private var unavailableSnippetIDs: Set<TorahLinkedSource.ID> = []
     @State private var snippetErrors: [TorahLinkedSource.ID: String] = [:]
     @Environment(\.locale) private var locale
+    @Environment(\.torahInspectorPresentationOptions) private var presentationOptions
 
     public init(
         focus: TorahInspectorFocus,
@@ -68,21 +69,25 @@ public struct TorahSegmentDetailView: View {
 
     @ViewBuilder
     public var body: some View {
-        switch chrome {
-        case .embeddedSheet:
+        if presentationOptions.usesMinimalChrome {
             panelContent
-                .background(.regularMaterial)
-        case .floatingPanel:
-            panelContent
-                .background(.regularMaterial)
-                .compositingGroup()
-                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .strokeBorder(Color.primary.opacity(0.07), lineWidth: 1)
-                }
-                .shadow(color: .black.opacity(0.035), radius: 7, x: 0, y: 2)
-                .padding(8)
+        } else {
+            switch chrome {
+            case .embeddedSheet:
+                panelContent
+                    .background(.regularMaterial)
+            case .floatingPanel:
+                panelContent
+                    .background(.regularMaterial)
+                    .compositingGroup()
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .strokeBorder(Color.primary.opacity(0.07), lineWidth: 1)
+                    }
+                    .shadow(color: .black.opacity(0.035), radius: 7, x: 0, y: 2)
+                    .padding(8)
+            }
         }
     }
 
@@ -111,8 +116,10 @@ public struct TorahSegmentDetailView: View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(TorahStrings.studyTools)
-                        .font(.title3.weight(.semibold))
+                    if presentationOptions.showsStudyToolsTitle {
+                        Text(TorahStrings.studyTools)
+                            .font(.title3.weight(.semibold))
+                    }
                     Text(segmentDisplayRef)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -164,9 +171,11 @@ public struct TorahSegmentDetailView: View {
 
     private var selectedSegmentCard: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Text(TorahStrings.selectedSegment)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+            if presentationOptions.showsSelectedSegmentTitle {
+                Text(TorahStrings.selectedSegment)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
             if let text = focus.text, !text.isEmpty {
                 Text(text)
                     .font(.subheadline)

@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- Inspector outer material and redundant headings belong to the package, rather than the host's FloatingPanel. Opt-in `TorahInspectorPresentationOptions` keeps the same content/actions and default presentation for other hosts while allowing a host to trim that chrome. See `docs/FAITHFUL_HOST_CHROME.md`; visual acceptance is still required.
+
 Useful technical discoveries, undocumented behavior, shortcuts, implementation tricks, platform behavior, or reusable knowledge discovered while working.
 
 ## Experiments / Investigations

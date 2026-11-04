@@ -19,6 +19,7 @@ public struct TorahInspectorView: View {
     private let actions: TorahInspectorHostActions
     private let entryMode: TorahInspectorEntryMode
     private let chrome: TorahInspectorChrome
+    private let presentationOptions: TorahInspectorPresentationOptions
     private let externalSelectedTool: Binding<TorahStudyTool>?
     @State private var localSelectedTool: TorahStudyTool = .commentaries
 
@@ -28,6 +29,7 @@ public struct TorahInspectorView: View {
         entryMode: TorahInspectorEntryMode = .sourceReader,
         chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
+        presentationOptions: TorahInspectorPresentationOptions = .init(),
         actions: TorahInspectorHostActions = TorahInspectorHostActions()
     ) {
         self.repository = repository
@@ -35,6 +37,7 @@ public struct TorahInspectorView: View {
         self.entryMode = entryMode
         self.chrome = chrome
         self.externalSelectedTool = selectedTool
+        self.presentationOptions = presentationOptions
         self.actions = actions
     }
 
@@ -44,6 +47,7 @@ public struct TorahInspectorView: View {
         entryMode: TorahInspectorEntryMode = .sourceReader,
         chrome: TorahInspectorChrome = .floatingPanel,
         selectedTool: Binding<TorahStudyTool>? = nil,
+        presentationOptions: TorahInspectorPresentationOptions = .init(),
         onClose: (() -> Void)? = nil,
         onInsertSegment: ((TorahSourceTransfer) -> Void)? = nil,
         onOpenInNewTab: ((TorahInspectorSelection) -> Void)? = nil,
@@ -58,6 +62,7 @@ public struct TorahInspectorView: View {
             entryMode: entryMode,
             chrome: chrome,
             selectedTool: selectedTool,
+            presentationOptions: presentationOptions,
             actions: TorahInspectorHostActions(
                 onClose: onClose,
                 onInsertSegment: onInsertSegment,
@@ -71,24 +76,27 @@ public struct TorahInspectorView: View {
     }
 
     public var body: some View {
-        switch entryMode {
-        case .sourceReader:
-            _InspectorSourceReaderEntry(
-                selection: selection,
-                repository: repository,
-                selectedTool: selectedToolBinding,
-                chrome: chrome,
-                actions: actions
-            )
-        case .relationships, .segmentRelationships:
-            _InspectorRelationshipsEntry(
-                selection: selection,
-                repository: repository,
-                selectedTool: selectedToolBinding,
-                chrome: chrome,
-                actions: actions
-            )
+        Group {
+            switch entryMode {
+            case .sourceReader:
+                _InspectorSourceReaderEntry(
+                    selection: selection,
+                    repository: repository,
+                    selectedTool: selectedToolBinding,
+                    chrome: chrome,
+                    actions: actions
+                )
+            case .relationships, .segmentRelationships:
+                _InspectorRelationshipsEntry(
+                    selection: selection,
+                    repository: repository,
+                    selectedTool: selectedToolBinding,
+                    chrome: chrome,
+                    actions: actions
+                )
+            }
         }
+        .environment(\.torahInspectorPresentationOptions, presentationOptions)
     }
 
     private var selectedToolBinding: Binding<TorahStudyTool> {
