@@ -45,3 +45,16 @@
 "Could not load related documents" = "Could not load related documents";
 "Unlink" = "Unlink";
 "Source" = "Source";
+
+"Add note to source" = "Add note to source";
+"Indexed documents in this Space; results may be incomplete" = "Indexed documents in this Space; results may be incomplete.";
+"Block links are not included" = "Links attached to blocks are not included.";
+"Source quotes are not included" = "Source quotes are not included.";
+"Index freshness is unverified" = "Index freshness is unverified.";
+"Some results were omitted due to the result limit" = "Some results were omitted due to the result limit.";
+"Some indexed results could not be verified" = "Some indexed results could not be verified.";
+"No matches in available results" = "No matches in the available results";
+"No related documents" = "No related documents";
+"Unlink source" = "Unlink source";
+"Showing previous results; refresh failed" = "Showing previous results; refresh failed.";
+"Refreshing related documents" = "Refreshing related documents";

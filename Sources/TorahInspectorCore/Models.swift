@@ -369,6 +369,13 @@ public struct TorahRelatedDocument: Identifiable, Hashable, Sendable {
     public let snippet: String?
     public let sourceReference: String
     public let kind: TorahRelatedDocumentKind
+    public let blockID: String?
+    public let typeID: String?
+    public let iconEmoji: String?
+    public let iconName: String?
+    public let iconImageID: String?
+    public let updatedAt: Date?
+    public let canUnlink: Bool
 
     public init(
         id: String,
@@ -377,7 +384,14 @@ public struct TorahRelatedDocument: Identifiable, Hashable, Sendable {
         title: String,
         snippet: String? = nil,
         sourceReference: String,
-        kind: TorahRelatedDocumentKind = .document
+        kind: TorahRelatedDocumentKind = .document,
+        blockID: String? = nil,
+        typeID: String? = nil,
+        iconEmoji: String? = nil,
+        iconName: String? = nil,
+        iconImageID: String? = nil,
+        updatedAt: Date? = nil,
+        canUnlink: Bool = true
     ) {
         self.id = id
         self.spaceID = spaceID
@@ -386,24 +400,43 @@ public struct TorahRelatedDocument: Identifiable, Hashable, Sendable {
         self.snippet = snippet
         self.sourceReference = sourceReference
         self.kind = kind
+        self.blockID = blockID
+        self.typeID = typeID
+        self.iconEmoji = iconEmoji
+        self.iconName = iconName
+        self.iconImageID = iconImageID
+        self.updatedAt = updatedAt
+        self.canUnlink = canUnlink
     }
 }
 
 public enum TorahRelatedDocumentsCoverage: String, Hashable, Codable, Sendable {
     case spaceWide
     case currentDocumentOnly
+    case indexedDocumentsOnly
+}
+
+public enum TorahRelatedDocumentsLimitation: String, Hashable, Codable, Sendable {
+    case blockAssociationsNotIndexed
+    case sourceQuotesNotIndexed
+    case indexFreshnessUnverified
+    case resultLimitReached
+    case staleCandidates
 }
 
 public struct TorahRelatedDocumentsSnapshot: Equatable, Sendable {
     public let documents: [TorahRelatedDocument]
     public let coverage: TorahRelatedDocumentsCoverage
+    public let limitations: [TorahRelatedDocumentsLimitation]
 
     public init(
         documents: [TorahRelatedDocument],
-        coverage: TorahRelatedDocumentsCoverage
+        coverage: TorahRelatedDocumentsCoverage,
+        limitations: [TorahRelatedDocumentsLimitation] = []
     ) {
         self.documents = documents
         self.coverage = coverage
+        self.limitations = limitations
     }
 
     public static let unavailable = TorahRelatedDocumentsSnapshot(

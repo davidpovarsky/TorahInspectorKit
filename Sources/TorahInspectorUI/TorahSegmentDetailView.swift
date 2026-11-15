@@ -673,69 +673,96 @@ public struct TorahSegmentDetailView: View {
     @ViewBuilder
     private var relatedDocumentsContent: some View {
         if let onAddNote = actions.onAddNote {
-            Button {
-                onAddNote(selection, relatedDocumentsDidChange)
-            } label: {
-                Label(TorahStrings.text("Add Note", locale: locale), systemImage: "plus")
-                    .font(.body.weight(.medium))
-                    .frame(maxWidth: .infinity)
+            Button { onAddNote(selection, relatedDocumentsDidChange) } label: {
+                Label(TorahStrings.text("Add note to source", locale: locale), systemImage: "plus")
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(.bordered)
             .accessibilityIdentifier("torah-inspector-related-add-note")
         }
         if loadingRelatedDocuments {
             loadingRow
-        } else if let relatedDocumentsError {
-            retryCard(relatedDocumentsError) { Task { await loadRelatedDocuments(force: true) } }
-        } else if let snapshot = relatedDocuments {
-            if snapshot.coverage != .spaceWide {
-                Label(
-                    TorahStrings.text("Space-wide backlinks are unavailable", locale: locale),
-                    systemImage: "info.circle"
-                )
-                .font(.caption)
-                .foregroundStyle(configuration.theme.secondaryText)
-                .padding(12)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(configuration.theme.elevatedSurface)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .accessibilityIdentifier("torah-inspector-related-documents-unavailable")
+        } else {
+            if let relatedDocumentsError {
+                retryCard(relatedDocumentsError) { Task { await loadRelatedDocuments(force: true) } }
             }
-            if snapshot.documents.isEmpty {
-                emptyRow(TorahStrings.text("No current-document links", locale: locale))
-            } else {
-                ForEach(snapshot.documents) { document in
-                    Button {
-                        actions.onOpenRelatedDocument?(document)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 5) {
-                            configuration.theme.text(document.title, role: .body)
-                            if let snippet = document.snippet, !snippet.isEmpty {
-                                configuration.theme.text(snippet, role: .caption)
-                                    .foregroundStyle(configuration.theme.secondaryText)
-                                    .lineLimit(2)
+            if let snapshot = relatedDocuments {
+                if relatedDocumentsError != nil {
+                    relatedCoverageNotice("Showing previous results; refresh failed")
+                }
+                if case .loading = relatedDocumentsState {
+                    ProgressView().accessibilityLabel(TorahStrings.text("Refreshing related documents", locale: locale))
+                }
+                if snapshot.coverage == .currentDocumentOnly {
+                    relatedCoverageNotice("Space-wide backlinks are unavailable")
+                } else if snapshot.coverage == .indexedDocumentsOnly {
+                    relatedCoverageNotice("Indexed documents in this Space; results may be incomplete")
+                }
+                ForEach(relatedLimitationKeys(snapshot.limitations), id: \.self) { key in
+                    relatedCoverageNotice(key)
+                }
+                if snapshot.documents.isEmpty {
+                    let partial = snapshot.coverage != .spaceWide || !snapshot.limitations.isEmpty
+                    emptyRow(TorahStrings.text(partial ? "No matches in available results" : "No related documents", locale: locale))
+                } else {
+                    ForEach(snapshot.documents) { document in
+                        Button { actions.onOpenRelatedDocument?(document) } label: {
+                            HStack(alignment: .top, spacing: 10) {
+                                if let emoji = document.iconEmoji, !emoji.isEmpty {
+                                    Text(emoji).accessibilityHidden(true)
+                                } else {
+                                    Image(systemName: document.iconName ?? (document.kind == .note ? "note.text" : "doc.text"))
+                                        .accessibilityHidden(true)
+                                }
+                                VStack(alignment: .leading, spacing: 4) {
+                                    configuration.theme.text(document.title, role: .body)
+                                    if let snippet = document.snippet, !snippet.isEmpty {
+                                        configuration.theme.text(snippet, role: .caption)
+                                            .foregroundStyle(configuration.theme.secondaryText).lineLimit(2)
+                                    }
+                                    if let date = document.updatedAt {
+                                        Text(date, style: .date).font(.caption)
+                                            .foregroundStyle(configuration.theme.secondaryText)
+                                    }
+                                }
+                                Spacer(minLength: 0)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(13)
+                            .background(configuration.theme.elevatedSurface)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(13)
-                        .background(configuration.theme.elevatedSurface)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(actions.onOpenRelatedDocument == nil)
-                    .contextMenu {
-                        if let onUnlink = actions.onUnlinkRelatedDocument {
-                            Button(role: .destructive) {
-                                onUnlink(document, selection, relatedDocumentsDidChange)
-                            } label: {
-                                Label(TorahStrings.text("Unlink", locale: locale), systemImage: "link.badge.minus")
+                        .buttonStyle(.plain)
+                        .disabled(actions.onOpenRelatedDocument == nil)
+                        .contextMenu {
+                            if document.canUnlink, let onUnlink = actions.onUnlinkRelatedDocument {
+                                Button(role: .destructive) {
+                                    onUnlink(document, selection, relatedDocumentsDidChange)
+                                } label: {
+                                    Label(TorahStrings.text("Unlink source", locale: locale), systemImage: "link.badge.minus")
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private func relatedCoverageNotice(_ key: String) -> some View {
+        Label(TorahStrings.text(key, locale: locale), systemImage: "info.circle")
+            .font(.caption).foregroundStyle(configuration.theme.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityIdentifier("torah-inspector-related-documents-unavailable")
+    }
+
+    private func relatedLimitationKeys(_ reasons: [TorahRelatedDocumentsLimitation]) -> [String] {
+        var keys: [String] = []
+        if reasons.contains(.blockAssociationsNotIndexed) { keys.append("Block links are not included") }
+        if reasons.contains(.sourceQuotesNotIndexed) { keys.append("Source quotes are not included") }
+        if reasons.contains(.indexFreshnessUnverified) { keys.append("Index freshness is unverified") }
+        if reasons.contains(.resultLimitReached) { keys.append("Some results were omitted due to the result limit") }
+        if reasons.contains(.staleCandidates) { keys.append("Some indexed results could not be verified") }
+        return keys
     }
 
     private func noteRow(_ note: TorahInspectorNote) -> some View {
@@ -852,7 +879,7 @@ public struct TorahSegmentDetailView: View {
         case .notes:
             await loadNotes()
         case .relatedDocuments:
-            await loadRelatedDocuments()
+            await loadRelatedDocuments(force: true)
         case .none:
             break
         }
@@ -938,7 +965,7 @@ public struct TorahSegmentDetailView: View {
         if !force, case .loaded = relatedDocumentsState { return }
         let request = relatedDocumentsState.begin(focusID: focus.id)
         do {
-            let fetched = try await repository.relatedDocuments(for: selection)
+            let fetched = try await repository.relatedDocuments(for: selection, forceRefresh: force)
             try Task.checkCancellation()
             relatedDocumentsState.publish(fetched, for: request)
         } catch is CancellationError {

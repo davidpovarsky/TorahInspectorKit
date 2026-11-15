@@ -45,3 +45,16 @@
 "Could not load related documents" = "לא ניתן לטעון מסמכים קשורים";
 "Unlink" = "בטל קישור";
 "Source" = "מקור";
+
+"Add note to source" = "הוסף הערה למקור";
+"Indexed documents in this Space; results may be incomplete" = "מסמכים מאונדקסים במרחב הזה; התוצאות עשויות להיות חלקיות.";
+"Block links are not included" = "קישורים המשויכים לבלוקים אינם כלולים.";
+"Source quotes are not included" = "ציטוטי מקור אינם כלולים.";
+"Index freshness is unverified" = "עדכניות האינדקס לא אומתה.";
+"Some results were omitted due to the result limit" = "חלק מהתוצאות הושמטו בגלל מגבלת התוצאות.";
+"Some indexed results could not be verified" = "לא ניתן היה לאמת חלק מהתוצאות המאונדקסות.";
+"No matches in available results" = "לא נמצאו התאמות בתוצאות הזמינות";
+"No related documents" = "אין מסמכים קשורים";
+"Unlink source" = "הסר קישור למקור";
+"Showing previous results; refresh failed" = "מוצגות תוצאות קודמות; הרענון נכשל.";
+"Refreshing related documents" = "מרענן מסמכים קשורים";

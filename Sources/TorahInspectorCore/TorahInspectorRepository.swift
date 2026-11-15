@@ -29,7 +29,8 @@ public final class TorahInspectorRepository {
     private var notesCache: [String: [TorahInspectorNote]] = [:]
     private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
     private var relatedDocumentsCache: [String: TorahRelatedDocumentsSnapshot] = [:]
-    private var inFlightRelatedDocuments: [String: Task<TorahRelatedDocumentsSnapshot, Error>] = [:]
+    private var relatedDocumentsGeneration: [String: UUID] = [:]
+    private var inFlightRelatedDocuments: [String: (id: UUID, task: Task<TorahRelatedDocumentsSnapshot, Error>)] = [:]
 
     public init(
         documentCapacity: Int = 30,
@@ -221,21 +222,34 @@ public final class TorahInspectorRepository {
     }
 
     public func relatedDocuments(
-        for selection: TorahInspectorSelection
+        for selection: TorahInspectorSelection,
+        forceRefresh: Bool = false
     ) async throws -> TorahRelatedDocumentsSnapshot {
         let key = selection.id
+        if forceRefresh { invalidateRelatedDocuments(for: selection) }
         if let cached = relatedDocumentsCache[key] { return cached }
-        if let inFlight = inFlightRelatedDocuments[key] { return try await inFlight.value }
-        let fetcher = relatedDocumentsFetcher
-        let task = Task<TorahRelatedDocumentsSnapshot, Error> { try await fetcher(selection) }
-        inFlightRelatedDocuments[key] = task
+        let flight: (id: UUID, task: Task<TorahRelatedDocumentsSnapshot, Error>)
+        if let existing = inFlightRelatedDocuments[key] {
+            flight = existing
+        } else {
+            let fetcher = relatedDocumentsFetcher
+            flight = (UUID(), Task { try await fetcher(selection) })
+            inFlightRelatedDocuments[key] = flight
+            relatedDocumentsGeneration[key] = flight.id
+        }
         do {
-            let snapshot = try await task.value
-            inFlightRelatedDocuments.removeValue(forKey: key)
-            relatedDocumentsCache[key] = snapshot
+            let snapshot = try await flight.task.value
+            guard relatedDocumentsGeneration[key] == flight.id else { throw CancellationError() }
+            if inFlightRelatedDocuments[key]?.id == flight.id {
+                inFlightRelatedDocuments.removeValue(forKey: key)
+                relatedDocumentsCache[key] = snapshot
+            }
+            try Task.checkCancellation()
             return snapshot
         } catch {
-            inFlightRelatedDocuments.removeValue(forKey: key)
+            if inFlightRelatedDocuments[key]?.id == flight.id {
+                inFlightRelatedDocuments.removeValue(forKey: key)
+            }
             throw error
         }
     }
@@ -243,10 +257,12 @@ public final class TorahInspectorRepository {
     public func invalidateRelatedDocuments(for selection: TorahInspectorSelection? = nil) {
         if let selection {
             relatedDocumentsCache.removeValue(forKey: selection.id)
-            inFlightRelatedDocuments.removeValue(forKey: selection.id)?.cancel()
+            relatedDocumentsGeneration.removeValue(forKey: selection.id)
+            inFlightRelatedDocuments.removeValue(forKey: selection.id)?.task.cancel()
         } else {
             relatedDocumentsCache.removeAll()
-            for task in inFlightRelatedDocuments.values { task.cancel() }
+            relatedDocumentsGeneration.removeAll()
+            for flight in inFlightRelatedDocuments.values { flight.task.cancel() }
             inFlightRelatedDocuments.removeAll()
         }
     }
