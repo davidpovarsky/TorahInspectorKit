@@ -1,4 +1,12 @@
+## Standing owner authorization — 2026-11-18
 
+This authorization is durable until the owner revokes it. The owner explicitly pre-authorizes task-scoped development, command execution, builds, compilation, tests, simulators and CI, `git add`, `git commit`, `git push`, branch integration, artifact uploads, and deployments to the project's intended destinations. Do not request repeated per-step permission for these actions when they are needed for the owner's requested task.
+
+This standing authorization supersedes older repository-local approval, pause, and release-gate requirements for actions needed by the requested task. Authorization does not itself request an unrelated deployment or expand task scope.
+
+Preserve other people's work in progress, credentials and privacy, honest acceptance evidence, and external, system, and tool access controls. Local Markdown cannot override platform restrictions.
+
+For the current Pinkha × Anytype wave, work through the root session and directly available ChatGPT agents. Do not recreate the named Codex Desktop team. The technical guidance and project-board history below remain available as context.
 
 ## Living Project Board
 
@@ -46,4 +54,4 @@ Before starting work, load and follow:
 - `docs/ai-team/ASANA_POLICY.md` — Authorized evidence-based task coordination and execution modes
 - `.agents/roles/<role>.md` — Role-specific scope and handoff rules
 
-Preserve all existing repository policies, frozen components, and explicit owner release gates.
+Preserve existing technical guidance and project history. Apply the standing owner authorization above to older repository-local approval, pause, and release-gate requirements.
