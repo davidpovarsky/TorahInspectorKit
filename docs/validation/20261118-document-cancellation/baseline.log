@@ -1,0 +1,56 @@
+Building for debugging...
+[0/13] Write swift-version-2807070033DA82CF.txt
+[1/13] Write sources
+[4/14] Emitting module TorahInspectorCore
+[5/21] Compiling TorahInspectorCore Models.swift
+[6/21] Compiling TorahInspectorCore ProviderProtocols.swift
+[7/21] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[8/21] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[9/21] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[10/21] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[11/21] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[12/22] Wrapping AST for TorahInspectorCore for debugging
+[14/23] Emitting module TorahInspectorCoreTests
+[15/24] Compiling TorahInspectorCoreTests DocumentConsumerCancellationTests.swift
+[16/25] C:\Users\DAVID\Code\TorahInspectorKit-chatgpt-ui-20261118\.build\portable-document-cancellation\.build\x86_64-unknown-windows-msvc\debug\TorahInspectorDocumentCancellationProofPackageDiscoveredTests.derived\all-discovered-tests.swift
+[17/25] Wrapping AST for TorahInspectorCoreTests for debugging
+[18/25] Write sources
+[20/26] Emitting module TorahInspectorDocumentCancellationProofPackageDiscoveredTests
+[21/28] Compiling TorahInspectorDocumentCancellationProofPackageDiscoveredTests TorahInspectorCoreTests.swift
+[22/28] Compiling TorahInspectorDocumentCancellationProofPackageDiscoveredTests all-discovered-tests.swift
+[23/29] Wrapping AST for TorahInspectorDocumentCancellationProofPackageDiscoveredTests for debugging
+[24/29] C:\Users\DAVID\Code\TorahInspectorKit-chatgpt-ui-20261118\.build\portable-document-cancellation\.build\x86_64-unknown-windows-msvc\debug\TorahInspectorDocumentCancellationProofPackageTests.derived\runner.swift
+[25/29] Write sources
+[27/30] Emitting module TorahInspectorDocumentCancellationProofPackageTests
+[28/31] Compiling TorahInspectorDocumentCancellationProofPackageTests runner.swift
+[29/32] Wrapping AST for TorahInspectorDocumentCancellationProofPackageTests for debugging
+[30/32] Write Objects.LinkFileList
+[31/32] Linking TorahInspectorDocumentCancellationProofPackageTests.xctest
+Build complete! (107.97s)
+Test Suite 'Selected tests' started at 2026-11-17 22:35:40.846
+Test Suite 'Selected tests' passed at 2026-11-17 22:35:40.880
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Inspector document consumer cancellation" started.
+◊ Test "A cancelled reader cannot publish a late document or cancel another reader" started.
+× Test "A cancelled reader cannot publish a late document or cancel another reader" recorded an issue at DocumentConsumerCancellationTests.swift:96:25: Issue recorded
+→ A cancelled document consumer received a successful result
+× Test "A cancelled reader cannot publish a late document or cancel another reader" failed after 0.002 seconds with 1 issue.
+◊ Test "Cancelling a joined reader preserves the original reader and shared cache" started.
+× Test "Cancelling a joined reader preserves the original reader and shared cache" recorded an issue at DocumentConsumerCancellationTests.swift:96:25: Issue recorded
+→ A cancelled document consumer received a successful result
+× Test "Cancelling a joined reader preserves the original reader and shared cache" failed after 0.001 seconds with 1 issue.
+◊ Test "A cancelled cached read returns cancellation instead of stale success" started.
+× Test "A cancelled cached read returns cancellation instead of stale success" recorded an issue at DocumentConsumerCancellationTests.swift:96:25: Issue recorded
+→ A cancelled document consumer received a successful result
+× Test "A cancelled cached read returns cancellation instead of stale success" failed after 0.001 seconds with 1 issue.
+◊ Test "An already cancelled read never starts a provider request" started.
+× Test "An already cancelled read never starts a provider request" recorded an issue at DocumentConsumerCancellationTests.swift:96:25: Issue recorded
+→ A cancelled document consumer received a successful result
+× Test "An already cancelled read never starts a provider request" recorded an issue at DocumentConsumerCancellationTests.swift:78:9: Expectation failed: await calls.value == 0
+× Test "An already cancelled read never starts a provider request" recorded an issue at DocumentConsumerCancellationTests.swift:79:9: Expectation failed: (repository.cachedDocument(for: "Genesis 1", providerID: "test") → TorahTextDocument(providerID: "test", requestedRef: "Genesis 1", canonicalRef: "Genesis 1", hebrewRef: nil, sectionRef: "Genesis 1", hebrewSectionRef: nil, segments: [TorahInspectorCore.TorahTextSegment(id: "Genesis 1:1", canonicalRef: "Genesis 1:1", hebrewRef: nil, text: "Fixture", ordinal: 1)], previousSectionRef: nil, nextSectionRef: nil, version: TorahInspectorCore.TorahTextVersionMetadata(language: "en", actualLanguage: nil, languageFamilyName: nil, versionTitle: "Fixture", versionTitleInHebrew: nil, license: nil, direction: nil), rawProviderPayload: "{}")) == nil
+× Test "An already cancelled read never starts a provider request" failed after 0.004 seconds with 3 issues.
+× Suite "Inspector document consumer cancellation" failed after 0.010 seconds with 6 issues.
+× Test run with 4 tests in 1 suite failed after 0.010 seconds with 6 issues.

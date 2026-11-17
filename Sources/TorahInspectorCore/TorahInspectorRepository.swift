@@ -93,9 +93,14 @@ public final class TorahInspectorRepository {
     }
 
     public func document(for reference: String, providerID: String? = nil) async throws -> TorahTextDocument {
+        try Task.checkCancellation()
         if let cached = cachedDocument(for: reference, providerID: providerID) { return cached }
         let key = normalizedKey(providerID: providerID, reference: reference)
-        if let inFlight = inFlightDocuments[key] { return try await inFlight.value }
+        if let inFlight = inFlightDocuments[key] {
+            let document = try await inFlight.value
+            try Task.checkCancellation()
+            return document
+        }
 
         let fetcher = textFetcher
         let task = Task<TorahTextDocument, Error> { try await fetcher(reference, providerID) }
@@ -104,6 +109,8 @@ public final class TorahInspectorRepository {
             let document = try await task.value
             inFlightDocuments.removeValue(forKey: key)
             storeDocument(document, requestedRef: reference, providerID: providerID)
+            // A shared fetch may still serve another reader after this consumer leaves.
+            try Task.checkCancellation()
             return document
         } catch {
             inFlightDocuments.removeValue(forKey: key)
