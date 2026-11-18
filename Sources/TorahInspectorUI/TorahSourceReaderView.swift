@@ -288,6 +288,7 @@ public struct TorahSourceReaderView: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("torah-reader-segment-\(segment.id)")
         .background {
             GeometryReader { geometry in
                 Color.clear.preference(
@@ -302,6 +303,7 @@ public struct TorahSourceReaderView: View {
                 Button { onInsertSegment(transfer) } label: {
                     Label(TorahStrings.text("Insert into document", locale: locale), systemImage: "arrow.down.doc")
                 }
+                .accessibilityIdentifier("torah-reader-insert-\(segment.id)")
             }
             Button { TorahPlatformClipboard.copy(segment.text) } label: {
                 Label(TorahStrings.text("Copy", locale: locale), systemImage: "doc.on.doc")
