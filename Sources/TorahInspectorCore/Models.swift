@@ -414,6 +414,8 @@ public enum TorahRelatedDocumentsCoverage: String, Hashable, Codable, Sendable {
     case spaceWide
     case currentDocumentOnly
     case indexedDocumentsOnly
+    /// Native candidates include document and block targets; completeness is not implied.
+    case indexedTargetsOnly
 }
 
 public enum TorahRelatedDocumentsLimitation: String, Hashable, Codable, Sendable {

@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- T5 coverage distinguishes indexed document-only results from indexed document-and-block targets. Both are incomplete until the host proves current-Space index freshness; a stored native row version cannot establish the running engine's capability. Exact block IDs and read-only quote actions survive repository refresh, and runtime fallback must replace expanded cached results. Implemented for the November wave on the isolated T5 UI branch; Apple UI acceptance remains separate.
+
 Useful technical discoveries, undocumented behavior, shortcuts, implementation tricks, platform behavior, or reusable knowledge discovered while working.
 
 ## Experiments / Investigations

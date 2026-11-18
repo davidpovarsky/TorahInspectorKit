@@ -47,3 +47,50 @@ private actor RelatedFetchGate {
     #expect(cached.limitations == [.blockAssociationsNotIndexed, .indexFreshnessUnverified])
     #expect(await gate.count() == 2)
 }
+
+private actor RelatedCoverageRuntime {
+    private var current: TorahRelatedDocumentsSnapshot
+
+    init(_ snapshot: TorahRelatedDocumentsSnapshot) { current = snapshot }
+    func replace(with snapshot: TorahRelatedDocumentsSnapshot) { current = snapshot }
+    func fetch() -> TorahRelatedDocumentsSnapshot { current }
+}
+
+@Test @MainActor func refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback() async throws {
+    let source = TorahInspectorSelection(providerID: "test", canonicalRef: "Genesis 1")
+    let document = TorahRelatedDocument(
+        id: "space-document", spaceID: "space", objectID: "document", title: "Document",
+        sourceReference: source.relationshipRef, canUnlink: true
+    )
+    let quote = TorahRelatedDocument(
+        id: "space-document-quote", spaceID: "space", objectID: "document", title: "Document",
+        sourceReference: source.relationshipRef, blockID: "quoted-block", canUnlink: false
+    )
+    let fallback = TorahRelatedDocumentsSnapshot(
+        documents: [document], coverage: .indexedDocumentsOnly,
+        limitations: [.blockAssociationsNotIndexed, .sourceQuotesNotIndexed, .indexFreshnessUnverified]
+    )
+    let runtime = RelatedCoverageRuntime(fallback)
+    let repository = TorahInspectorRepository(
+        textFetcher: { _, _ in throw CancellationError() },
+        relatedDocumentsFetcher: { _ in await runtime.fetch() }
+    )
+    #expect(try await repository.relatedDocuments(for: source) == fallback)
+
+    let expanded = TorahRelatedDocumentsSnapshot(
+        documents: [document, quote], coverage: .indexedTargetsOnly,
+        limitations: [.indexFreshnessUnverified, .resultLimitReached]
+    )
+    await runtime.replace(with: expanded)
+    let upgraded = try await repository.relatedDocuments(for: source, forceRefresh: true)
+    #expect(upgraded.documents.map(\.blockID) == [nil, "quoted-block"])
+    #expect(upgraded.documents.map(\.canUnlink) == [true, false])
+    #expect(upgraded.coverage != .spaceWide)
+    #expect(upgraded.limitations == [.indexFreshnessUnverified, .resultLimitReached])
+    #expect(try await repository.relatedDocuments(for: source) == upgraded)
+
+    await runtime.replace(with: fallback)
+    let downgraded = try await repository.relatedDocuments(for: source, forceRefresh: true)
+    #expect(downgraded == fallback)
+    #expect(try await repository.relatedDocuments(for: source) == fallback)
+}

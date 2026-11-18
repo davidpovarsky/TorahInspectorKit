@@ -696,6 +696,8 @@ public struct TorahSegmentDetailView: View {
                     relatedCoverageNotice("Space-wide backlinks are unavailable")
                 } else if snapshot.coverage == .indexedDocumentsOnly {
                     relatedCoverageNotice("Indexed documents in this Space; results may be incomplete")
+                } else if snapshot.coverage == .indexedTargetsOnly {
+                    relatedCoverageNotice("Indexed documents and blocks in this Space; results may be incomplete")
                 }
                 ForEach(relatedLimitationKeys(snapshot.limitations), id: \.self) { key in
                     relatedCoverageNotice(key)
