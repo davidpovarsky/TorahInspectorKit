@@ -46,6 +46,9 @@ public struct TorahInspectorHostActions {
     public var onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
+    /// Some hosts remove only the source association and retain the Note object.
+    /// Defaults to deletion semantics for existing hosts.
+    public var noteActionUnlinksSource: Bool
     public var onOpenRelatedDocument: ((TorahRelatedDocument) -> Void)?
     public var onUnlinkRelatedDocument: ((TorahRelatedDocument, TorahInspectorSelection, @escaping NotesDidChange) -> Void)?
     public var search: TorahInspectorSearchCapability?
@@ -59,6 +62,7 @@ public struct TorahInspectorHostActions {
         onAddNote: ((TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         onOpenNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         onDeleteNote: ((TorahInspectorNote, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
+        noteActionUnlinksSource: Bool = false,
         onOpenRelatedDocument: ((TorahRelatedDocument) -> Void)? = nil,
         onUnlinkRelatedDocument: ((TorahRelatedDocument, TorahInspectorSelection, @escaping NotesDidChange) -> Void)? = nil,
         search: TorahInspectorSearchCapability? = nil,
@@ -70,6 +74,7 @@ public struct TorahInspectorHostActions {
         self.onAddNote = onAddNote
         self.onOpenNote = onOpenNote
         self.onDeleteNote = onDeleteNote
+        self.noteActionUnlinksSource = noteActionUnlinksSource
         self.onOpenRelatedDocument = onOpenRelatedDocument
         self.onUnlinkRelatedDocument = onUnlinkRelatedDocument
         self.search = search

@@ -656,8 +656,14 @@ public struct TorahSegmentDetailView: View {
                             Button(role: .destructive) {
                                 onDeleteNote(note, selection, notesDidChange)
                             } label: {
-                                Label(TorahStrings.text("Delete", locale: locale), systemImage: "trash")
+                                Label(
+                                    TorahStrings.text(actions.noteActionUnlinksSource ? "Unlink source" : "Delete", locale: locale),
+                                    systemImage: actions.noteActionUnlinksSource ? "link.badge.minus" : "trash"
+                                )
                             }
+                            .accessibilityIdentifier(actions.noteActionUnlinksSource
+                                ? "torah-inspector-note-unlink-\(note.id)"
+                                : "torah-inspector-note-delete-\(note.id)")
                         }
                     }
                     if note.id != notes.last?.id {
@@ -734,6 +740,7 @@ public struct TorahSegmentDetailView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("torah-inspector-related-row-\(document.id)")
                         .disabled(actions.onOpenRelatedDocument == nil)
                         .contextMenu {
                             if document.canUnlink, let onUnlink = actions.onUnlinkRelatedDocument {
@@ -742,6 +749,7 @@ public struct TorahSegmentDetailView: View {
                                 } label: {
                                     Label(TorahStrings.text("Unlink source", locale: locale), systemImage: "link.badge.minus")
                                 }
+                                .accessibilityIdentifier("torah-inspector-related-unlink-\(document.id)")
                             }
                         }
                     }
