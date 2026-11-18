@@ -723,6 +723,8 @@ public struct TorahSegmentDetailView: View {
                                 }
                                 VStack(alignment: .leading, spacing: 4) {
                                     configuration.theme.text(document.title, role: .body)
+                                        .lineLimit(2)
+                                        .accessibilityLabel(Text(verbatim: document.title))
                                     if let snippet = document.snippet, !snippet.isEmpty {
                                         configuration.theme.text(snippet, role: .caption)
                                             .foregroundStyle(configuration.theme.secondaryText).lineLimit(2)
