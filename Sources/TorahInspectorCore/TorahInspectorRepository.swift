@@ -232,6 +232,7 @@ public final class TorahInspectorRepository {
         for selection: TorahInspectorSelection,
         forceRefresh: Bool = false
     ) async throws -> TorahRelatedDocumentsSnapshot {
+        try Task.checkCancellation()
         let key = selection.id
         if forceRefresh { invalidateRelatedDocuments(for: selection) }
         if let cached = relatedDocumentsCache[key] { return cached }

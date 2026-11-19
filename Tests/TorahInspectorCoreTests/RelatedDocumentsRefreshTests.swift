@@ -2,6 +2,96 @@ import Foundation
 import Testing
 @testable import TorahInspectorCore
 
+private actor RelatedCountingFetcher {
+    private var calls = 0
+
+    func fetch(for selection: TorahInspectorSelection) -> TorahRelatedDocumentsSnapshot {
+        calls += 1
+        return .init(
+            documents: [TorahRelatedDocument(
+                id: "row-\(calls)", spaceID: "space", objectID: "document-\(calls)",
+                title: "Document \(calls)", sourceReference: selection.relationshipRef,
+                canUnlink: true
+            )],
+            coverage: .indexedTargetsOnly,
+            limitations: [.indexFreshnessUnverified]
+        )
+    }
+
+    func count() -> Int { calls }
+}
+
+@MainActor private func preCancelledRelatedDocumentsRequest(
+    _ repository: TorahInspectorRepository,
+    selection: TorahInspectorSelection,
+    forceRefresh: Bool = false
+) -> Task<TorahRelatedDocumentsSnapshot, Error> {
+    Task { @MainActor in
+        withUnsafeCurrentTask { $0?.cancel() }
+        #expect(Task.isCancelled)
+        return try await repository.relatedDocuments(for: selection, forceRefresh: forceRefresh)
+    }
+}
+
+@Test @MainActor func preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache() async throws {
+    let fetcher = RelatedCountingFetcher()
+    let selection = TorahInspectorSelection(providerID: "test", canonicalRef: "Genesis 1")
+    let repository = TorahInspectorRepository(
+        textFetcher: { _, _ in throw CancellationError() },
+        relatedDocumentsFetcher: { await fetcher.fetch(for: $0) }
+    )
+    let original = try await repository.relatedDocuments(for: selection)
+
+    do {
+        _ = try await preCancelledRelatedDocumentsRequest(repository, selection: selection).value
+        Issue.record("A pre-cancelled request returned a cached result")
+    } catch is CancellationError { }
+
+    #expect(await fetcher.count() == 1)
+    #expect(try await repository.relatedDocuments(for: selection) == original)
+    #expect(await fetcher.count() == 1)
+}
+
+@Test @MainActor func preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch() async throws {
+    let fetcher = RelatedCountingFetcher()
+    let selection = TorahInspectorSelection(providerID: "test", canonicalRef: "Genesis 1")
+    let repository = TorahInspectorRepository(
+        textFetcher: { _, _ in throw CancellationError() },
+        relatedDocumentsFetcher: { await fetcher.fetch(for: $0) }
+    )
+
+    do {
+        _ = try await preCancelledRelatedDocumentsRequest(repository, selection: selection).value
+        Issue.record("A pre-cancelled request returned a newly fetched result")
+    } catch is CancellationError { }
+
+    #expect(await fetcher.count() == 0)
+    let firstLiveResult = try await repository.relatedDocuments(for: selection)
+    #expect(firstLiveResult.documents.map(\.objectID) == ["document-1"])
+    #expect(await fetcher.count() == 1)
+}
+
+@Test @MainActor func preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch() async throws {
+    let fetcher = RelatedCountingFetcher()
+    let selection = TorahInspectorSelection(providerID: "test", canonicalRef: "Genesis 1")
+    let repository = TorahInspectorRepository(
+        textFetcher: { _, _ in throw CancellationError() },
+        relatedDocumentsFetcher: { await fetcher.fetch(for: $0) }
+    )
+    let original = try await repository.relatedDocuments(for: selection)
+
+    do {
+        _ = try await preCancelledRelatedDocumentsRequest(
+            repository, selection: selection, forceRefresh: true
+        ).value
+        Issue.record("A pre-cancelled request returned a force-refreshed result")
+    } catch is CancellationError { }
+
+    #expect(await fetcher.count() == 1)
+    #expect(try await repository.relatedDocuments(for: selection) == original)
+    #expect(await fetcher.count() == 1)
+}
+
 private actor RelatedFetchGate {
     private var started: CheckedContinuation<Void, Never>?
     private var release: CheckedContinuation<Void, Never>?
