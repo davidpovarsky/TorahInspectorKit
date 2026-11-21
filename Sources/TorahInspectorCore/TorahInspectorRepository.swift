@@ -29,6 +29,7 @@ public final class TorahInspectorRepository {
     private var notesCache: [String: [TorahInspectorNote]] = [:]
     private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
     private var relatedDocumentsCache: [String: TorahRelatedDocumentsSnapshot] = [:]
+    private var relatedDocumentsOwnerIsActive = true
     private var relatedDocumentsGeneration: [String: UUID] = [:]
     private var inFlightRelatedDocuments: [String: (id: UUID, task: Task<TorahRelatedDocumentsSnapshot, Error>)] = [:]
 
@@ -233,6 +234,9 @@ public final class TorahInspectorRepository {
         forceRefresh: Bool = false
     ) async throws -> TorahRelatedDocumentsSnapshot {
         try Task.checkCancellation()
+        guard relatedDocumentsOwnerIsActive else {
+            throw TorahRelatedDocumentsAccessError.invalidated
+        }
         let key = selection.id
         if forceRefresh { invalidateRelatedDocuments(for: selection) }
         if let cached = relatedDocumentsCache[key] { return cached }
@@ -247,6 +251,9 @@ public final class TorahInspectorRepository {
         }
         do {
             let snapshot = try await flight.task.value
+            guard relatedDocumentsOwnerIsActive else {
+                throw TorahRelatedDocumentsAccessError.invalidated
+            }
             guard relatedDocumentsGeneration[key] == flight.id else { throw CancellationError() }
             if inFlightRelatedDocuments[key]?.id == flight.id {
                 inFlightRelatedDocuments.removeValue(forKey: key)
@@ -255,11 +262,50 @@ public final class TorahInspectorRepository {
             try Task.checkCancellation()
             return snapshot
         } catch {
+            // A retired owner never returns its former cache. An old request
+            // must not revoke a newer owner or a replacement request either.
+            guard relatedDocumentsOwnerIsActive else {
+                throw TorahRelatedDocumentsAccessError.invalidated
+            }
+            guard relatedDocumentsGeneration[key] == flight.id else {
+                throw CancellationError()
+            }
             if inFlightRelatedDocuments[key]?.id == flight.id {
                 inFlightRelatedDocuments.removeValue(forKey: key)
             }
+            if let accessFailure = error as? TorahRelatedDocumentsAccessError {
+                discardRelatedDocuments(after: accessFailure)
+            }
             throw error
         }
+    }
+
+    /// Synchronous lifetime barrier for this repository's account/Space owner.
+    /// This is not a native ACL decision; the host must retire before changing
+    /// or releasing that owner. Already-running work cannot republish afterward.
+    public func retireRelatedDocuments() {
+        guard relatedDocumentsOwnerIsActive else { return }
+        relatedDocumentsOwnerIsActive = false
+        discardRelatedDocuments(after: .invalidated)
+    }
+
+    /// Reactivating the same host starts without cached authority. Each result
+    /// still has to pass the engine's current read and session fences.
+    public func resumeRelatedDocuments() {
+        guard !relatedDocumentsOwnerIsActive else { return }
+        invalidateRelatedDocuments()
+        relatedDocumentsOwnerIsActive = true
+    }
+
+    private func discardRelatedDocuments(after failure: TorahRelatedDocumentsAccessError) {
+        invalidateRelatedDocuments()
+        // Other selections mounted from this exact repository must drop their
+        // previous rows even if they do not currently have a refresh in flight.
+        NotificationCenter.default.post(
+            name: .torahInspectorRelatedDocumentsAccessDidChange,
+            object: self,
+            userInfo: ["reason": failure.rawValue]
+        )
     }
 
     public func invalidateRelatedDocuments(for selection: TorahInspectorSelection? = nil) {
@@ -289,4 +335,5 @@ public final class TorahInspectorRepository {
 
 extension Notification.Name {
     public static let torahInspectorNotesDidChange = Notification.Name("TorahInspectorNotesDidChangeNotification")
+    public static let torahInspectorRelatedDocumentsAccessDidChange = Notification.Name("TorahInspectorRelatedDocumentsAccessDidChangeNotification")
 }

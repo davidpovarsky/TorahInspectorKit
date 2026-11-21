@@ -1,0 +1,10 @@
+Building for debugging...
+[0/16] Write sources
+[3/16] Write swift-version-2807070033DA82CF.txt
+[5/17] Emitting module TorahInspectorCore
+[7/18] Emitting module TorahInspectorUITests
+[9/19] Emitting module TorahInspectorCoreTests
+[10/20] Wrapping AST for TorahInspectorUITests for debugging
+[11/20] C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\.build\x86_64-unknown-windows-msvc\debug\RelatedAccessComponentPackageDiscoveredTests.derived\all-discovered-tests.swift
+[12/20] Write sources
+[13/23] Wrapping AST for TorahInspectorCoreTests for debugging

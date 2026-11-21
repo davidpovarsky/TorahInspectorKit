@@ -1,0 +1,25 @@
+[0/1] Planning build
+Building for debugging...
+[0/17] Write sources
+[4/17] Write swift-version-2807070033DA82CF.txt
+[5/18] Wrapping AST for TorahInspectorCore for debugging
+[7/21] Emitting module TorahInspectorUI
+[8/21] Compiling TorahInspectorUI TorahPanelLoadState.swift
+[9/21] Emitting module TorahInspectorCoreTests
+[10/21] Compiling TorahInspectorCoreTests RelatedDocumentsAuthorityTests.swift
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Tests\TorahInspectorCoreTests\RelatedDocumentsAuthorityTests.swift:47:45: error: sending 'notification' risks causing data races [#SendingRisksDataRace]
+ 45 |         ) { [self] notification in
+ 46 |             MainActor.assumeIsolated {
+ 47 |                 if let owner = notification.object as? TorahInspectorRepository {
+    |                                             |- error: sending 'notification' risks causing data races [#SendingRisksDataRace]
+    |                                             `- note: task-isolated 'notification' is captured by a main actor-isolated closure. main actor-isolated uses in closure may race against later nonisolated uses
+ 48 |                     owners.append(ObjectIdentifier(owner))
+ 49 |                 }
+
+[#SendingRisksDataRace]: <https://docs.swift.org/compiler/documentation/diagnostics/sending-risks-data-race>
+[11/23] Wrapping AST for TorahInspectorUI for debugging
+[13/25] Compiling TorahInspectorUITests TorahRelatedDocumentsAccessStateTests.swift
+[14/25] Emitting module TorahInspectorUITests
+[15/25] Compiling TorahInspectorCoreTests RelatedDocumentsRefreshTests.swift
+[16/26] Wrapping AST for TorahInspectorUITests for debugging
+error: fatalError

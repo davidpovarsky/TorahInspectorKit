@@ -157,6 +157,13 @@ public struct TorahSegmentDetailView: View {
         }
         .onAppear { ensureValidSelectedTool() }
         .onChange(of: configuration.availableTools) { _, _ in ensureValidSelectedTool() }
+        .onReceive(NotificationCenter.default.publisher(for: .torahInspectorRelatedDocumentsAccessDidChange)) { notification in
+            guard let owner = notification.object as? TorahInspectorRepository,
+                  owner === repository else { return }
+            relatedDocumentsState.discardPreviousValue(
+                TorahStrings.text("Could not load related documents", locale: locale)
+            )
+        }
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorNotesDidChange)) { _ in
             if selectedTool == .notes {
                 Task { @MainActor in await loadNotes(force: true) }
@@ -985,7 +992,8 @@ public struct TorahSegmentDetailView: View {
         } catch {
             relatedDocumentsState.fail(
                 TorahStrings.text("Could not load related documents", locale: locale),
-                for: request
+                for: request,
+                underlyingError: error
             )
         }
     }

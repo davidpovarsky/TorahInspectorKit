@@ -49,9 +49,17 @@ enum TorahPanelLoadState<Value: Sendable>: Sendable {
         self = .loaded(value)
     }
 
-    mutating func fail(_ message: String, for request: TorahPanelRequest) {
+    mutating func fail(
+        _ message: String, for request: TorahPanelRequest, underlyingError: Error? = nil
+    ) {
         guard isCurrent(request) else { return }
-        self = .failed(message: message, cached: value)
+        let previous = underlyingError is TorahRelatedDocumentsAccessError ? nil : value
+        self = .failed(message: message, cached: previous)
+    }
+
+    /// Owner-wide access invalidation is also a barrier for late panel results.
+    mutating func discardPreviousValue(_ message: String) {
+        self = .failed(message: message, cached: nil)
     }
 
     mutating func cancel(_ request: TorahPanelRequest) {
