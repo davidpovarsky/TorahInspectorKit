@@ -1,0 +1,27 @@
+{
+  "phase": "baseline",
+  "platform": "Windows, Swift 6.3.3; portable Core-only package, not Apple or UI acceptance",
+  "started_utc": "2026-11-17T22:33:48.733968+00:00",
+  "command": [
+    "C:/Users/DAVID/AppData/Local/Programs/Swift/Toolchains/6.3.3+Asserts/usr/bin/swift.exe",
+    "test",
+    "--package-path",
+    "C:\\Users\\DAVID\\Code\\TorahInspectorKit-chatgpt-ui-20261118\\.build\\portable-document-cancellation",
+    "--jobs",
+    "1",
+    "--filter",
+    "DocumentConsumerCancellationTests"
+  ],
+  "source_sha256": {
+    "Sources\\TorahInspectorCore\\Models.swift": "bcddab69f750deebc3cbd5922d1a663ed23900c641ffe169190435f451daae7f",
+    "Sources\\TorahInspectorCore\\ProviderProtocols.swift": "b89f68c7515eec81f48375007f679dcc7218910087e9572733db42e2b408dfea",
+    "Sources\\TorahInspectorCore\\TorahInspectorCoordinator.swift": "9d4e9135ec4397e7913ca6599160676be97bb6ee980401453d22266886b14a19",
+    "Sources\\TorahInspectorCore\\TorahInspectorRepository.swift": "9b65d6a5079e7e7a950d15592980dd8d19b5be5b9f02515de3af3007ece908e6",
+    "Sources\\TorahInspectorCore\\TorahReaderScrollStateMachine.swift": "386d0abb03634becfd412bf37b00fefb8472b3345f58eb49335c7bf85811a1c6",
+    "Sources\\TorahInspectorCore\\TorahSourceTransfer.swift": "0ad84899eb76511fc45715dbe2bc75b2d0789adfe94be5fee13ab6a453fcdc5f",
+    "Sources\\TorahInspectorCore\\TorahToolSelectorStateMachine.swift": "9cfff5dc67a108234adac2df3ab52f3532de8312319d10bd6c11efb1f3519ef5",
+    "Tests\\TorahInspectorCoreTests\\DocumentConsumerCancellationTests.swift": "8ceb9703f8330ef94b8f3a552b1ecf368a8e59963b81ed833221546d694176fd"
+  },
+  "returncode": 1,
+  "finished_utc": "2026-11-17T22:35:41.032744+00:00"
+}

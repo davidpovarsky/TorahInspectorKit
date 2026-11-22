@@ -1,0 +1,21 @@
+Building for debugging...
+[0/16] Write sources
+[3/16] Write swift-version-2807070033DA82CF.txt
+[5/21] Emitting module TorahInspectorCore
+[6/21] Compiling TorahInspectorCore Models.swift
+[7/21] Compiling TorahInspectorCore ProviderProtocols.swift
+[8/21] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[9/21] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[10/25] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[11/25] Compiling TorahInspectorCore TorahRelatedDocumentsAccessError.swift
+[12/25] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[13/25] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[15/28] Emitting module TorahInspectorUITests
+[16/28] Compiling TorahInspectorUITests TorahRelatedDocumentsAccessStateTests.swift
+[17/29] Wrapping AST for TorahInspectorUITests for debugging
+[19/29] Emitting module TorahInspectorCoreTests
+[20/29] Compiling TorahInspectorCoreTests RelatedDocumentsAuthorityTests.swift
+[21/30] Compiling TorahInspectorCoreTests RelatedDocumentsRefreshTests.swift
+[22/31] C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\.build\x86_64-unknown-windows-msvc\debug\RelatedAccessComponentPackageDiscoveredTests.derived\all-discovered-tests.swift
+[23/31] Write sources
+[24/31] Wrapping AST for TorahInspectorCoreTests for debugging

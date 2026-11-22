@@ -9,6 +9,7 @@
 "The reference is not valid." = "המקור אינו תקין.";
 "Torah storage is unavailable." = "האחסון התורני אינו זמין.";
 "Close" = "סגור";
+"Search Torah sources" = "חיפוש מקורות";
 "Insert into document" = "הוסף למסמך";
 "Open in new tab" = "פתח בכרטיסייה חדשה";
 "Copy" = "העתק";
@@ -33,3 +34,28 @@
 "Targum" = "תרגום";
 "Halakhah" = "הלכה";
 "Other" = "אחר";
+"Expand" = "הרחב";
+"Expanded" = "מורחב";
+"Collapsed" = "מכווץ";
+"Delete" = "מחק";
+"In Documents" = "במסמכים";
+"Open full source" = "פתח מקור מלא";
+"Space-wide backlinks are unavailable" = "קישורים חוזרים מכל המרחב אינם זמינים. מוצגים רק קישורים מהמסמך הנוכחי.";
+"No current-document links" = "אין קישורים מהמסמך הנוכחי";
+"Could not load related documents" = "לא ניתן לטעון מסמכים קשורים";
+"Unlink" = "בטל קישור";
+"Source" = "מקור";
+
+"Add note to source" = "הוסף הערה למקור";
+"Indexed documents in this Space; results may be incomplete" = "מסמכים מאונדקסים במרחב הזה; התוצאות עשויות להיות חלקיות.";
+"Block links are not included" = "קישורים המשויכים לבלוקים אינם כלולים.";
+"Source quotes are not included" = "ציטוטי מקור אינם כלולים.";
+"Index freshness is unverified" = "עדכניות האינדקס לא אומתה.";
+"Some results were omitted due to the result limit" = "חלק מהתוצאות הושמטו בגלל מגבלת התוצאות.";
+"Some indexed results could not be verified" = "לא ניתן היה לאמת חלק מהתוצאות המאונדקסות.";
+"No matches in available results" = "לא נמצאו התאמות בתוצאות הזמינות";
+"No related documents" = "אין מסמכים קשורים";
+"Unlink source" = "הסר קישור למקור";
+"Showing previous results; refresh failed" = "מוצגות תוצאות קודמות; הרענון נכשל.";
+"Refreshing related documents" = "מרענן מסמכים קשורים";
+"Indexed documents and blocks in this Space; results may be incomplete" = "מסמכים ובלוקים שנוספו לאינדקס במרחב זה; ייתכן שהתוצאות אינן מלאות.";

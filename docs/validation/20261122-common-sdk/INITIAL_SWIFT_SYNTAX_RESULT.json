@@ -1,0 +1,78 @@
+{
+  "scope": "Swift syntax only; no Apple typecheck or Native acceptance",
+  "results": [
+    {
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "6",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "C:\\Users\\DAVID\\Code\\TorahInspectorKit-otzaria-anytype-common-20261122\\Sources\\TorahInspectorCore\\TorahInspectorRepository.swift"
+      ],
+      "returncode": 0,
+      "seconds": 0.7809999999990396,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorPresentationOptions.swift",
+      "sha256": "74cd8e58df5076d3754009529f434dbfcb5aaedd40e020589d3e3d26852f843c",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "6",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "C:\\Users\\DAVID\\Code\\TorahInspectorKit-otzaria-anytype-common-20261122\\Sources\\TorahInspectorUI\\TorahInspectorPresentationOptions.swift"
+      ],
+      "returncode": 0,
+      "seconds": 0.5940000000009604,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "6",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "C:\\Users\\DAVID\\Code\\TorahInspectorKit-otzaria-anytype-common-20261122\\Sources\\TorahInspectorUI\\TorahInspectorView.swift"
+      ],
+      "returncode": 0,
+      "seconds": 0.625,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "sha256": "278e22648f7e5f725ddcacc47f047ae2a5c429905e93eaebd20c29272c100b7c",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "6",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "C:\\Users\\DAVID\\Code\\TorahInspectorKit-otzaria-anytype-common-20261122\\Sources\\TorahInspectorUI\\TorahSegmentDetailView.swift"
+      ],
+      "returncode": 0,
+      "seconds": 0.6869999999980791,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n"
+    }
+  ],
+  "passed": true
+}

@@ -23,3 +23,16 @@ extension EnvironmentValues {
         set { self[TorahInspectorPresentationOptionsKey.self] = newValue }
     }
 }
+
+// Existing legacy entry points retain their header and selected-segment card.
+// Configured tool-ID entry points keep the native navigation presentation.
+private struct TorahInspectorLegacyDetailLayoutKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var torahInspectorUsesLegacyDetailLayout: Bool {
+        get { self[TorahInspectorLegacyDetailLayoutKey.self] }
+        set { self[TorahInspectorLegacyDetailLayoutKey.self] = newValue }
+    }
+}

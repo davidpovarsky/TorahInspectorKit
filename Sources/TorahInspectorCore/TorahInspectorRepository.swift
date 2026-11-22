@@ -7,12 +7,14 @@ public final class TorahInspectorRepository {
     public typealias TopicsFetcher = @Sendable (String, String?) async throws -> [TorahLinkedTopic]
     public typealias NotesFetcher = @Sendable (TorahInspectorSelection) async throws -> [TorahInspectorNote]
     public typealias SnippetsFetcher = @Sendable ([TorahLinkedSource]) async throws -> [TorahLinkedSource.ID: String]
+    public typealias RelatedDocumentsFetcher = @Sendable (TorahInspectorSelection) async throws -> TorahRelatedDocumentsSnapshot
 
     private let textFetcher: TextFetcher
     private let linksFetcher: LinksFetcher
     private let topicsFetcher: TopicsFetcher
     private let notesFetcher: NotesFetcher
     private let snippetsFetcher: SnippetsFetcher
+    private let relatedDocumentsFetcher: RelatedDocumentsFetcher
     public let documentCapacity: Int
     public let relationshipCapacity: Int
     public let snippetCapacity: Int
@@ -31,6 +33,10 @@ public final class TorahInspectorRepository {
     private var inFlightNotes: [String: Task<[TorahInspectorNote], Error>] = [:]
     private var snippetsCache: [TorahLinkedSource.ID: String] = [:]
     private var snippetsLRU: [TorahLinkedSource.ID] = []
+    private var relatedDocumentsCache: [String: TorahRelatedDocumentsSnapshot] = [:]
+    private var relatedDocumentsOwnerIsActive = true
+    private var relatedDocumentsGeneration: [String: UUID] = [:]
+    private var inFlightRelatedDocuments: [String: (id: UUID, task: Task<TorahRelatedDocumentsSnapshot, Error>)] = [:]
 
     public init(
         documentCapacity: Int = 30,
@@ -40,13 +46,15 @@ public final class TorahInspectorRepository {
         linksFetcher: @escaping LinksFetcher = { _, _ in [] },
         topicsFetcher: @escaping TopicsFetcher = { _, _ in [] },
         notesFetcher: @escaping NotesFetcher = { _ in [] },
-        snippetsFetcher: @escaping SnippetsFetcher = { _ in [:] }
+        snippetsFetcher: @escaping SnippetsFetcher = { _ in [:] },
+        relatedDocumentsFetcher: @escaping RelatedDocumentsFetcher = { _ in .unavailable }
     ) {
         self.textFetcher = textFetcher
         self.linksFetcher = linksFetcher
         self.topicsFetcher = topicsFetcher
         self.notesFetcher = notesFetcher
         self.snippetsFetcher = snippetsFetcher
+        self.relatedDocumentsFetcher = relatedDocumentsFetcher
         self.documentCapacity = max(0, documentCapacity)
         self.relationshipCapacity = max(0, relationshipCapacity)
         self.snippetCapacity = max(0, snippetCapacity)
@@ -95,9 +103,14 @@ public final class TorahInspectorRepository {
     }
 
     public func document(for reference: String, providerID: String? = nil) async throws -> TorahTextDocument {
+        try Task.checkCancellation()
         if let cached = cachedDocument(for: reference, providerID: providerID) { return cached }
         let key = normalizedKey(providerID: providerID, reference: reference)
-        if let inFlight = inFlightDocuments[key] { return try await inFlight.value }
+        if let inFlight = inFlightDocuments[key] {
+            let document = try await inFlight.value
+            try Task.checkCancellation()
+            return document
+        }
 
         let fetcher = textFetcher
         let task = Task<TorahTextDocument, Error> { try await fetcher(reference, providerID) }
@@ -106,6 +119,8 @@ public final class TorahInspectorRepository {
             let document = try await task.value
             inFlightDocuments.removeValue(forKey: key)
             storeDocument(document, requestedRef: reference, providerID: providerID)
+            // A shared fetch may still serve another reader after this consumer leaves.
+            try Task.checkCancellation()
             return document
         } catch {
             inFlightDocuments.removeValue(forKey: key)
@@ -259,6 +274,98 @@ public final class TorahInspectorRepository {
         snippetsLRU.removeAll()
     }
 
+    public func relatedDocuments(
+        for selection: TorahInspectorSelection,
+        forceRefresh: Bool = false
+    ) async throws -> TorahRelatedDocumentsSnapshot {
+        try Task.checkCancellation()
+        guard relatedDocumentsOwnerIsActive else {
+            throw TorahRelatedDocumentsAccessError.invalidated
+        }
+        let key = selection.id
+        if forceRefresh { invalidateRelatedDocuments(for: selection) }
+        if let cached = relatedDocumentsCache[key] { return cached }
+        let flight: (id: UUID, task: Task<TorahRelatedDocumentsSnapshot, Error>)
+        if let existing = inFlightRelatedDocuments[key] {
+            flight = existing
+        } else {
+            let fetcher = relatedDocumentsFetcher
+            flight = (UUID(), Task { try await fetcher(selection) })
+            inFlightRelatedDocuments[key] = flight
+            relatedDocumentsGeneration[key] = flight.id
+        }
+        do {
+            let snapshot = try await flight.task.value
+            guard relatedDocumentsOwnerIsActive else {
+                throw TorahRelatedDocumentsAccessError.invalidated
+            }
+            guard relatedDocumentsGeneration[key] == flight.id else { throw CancellationError() }
+            if inFlightRelatedDocuments[key]?.id == flight.id {
+                inFlightRelatedDocuments.removeValue(forKey: key)
+                relatedDocumentsCache[key] = snapshot
+            }
+            try Task.checkCancellation()
+            return snapshot
+        } catch {
+            // A retired owner never returns its former cache. An old request
+            // must not revoke a newer owner or a replacement request either.
+            guard relatedDocumentsOwnerIsActive else {
+                throw TorahRelatedDocumentsAccessError.invalidated
+            }
+            guard relatedDocumentsGeneration[key] == flight.id else {
+                throw CancellationError()
+            }
+            if inFlightRelatedDocuments[key]?.id == flight.id {
+                inFlightRelatedDocuments.removeValue(forKey: key)
+            }
+            if let accessFailure = error as? TorahRelatedDocumentsAccessError {
+                discardRelatedDocuments(after: accessFailure)
+            }
+            throw error
+        }
+    }
+
+    /// Synchronous lifetime barrier for this repository's account/Space owner.
+    /// This is not a native ACL decision; the host must retire before changing
+    /// or releasing that owner. Already-running work cannot republish afterward.
+    public func retireRelatedDocuments() {
+        guard relatedDocumentsOwnerIsActive else { return }
+        relatedDocumentsOwnerIsActive = false
+        discardRelatedDocuments(after: .invalidated)
+    }
+
+    /// Reactivating the same host starts without cached authority. Each result
+    /// still has to pass the engine's current read and session fences.
+    public func resumeRelatedDocuments() {
+        guard !relatedDocumentsOwnerIsActive else { return }
+        invalidateRelatedDocuments()
+        relatedDocumentsOwnerIsActive = true
+    }
+
+    private func discardRelatedDocuments(after failure: TorahRelatedDocumentsAccessError) {
+        invalidateRelatedDocuments()
+        // Other selections mounted from this exact repository must drop their
+        // previous rows even if they do not currently have a refresh in flight.
+        NotificationCenter.default.post(
+            name: .torahInspectorRelatedDocumentsAccessDidChange,
+            object: self,
+            userInfo: ["reason": failure.rawValue]
+        )
+    }
+
+    public func invalidateRelatedDocuments(for selection: TorahInspectorSelection? = nil) {
+        if let selection {
+            relatedDocumentsCache.removeValue(forKey: selection.id)
+            relatedDocumentsGeneration.removeValue(forKey: selection.id)
+            inFlightRelatedDocuments.removeValue(forKey: selection.id)?.task.cancel()
+        } else {
+            relatedDocumentsCache.removeAll()
+            relatedDocumentsGeneration.removeAll()
+            for flight in inFlightRelatedDocuments.values { flight.task.cancel() }
+            inFlightRelatedDocuments.removeAll()
+        }
+    }
+
     private static func touchRelationship(_ key: String, lru: inout [String]) {
         lru.removeAll { $0 == key }
         lru.append(key)
@@ -273,4 +380,5 @@ public final class TorahInspectorRepository {
 
 extension Notification.Name {
     public static let torahInspectorNotesDidChange = Notification.Name("TorahInspectorNotesDidChangeNotification")
+    public static let torahInspectorRelatedDocumentsAccessDidChange = Notification.Name("TorahInspectorRelatedDocumentsAccessDidChangeNotification")
 }

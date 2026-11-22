@@ -9,6 +9,7 @@
 "The reference is not valid." = "The reference is not valid.";
 "Torah storage is unavailable." = "Torah storage is unavailable.";
 "Close" = "Close";
+"Search Torah sources" = "Search Torah sources";
 "Insert into document" = "Insert into document";
 "Open in new tab" = "Open in new tab";
 "Copy" = "Copy";
@@ -33,3 +34,28 @@
 "Targum" = "Targum";
 "Halakhah" = "Halakhah";
 "Other" = "Other";
+"Expand" = "Expand";
+"Expanded" = "Expanded";
+"Collapsed" = "Collapsed";
+"Delete" = "Delete";
+"In Documents" = "In Documents";
+"Open full source" = "Open full source";
+"Space-wide backlinks are unavailable" = "Space-wide backlinks are unavailable. Showing current-document links only.";
+"No current-document links" = "No current-document links";
+"Could not load related documents" = "Could not load related documents";
+"Unlink" = "Unlink";
+"Source" = "Source";
+
+"Add note to source" = "Add note to source";
+"Indexed documents in this Space; results may be incomplete" = "Indexed documents in this Space; results may be incomplete.";
+"Block links are not included" = "Links attached to blocks are not included.";
+"Source quotes are not included" = "Source quotes are not included.";
+"Index freshness is unverified" = "Index freshness is unverified.";
+"Some results were omitted due to the result limit" = "Some results were omitted due to the result limit.";
+"Some indexed results could not be verified" = "Some indexed results could not be verified.";
+"No matches in available results" = "No matches in the available results";
+"No related documents" = "No related documents";
+"Unlink source" = "Unlink source";
+"Showing previous results; refresh failed" = "Showing previous results; refresh failed.";
+"Refreshing related documents" = "Refreshing related documents";
+"Indexed documents and blocks in this Space; results may be incomplete" = "Indexed documents and blocks in this Space; results may be incomplete.";

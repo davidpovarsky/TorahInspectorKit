@@ -1,0 +1,232 @@
+Building for debugging...
+[0/17] Write sources
+[4/17] Write swift-version-2807070033DA82CF.txt
+[6/22] Compiling TorahInspectorCore Models.swift
+[7/22] Compiling TorahInspectorCore ProviderProtocols.swift
+[8/22] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[9/22] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[10/22] Emitting module TorahInspectorCore
+[11/26] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[12/26] Compiling TorahInspectorCore TorahRelatedDocumentsAccessError.swift
+[13/26] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[14/26] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[15/29] Wrapping AST for TorahInspectorCore for debugging
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+[17/31] Emitting module TorahInspectorUI
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:87:15: error: cannot find type 'TorahStudyToolID' in scope
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |               `- error: cannot find type 'TorahStudyToolID' in scope
+ 88 | }
+ 89 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:85:8: error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Hashable'
+ 83 | }
+ 84 | 
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+    |        `- error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Hashable'
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |         `- note: stored property type '_' does not conform to protocol 'Hashable', preventing synthesized conformance of 'TorahPanelLoadTaskID' to 'Hashable'
+ 88 | }
+ 89 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:85:8: error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Equatable'
+ 83 | }
+ 84 | 
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+    |        |- error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Equatable'
+    |        `- note: add stubs for conformance
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |         `- note: stored property type '_' does not conform to protocol 'Equatable', preventing synthesized conformance of 'TorahPanelLoadTaskID' to 'Equatable'
+ 88 | }
+ 89 | 
+
+Swift.==:1:24: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'RawRepresentable'
+1 | @inlinable public func == <T>(lhs: T, rhs: T) -> Bool where T : RawRepresentable, T.RawValue : Equatable
+  |                        `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'RawRepresentable'
+
+Swift.FloatingPoint.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'FloatingPoint'
+1 | protocol FloatingPoint {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'FloatingPoint'
+3 | 
+
+Swift.BinaryInteger.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'BinaryInteger'
+1 | protocol BinaryInteger {
+2 | public static func == <Other>(lhs: Self, rhs: Other) -> Bool where Other : BinaryInteger}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'BinaryInteger'
+3 | 
+
+Swift._Pointer.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+1 | protocol _Pointer {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+3 | 
+
+Swift._Pointer.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+1 | protocol _Pointer {
+2 | @inlinable public static func == <Other>(lhs: Self, rhs: Other) -> Bool where Other : _Pointer}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+3 | 
+
+Swift.Strideable.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'Strideable'
+1 | protocol Strideable {
+2 | @inlinable public static func == (x: Self, y: Self) -> Bool}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'Strideable'
+3 | 
+
+Swift.StringProtocol.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'StringProtocol'
+1 | protocol StringProtocol {
+2 | @inlinable public static func == <RHS>(lhs: Self, rhs: RHS) -> Bool where RHS : StringProtocol}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'StringProtocol'
+3 | 
+
+Swift.SIMD.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'SIMD'
+1 | protocol SIMD {
+2 | public static func == (a: Self, b: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'SIMD'
+3 | 
+
+Foundation.__BridgedNSError.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '__BridgedNSError'
+1 | protocol __BridgedNSError {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '__BridgedNSError'
+3 | 
+
+Foundation._BridgedStoredNSError.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_BridgedStoredNSError'
+1 | protocol _BridgedStoredNSError {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_BridgedStoredNSError'
+3 | 
+
+FoundationEssentials.AttributedStringProtocol.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'AttributedStringProtocol'
+1 | protocol AttributedStringProtocol {
+2 | public static func == <RHS>(lhs: Self, rhs: RHS) -> Bool where RHS : AttributedStringProtocol}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'AttributedStringProtocol'
+3 | 
+
+Swift.Equatable.==:2:13: note: protocol requires function '==' with type '(TorahPanelLoadTaskID, TorahPanelLoadTaskID) -> Bool'
+1 | protocol Equatable {
+2 | static func == (lhs: Self, rhs: Self) -> Bool}
+  |             `- note: protocol requires function '==' with type '(TorahPanelLoadTaskID, TorahPanelLoadTaskID) -> Bool'
+3 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:97:34: error: cannot find type 'TorahStudyToolID' in scope
+ 95 |     case none
+ 96 | 
+ 97 |     static func demand(for tool: TorahStudyToolID) -> Self {
+    |                                  `- error: cannot find type 'TorahStudyToolID' in scope
+ 98 |         switch tool {
+ 99 |         case .commentaries: .links
+[18/31] Compiling TorahInspectorUI TorahPanelLoadState.swift
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:87:15: error: cannot find type 'TorahStudyToolID' in scope
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |               `- error: cannot find type 'TorahStudyToolID' in scope
+ 88 | }
+ 89 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:85:8: error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Hashable'
+ 83 | }
+ 84 | 
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+    |        `- error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Hashable'
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |         `- note: stored property type '_' does not conform to protocol 'Hashable', preventing synthesized conformance of 'TorahPanelLoadTaskID' to 'Hashable'
+ 88 | }
+ 89 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:85:8: error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Equatable'
+ 83 | }
+ 84 | 
+ 85 | struct TorahPanelLoadTaskID: Hashable {
+    |        |- error: type 'TorahPanelLoadTaskID' does not conform to protocol 'Equatable'
+    |        `- note: add stubs for conformance
+ 86 |     let focusID: String
+ 87 |     let tool: TorahStudyToolID
+    |         `- note: stored property type '_' does not conform to protocol 'Equatable', preventing synthesized conformance of 'TorahPanelLoadTaskID' to 'Equatable'
+ 88 | }
+ 89 | 
+
+Swift.==:1:24: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'RawRepresentable'
+1 | @inlinable public func == <T>(lhs: T, rhs: T) -> Bool where T : RawRepresentable, T.RawValue : Equatable
+  |                        `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'RawRepresentable'
+
+Swift.FloatingPoint.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'FloatingPoint'
+1 | protocol FloatingPoint {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'FloatingPoint'
+3 | 
+
+Swift.BinaryInteger.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'BinaryInteger'
+1 | protocol BinaryInteger {
+2 | public static func == <Other>(lhs: Self, rhs: Other) -> Bool where Other : BinaryInteger}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'BinaryInteger'
+3 | 
+
+Swift._Pointer.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+1 | protocol _Pointer {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+3 | 
+
+Swift._Pointer.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+1 | protocol _Pointer {
+2 | @inlinable public static func == <Other>(lhs: Self, rhs: Other) -> Bool where Other : _Pointer}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_Pointer'
+3 | 
+
+Swift.Strideable.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'Strideable'
+1 | protocol Strideable {
+2 | @inlinable public static func == (x: Self, y: Self) -> Bool}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'Strideable'
+3 | 
+
+Swift.StringProtocol.==:2:31: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'StringProtocol'
+1 | protocol StringProtocol {
+2 | @inlinable public static func == <RHS>(lhs: Self, rhs: RHS) -> Bool where RHS : StringProtocol}
+  |                               `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'StringProtocol'
+3 | 
+
+Swift.SIMD.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'SIMD'
+1 | protocol SIMD {
+2 | public static func == (a: Self, b: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'SIMD'
+3 | 
+
+Foundation.__BridgedNSError.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '__BridgedNSError'
+1 | protocol __BridgedNSError {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '__BridgedNSError'
+3 | 
+
+Foundation._BridgedStoredNSError.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_BridgedStoredNSError'
+1 | protocol _BridgedStoredNSError {
+2 | public static func == (lhs: Self, rhs: Self) -> Bool}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to '_BridgedStoredNSError'
+3 | 
+
+FoundationEssentials.AttributedStringProtocol.==:2:20: note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'AttributedStringProtocol'
+1 | protocol AttributedStringProtocol {
+2 | public static func == <RHS>(lhs: Self, rhs: RHS) -> Bool where RHS : AttributedStringProtocol}
+  |                    `- note: candidate would match if 'TorahPanelLoadTaskID' conformed to 'AttributedStringProtocol'
+3 | 
+
+Swift.Equatable.==:2:13: note: protocol requires function '==' with type '(TorahPanelLoadTaskID, TorahPanelLoadTaskID) -> Bool'
+1 | protocol Equatable {
+2 | static func == (lhs: Self, rhs: Self) -> Bool}
+  |             `- note: protocol requires function '==' with type '(TorahPanelLoadTaskID, TorahPanelLoadTaskID) -> Bool'
+3 | 
+
+C:\Users\DAVID\Code\TorahInspectorKit-shared-related-access-20261121\.build\related-access-component\Sources\TorahInspectorUI\TorahPanelLoadState.swift:97:34: error: cannot find type 'TorahStudyToolID' in scope
+ 95 |     case none
+ 96 | 
+ 97 |     static func demand(for tool: TorahStudyToolID) -> Self {
+    |                                  `- error: cannot find type 'TorahStudyToolID' in scope
+ 98 |         switch tool {
+ 99 |         case .commentaries: .links

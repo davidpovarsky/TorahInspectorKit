@@ -1,0 +1,41 @@
+{
+  "head": "19d1b35397af4f10ae70cfb3f444c9de87383b53",
+  "merge_head": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "files": [
+    {
+      "path": "PROJECT_BOARD.md",
+      "before_sha256": "4ead8e73104514ec73519db6cd2efd7bfd89abcb43be54a043a7cd404ac1b835",
+      "before_lf_sha256": "76f2b3a47d6e63cacaf0ec7e5c3ea71aa20ef0159dfc4888ef04179f67a03796",
+      "after_sha256": "31f65bac6e473d1c379a30894a6fd64602ca2127b204a1e03188eec552c96452",
+      "bytes": 3025
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "before_sha256": "c310d152ea372322289fb681f33e4061861a552923f1d999bef93d67733784f4",
+      "before_lf_sha256": "ea4894117e14f7d3210242fa1c75708ee5be4614d3ed1dc0572e85fd528cc2d0",
+      "after_sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040",
+      "bytes": 17499
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorPresentationOptions.swift",
+      "before_sha256": "93108c769bda01fa19a03b9ad840edaa3f986fcbf1edfd7668d2c6d1ea49fb79",
+      "before_lf_sha256": "93108c769bda01fa19a03b9ad840edaa3f986fcbf1edfd7668d2c6d1ea49fb79",
+      "after_sha256": "74cd8e58df5076d3754009529f434dbfcb5aaedd40e020589d3e3d26852f843c",
+      "bytes": 1494
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "before_sha256": "8f0a789f3c96b0b4429a852a3f3542cca49aeb9784f6e4e13cdb964965ffa776",
+      "before_lf_sha256": "07f9573880aaf3aa3b9eefd9ad8aecda8f415102c6628b1581badf9559582931",
+      "after_sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "bytes": 24889
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "before_sha256": "5baac0d03f7c2c3e7166f61041749963a428b77a0b5ebbba32319c3263f73568",
+      "before_lf_sha256": "6678e42133ad15eee7eaa6148ed7b94e341be873d3d709be34658a97aa0d10ca",
+      "after_sha256": "cf23dec33df1df00d85e3fd333a838a60befa7a22a6ea2daed53dc86158df823",
+      "bytes": 54958
+    }
+  ]
+}

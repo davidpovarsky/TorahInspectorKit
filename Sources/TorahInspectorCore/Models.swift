@@ -273,6 +273,20 @@ public enum TorahInspectorSelectionScope: String, Hashable, Codable, Sendable {
     case segment
 }
 
+/// Localized presentation data supplied by the host at the moment a route is
+/// created. It is deliberately separate from canonical provider identity so
+/// adding or refreshing a label never changes navigation equality or cache
+/// keys.
+public struct TorahReferenceDisplayMetadata: Hashable, Sendable {
+    public let english: String?
+    public let hebrew: String?
+
+    public init(english: String? = nil, hebrew: String? = nil) {
+        self.english = english
+        self.hebrew = hebrew
+    }
+}
+
 public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
     public var id: String {
         "\(providerID):\(scope.rawValue):\(canonicalRef):\(preferredSegmentRef ?? "")"
@@ -283,17 +297,20 @@ public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
     /// An exact segment reference. It is never synthesized for section scope.
     public let preferredSegmentRef: String?
     public let scope: TorahInspectorSelectionScope
+    public let displayMetadata: TorahReferenceDisplayMetadata?
 
     public init(
         providerID: String,
         canonicalRef: String,
         preferredSegmentRef: String? = nil,
-        scope: TorahInspectorSelectionScope? = nil
+        scope: TorahInspectorSelectionScope? = nil,
+        displayMetadata: TorahReferenceDisplayMetadata? = nil
     ) {
         self.providerID = providerID
         self.canonicalRef = canonicalRef
         self.preferredSegmentRef = preferredSegmentRef
         self.scope = scope ?? (preferredSegmentRef == nil ? .section : .segment)
+        self.displayMetadata = displayMetadata
     }
 
     public var relationshipRef: String {
@@ -307,6 +324,20 @@ public struct TorahInspectorSelection: Identifiable, Hashable, Sendable {
 
     public func prefers(_ segment: TorahTextSegment) -> Bool {
         preferredSegmentRef == segment.canonicalRef
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.providerID == rhs.providerID
+            && lhs.canonicalRef == rhs.canonicalRef
+            && lhs.preferredSegmentRef == rhs.preferredSegmentRef
+            && lhs.scope == rhs.scope
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(providerID)
+        hasher.combine(canonicalRef)
+        hasher.combine(preferredSegmentRef)
+        hasher.combine(scope)
     }
 }
 
@@ -353,6 +384,120 @@ public struct TorahInspectorNote: Identifiable, Hashable, Sendable {
         self.selectedText = selectedText
         self.note = note
         self.tag = tag
+    }
+}
+
+public enum TorahRelatedDocumentKind: String, Hashable, Codable, Sendable {
+    case document
+    case note
+}
+
+public struct TorahRelatedDocument: Identifiable, Hashable, Sendable {
+    public let id: String
+    public let spaceID: String
+    public let objectID: String
+    public let title: String
+    public let snippet: String?
+    public let sourceReference: String
+    public let kind: TorahRelatedDocumentKind
+    public let blockID: String?
+    public let typeID: String?
+    public let iconEmoji: String?
+    public let iconName: String?
+    public let iconImageID: String?
+    public let updatedAt: Date?
+    public let canUnlink: Bool
+
+    public init(
+        id: String,
+        spaceID: String,
+        objectID: String,
+        title: String,
+        snippet: String? = nil,
+        sourceReference: String,
+        kind: TorahRelatedDocumentKind = .document,
+        blockID: String? = nil,
+        typeID: String? = nil,
+        iconEmoji: String? = nil,
+        iconName: String? = nil,
+        iconImageID: String? = nil,
+        updatedAt: Date? = nil,
+        canUnlink: Bool = true
+    ) {
+        self.id = id
+        self.spaceID = spaceID
+        self.objectID = objectID
+        self.title = title
+        self.snippet = snippet
+        self.sourceReference = sourceReference
+        self.kind = kind
+        self.blockID = blockID
+        self.typeID = typeID
+        self.iconEmoji = iconEmoji
+        self.iconName = iconName
+        self.iconImageID = iconImageID
+        self.updatedAt = updatedAt
+        self.canUnlink = canUnlink
+    }
+}
+
+public enum TorahRelatedDocumentsCoverage: String, Hashable, Codable, Sendable {
+    case spaceWide
+    case currentDocumentOnly
+    case indexedDocumentsOnly
+    /// Native candidates include document and block targets; completeness is not implied.
+    case indexedTargetsOnly
+}
+
+public enum TorahRelatedDocumentsLimitation: String, Hashable, Codable, Sendable {
+    case blockAssociationsNotIndexed
+    case sourceQuotesNotIndexed
+    case indexFreshnessUnverified
+    case resultLimitReached
+    case staleCandidates
+}
+
+public struct TorahRelatedDocumentsSnapshot: Equatable, Sendable {
+    public let documents: [TorahRelatedDocument]
+    public let coverage: TorahRelatedDocumentsCoverage
+    public let limitations: [TorahRelatedDocumentsLimitation]
+
+    public init(
+        documents: [TorahRelatedDocument],
+        coverage: TorahRelatedDocumentsCoverage,
+        limitations: [TorahRelatedDocumentsLimitation] = []
+    ) {
+        self.documents = documents
+        self.coverage = coverage
+        self.limitations = limitations
+    }
+
+    public static let unavailable = TorahRelatedDocumentsSnapshot(
+        documents: [],
+        coverage: .currentDocumentOnly
+    )
+}
+
+public struct TorahReaderViewport: Hashable, Sendable {
+    public let providerID: String
+    public let sectionReference: String
+    public let segmentReference: String
+    /// The visible segment's normalized vertical position in the viewport.
+    public let relativePosition: Double
+    public let loadedSectionReferences: [String]
+
+    public init(
+        providerID: String,
+        sectionReference: String,
+        segmentReference: String,
+        relativePosition: Double,
+        loadedSectionReferences: [String]
+    ) {
+        self.providerID = providerID
+        self.sectionReference = sectionReference
+        self.segmentReference = segmentReference
+        self.relativePosition = min(max(relativePosition, 0), 1)
+        self.loadedSectionReferences = loadedSectionReferences
     }
 }
 

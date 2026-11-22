@@ -1,0 +1,18 @@
+{
+  "scope": "Changed final request guard syntax only; unchanged other3 source parses reused",
+  "sha256": "cf23dec33df1df00d85e3fd333a838a60befa7a22a6ea2daed53dc86158df823",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-frontend",
+    "-parse",
+    "-swift-version",
+    "6",
+    "-target",
+    "arm64-apple-ios27.0-simulator",
+    "C:\\Users\\DAVID\\Code\\TorahInspectorKit-otzaria-anytype-common-20261122\\Sources\\TorahInspectorUI\\TorahSegmentDetailView.swift"
+  ],
+  "returncode": 0,
+  "seconds": 0.6399999999994179,
+  "stdout": "",
+  "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n"
+}

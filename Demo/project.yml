@@ -1,0 +1,39 @@
+name: TorahInspectorSheetDemo
+options:
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  TorahInspectorKit:
+    path: ..
+targets:
+  TorahInspectorSheetDemo:
+    type: application
+    platform: iOS
+    sources:
+      - App
+    dependencies:
+      - package: TorahInspectorKit
+        product: TorahInspectorCore
+      - package: TorahInspectorKit
+        product: TorahInspectorUI
+    settings:
+      base:
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Torah Inspector
+        PRODUCT_BUNDLE_IDENTIFIER: com.davidpovarsky.TorahInspectorSheetDemo
+        SWIFT_VERSION: 6.0
+        TARGETED_DEVICE_FAMILY: "2"
+  TorahInspectorSheetDemoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: TorahInspectorSheetDemo
+    settings:
+      base:
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.davidpovarsky.TorahInspectorSheetDemoUITests
+        SWIFT_VERSION: 6.0

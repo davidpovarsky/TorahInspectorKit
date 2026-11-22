@@ -85,6 +85,36 @@ struct RepositoryBoundaryTests {
         #expect(fetchCount == 1)
     }
 
+    @Test @MainActor func relationshipCacheIsReusedWhenToolsSwitchBack() async throws {
+        let linksCount = Counter()
+        let topicsCount = Counter()
+        let repository = TorahInspectorRepository(
+            textFetcher: { reference, _ in makeDocument(reference: reference) },
+            linksFetcher: { _, _ in
+                await linksCount.increment()
+                return [TorahLinkedSource(
+                    sourceRef: "Rashi on Genesis 1:1",
+                    category: "Commentary",
+                    type: "commentary"
+                )]
+            },
+            topicsFetcher: { _, _ in
+                await topicsCount.increment()
+                return [TorahLinkedTopic(slug: "creation")]
+            }
+        )
+
+        _ = try await repository.links(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.topics(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.links(for: "Genesis 1:1", providerID: "fixture")
+        _ = try await repository.topics(for: "Genesis 1:1", providerID: "fixture")
+
+        let finalLinksCount = await linksCount.value()
+        let finalTopicsCount = await topicsCount.value()
+        #expect(finalLinksCount == 1)
+        #expect(finalTopicsCount == 1)
+    }
+
     @Test @MainActor func optionalNotesProviderDefaultsToEmptyAndSupportsRefresh() async throws {
         let selection = TorahInspectorSelection(
             providerID: "fixture",
@@ -114,6 +144,43 @@ struct RepositoryBoundaryTests {
         _ = try await repository.notes(for: selection)
         let refreshedFetchCount = await count.value()
         #expect(refreshedFetchCount == 2)
+    }
+
+    @Test @MainActor func relatedDocumentsExposeCoverageAndRefreshTypedObjects() async throws {
+        let selection = TorahInspectorSelection(
+            providerID: "fixture",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:1"
+        )
+        let count = Counter()
+        let repository = TorahInspectorRepository(
+            textFetcher: { reference, _ in makeDocument(reference: reference) },
+            relatedDocumentsFetcher: { _ in
+                await count.increment()
+                return TorahRelatedDocumentsSnapshot(
+                    documents: [TorahRelatedDocument(
+                        id: "association-1",
+                        spaceID: "space",
+                        objectID: "object",
+                        title: "Study note",
+                        sourceReference: "Genesis 1:1",
+                        kind: .note
+                    )],
+                    coverage: .currentDocumentOnly
+                )
+            }
+        )
+        let first = try await repository.relatedDocuments(for: selection)
+        let cached = try await repository.relatedDocuments(for: selection)
+        #expect(first == cached)
+        #expect(first.coverage == .currentDocumentOnly)
+        #expect(first.documents.first?.objectID == "object")
+        let cachedCount = await count.value()
+        #expect(cachedCount == 1)
+        repository.invalidateRelatedDocuments(for: selection)
+        _ = try await repository.relatedDocuments(for: selection)
+        let refreshedCount = await count.value()
+        #expect(refreshedCount == 2)
     }
 }
 
@@ -296,11 +363,31 @@ struct InspectorIdentityTests {
         #expect(groups.commentaryGroups.map(\.id) == ["author:ibn-ezra", "author:ibn-caspi"])
     }
 
+    @Test func relationshipGroupingKeepsLargeProviderSnapshotsComplete() {
+        let sources = (0..<2_000).map { index in
+            TorahLinkedSource(
+                sourceRef: "Commentary \(index) on Genesis 1:1",
+                category: index.isMultiple(of: 4) ? "Tanakh" : "Commentary",
+                type: index.isMultiple(of: 4) ? "reference" : "commentary",
+                commentatorID: "author:\(index % 20)",
+                commentatorName: "Commentator \(index % 20)",
+                canonicalBookID: "book:\(index % 50)"
+            )
+        }
+
+        let groups = TorahRelationshipGroups(sources: sources)
+
+        #expect(groups.commentary.count == 1_500)
+        #expect(groups.linkedSources.count == 500)
+        #expect(groups.commentaryGroups.count == 15)
+    }
+
 #if canImport(UniformTypeIdentifiers)
     @Test func transferPayloadKeepsPinkhaUTTypeAndRoundTrips() throws {
         let transfer = TorahSourceTransfer(segment: makeDocument().segments[0], document: makeDocument())
         let decoded = try JSONDecoder().decode(TorahSourceTransfer.self, from: JSONEncoder().encode(transfer))
         #expect(decoded == transfer)
+        #expect(decoded.direction == "rtl")
         #expect(UTType.torahSource.identifier == "com.gloiiire.pinkha.torahSource")
     }
 #endif
@@ -345,6 +432,79 @@ struct ReaderNavigationStateTests {
         _ = next.onInitialLoadComplete(hasPrevious: true, hasNext: true, isUnderfilled: false)
         _ = next.onScrollOffsetChanged(offsetY: 399, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true)
         #expect(next.onScrollOffsetChanged(offsetY: 450, contentHeight: 1_000, containerHeight: 400, hasPrevious: true, hasNext: true).shouldLoadNext)
+    }
+
+    @Test func localizedDisplayMetadataDoesNotChangeSelectionIdentity() {
+        let canonical = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:5",
+            scope: .segment
+        )
+        let localized = TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:5",
+            scope: .segment,
+            displayMetadata: TorahReferenceDisplayMetadata(
+                english: "Genesis 1:5",
+                hebrew: "בראשית א׳:ה׳"
+            )
+        )
+
+        #expect(canonical == localized)
+        #expect(canonical.id == localized.id)
+        #expect(Set([canonical, localized]).count == 1)
+        #expect(localized.displayMetadata?.hebrew == "בראשית א׳:ה׳")
+    }
+
+
+    @Test func viewportClampsRelativePositionAndPreservesWindowIdentity() {
+        let viewport = TorahReaderViewport(
+            providerID: "sefaria",
+            sectionReference: "Genesis 1",
+            segmentReference: "Genesis 1:7",
+            relativePosition: 2,
+            loadedSectionReferences: ["Genesis 1", "Genesis 2"]
+        )
+        #expect(viewport.relativePosition == 1)
+        #expect(viewport.segmentReference == "Genesis 1:7")
+        #expect(viewport.loadedSectionReferences == ["Genesis 1", "Genesis 2"])
+    }
+
+    @Test @MainActor func trimmingAfterNextLoadSuppressesTriggersUntilAnchorRestores() {
+        let machine = TorahReaderScrollStateMachine()
+        _ = machine.onInitialLoadComplete(hasPrevious: true, hasNext: true, isUnderfilled: false)
+        _ = machine.onScrollOffsetChanged(
+            offsetY: 900,
+            contentHeight: 1_100,
+            containerHeight: 400,
+            hasPrevious: true,
+            hasNext: true
+        )
+        machine.onNextLoadCompleted(requiresAnchorRestoration: true)
+        #expect(machine.isRestoringAnchor)
+        #expect(machine.onScrollOffsetChanged(
+            offsetY: 0,
+            contentHeight: 1_100,
+            containerHeight: 400,
+            hasPrevious: true,
+            hasNext: true
+        ) == .idle)
+        machine.onAnchorRestorationCompleted()
+        #expect(!machine.isRestoringAnchor)
+    }
+
+    @Test func toolSelectorUsesHysteresisAndKeepsShortContentStable() {
+        var machine = TorahToolSelectorStateMachine(collapseDistance: 50, revealDistance: 20)
+        #expect(machine.update(offset: 80, contentHeight: 400, viewportHeight: 380) == .visible)
+        #expect(machine.update(offset: 30, contentHeight: 1_000, viewportHeight: 400) == .visible)
+        #expect(machine.update(offset: 90, contentHeight: 1_000, viewportHeight: 400) == .collapsed)
+        #expect(machine.update(offset: 82, contentHeight: 1_000, viewportHeight: 400) == .collapsed)
+        #expect(machine.update(offset: 60, contentHeight: 1_000, viewportHeight: 400) == .visible)
+        _ = machine.update(offset: 120, contentHeight: 1_000, viewportHeight: 400)
+        machine.revealManually()
+        #expect(machine.visibility == .visible)
     }
 }
 

@@ -1,0 +1,85 @@
+{
+  "scope": "Exact-source Core and byte-identical Foundation panel request/state declarations; excludes untested route/configuration declarations and SwiftUI rendering",
+  "startedAtUTC": "2026-11-21T23:47:25.540517+00:00",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.exe",
+    "test",
+    "--package-path",
+    "C:\\Users\\DAVID\\Code\\TorahInspectorKit-shared-related-access-20261121\\.build\\related-access-component",
+    "--jobs",
+    "2"
+  ],
+  "sourceSHA256": {
+    "Sources/TorahInspectorCore/Models.swift": {
+      "bytes": 23576,
+      "sha256": "e588802452c4b20c3036f334ee8afebc521f286cd0e93a4f3f1a457c8b7c7d92",
+      "canonicalLFSHA256": "9e2341edbad496cda0710b7a5b48fb3a1ac85ffa0bd0cfae876f566205586706"
+    },
+    "Sources/TorahInspectorCore/ProviderProtocols.swift": {
+      "bytes": 524,
+      "sha256": "b89f68c7515eec81f48375007f679dcc7218910087e9572733db42e2b408dfea",
+      "canonicalLFSHA256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273"
+    },
+    "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift": {
+      "bytes": 481,
+      "sha256": "9d4e9135ec4397e7913ca6599160676be97bb6ee980401453d22266886b14a19",
+      "canonicalLFSHA256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116"
+    },
+    "Sources/TorahInspectorCore/TorahInspectorRepository.swift": {
+      "bytes": 15566,
+      "sha256": "a93c5dd4e78e258d6cd2f2500849d3713b147f9acf28b80c6b721b8535303424",
+      "canonicalLFSHA256": "a93c5dd4e78e258d6cd2f2500849d3713b147f9acf28b80c6b721b8535303424"
+    },
+    "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift": {
+      "bytes": 3525,
+      "sha256": "386d0abb03634becfd412bf37b00fefb8472b3345f58eb49335c7bf85811a1c6",
+      "canonicalLFSHA256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc"
+    },
+    "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift": {
+      "bytes": 355,
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6",
+      "canonicalLFSHA256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6"
+    },
+    "Sources/TorahInspectorCore/TorahSourceTransfer.swift": {
+      "bytes": 3503,
+      "sha256": "0ad84899eb76511fc45715dbe2bc75b2d0789adfe94be5fee13ab6a453fcdc5f",
+      "canonicalLFSHA256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97"
+    },
+    "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift": {
+      "bytes": 2068,
+      "sha256": "9cfff5dc67a108234adac2df3ab52f3532de8312319d10bd6c11efb1f3519ef5",
+      "canonicalLFSHA256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729"
+    },
+    "Sources/TorahInspectorUI/TorahPanelLoadState.swift": {
+      "bytes": 2875,
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7",
+      "canonicalLFSHA256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7"
+    },
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": {
+      "bytes": 8315,
+      "sha256": "0670fa11f2431a751bfe3c5ddf10949394cd7a4670e0f342cab7961e9f322ff9",
+      "canonicalLFSHA256": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f"
+    },
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsAuthorityTests.swift": {
+      "bytes": 11158,
+      "sha256": "e79e027ff7ba77fb031e78b8e5fc27bb797ae11dc65ebade2a0b02553980699d",
+      "canonicalLFSHA256": "e79e027ff7ba77fb031e78b8e5fc27bb797ae11dc65ebade2a0b02553980699d"
+    },
+    "Tests/TorahInspectorUITests/TorahRelatedDocumentsAccessStateTests.swift": {
+      "bytes": 2234,
+      "sha256": "99e29d7f8e4cda29d0f362930e779a02beb70ef0c1eeefbbfda4781d1e9a6a3e",
+      "canonicalLFSHA256": "99e29d7f8e4cda29d0f362930e779a02beb70ef0c1eeefbbfda4781d1e9a6a3e"
+    }
+  },
+  "newTestMethods": 10,
+  "newArgumentCases": 12,
+  "affectedExistingMethods": 5,
+  "expectedActualCases": 17,
+  "compiledSourceOverride": {
+    "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+    "fullSourceSHA256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7",
+    "compiledPrefixSHA256": "9bdce3385e5e14fa49b83a48693f49b61a9cce3af367e004692941def7d599f6",
+    "boundary": "Exact original prefix before struct TorahLinksSnapshot; no rewritten state logic or substitute types"
+  },
+  "priorAttempt": "attempt-1; no test execution, missing unrelated route dependency"
+}

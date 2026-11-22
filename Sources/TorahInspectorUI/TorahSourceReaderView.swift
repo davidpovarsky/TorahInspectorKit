@@ -4,24 +4,28 @@ import TorahInspectorCore
 public struct TorahSegmentPreviewCard: View {
     public let segment: TorahTextSegment
     public let section: TorahTextDocument
+    public let theme: TorahInspectorTheme
     @Environment(\.locale) private var locale
 
-    public init(segment: TorahTextSegment, section: TorahTextDocument) {
+    public init(
+        segment: TorahTextSegment,
+        section: TorahTextDocument,
+        theme: TorahInspectorTheme = .native
+    ) {
         self.segment = segment
         self.section = section
+        self.theme = theme
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(TorahInspectorPresentation.reference(
+            theme.text(TorahInspectorPresentation.reference(
                 canonical: segment.canonicalRef,
                 hebrew: segment.hebrewRef,
                 locale: locale
-            ))
-                .font(.headline)
-                .foregroundStyle(.secondary)
-            Text(segment.text)
-                .font(.body)
+            ), role: .heading)
+                .foregroundStyle(theme.secondaryText)
+            theme.text(segment.text, role: .sourceBody)
                 .multilineTextAlignment(.leading)
         }
         .padding()
@@ -33,22 +37,28 @@ public struct TorahSegmentPreviewCard: View {
 public struct TorahDragPreview: View {
     public let title: String
     public let text: String
+    public let theme: TorahInspectorTheme
 
-    public init(title: String, text: String) {
+    public init(
+        title: String,
+        text: String,
+        theme: TorahInspectorTheme = .native
+    ) {
         self.title = title
         self.text = text
+        self.theme = theme
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.caption.bold()).foregroundStyle(.secondary)
-            Text(text).font(.subheadline).lineLimit(2).multilineTextAlignment(.leading)
+            theme.text(title, role: .caption).foregroundStyle(theme.secondaryText)
+            theme.text(text, role: .body).lineLimit(2).multilineTextAlignment(.leading)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
         .frame(maxWidth: 240, alignment: .leading)
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, TorahInspectorPresentation.layoutDirection(for: text))
     }
 }
 
@@ -58,10 +68,42 @@ private struct ScrollOffsetInfo: Equatable {
     let containerHeight: CGFloat
 }
 
+private struct SegmentFramePreferenceKey: PreferenceKey {
+    static let defaultValue: [String: CGRect] = [:]
+    static func reduce(value: inout [String: CGRect], nextValue: () -> [String: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+    }
+}
+
+private struct ReaderFallbackContentInfo: Equatable, Sendable {
+    let offset: CGFloat
+    let contentHeight: CGFloat
+
+    static let zero = Self(offset: 0, contentHeight: 0)
+}
+
+private struct ReaderFallbackContentPreferenceKey: PreferenceKey {
+    static let defaultValue = ReaderFallbackContentInfo.zero
+
+    static func reduce(value: inout ReaderFallbackContentInfo, nextValue: () -> ReaderFallbackContentInfo) {
+        value = nextValue()
+    }
+}
+
+private struct ReaderFallbackViewportPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 public struct TorahSourceReaderView: View {
     public let selection: TorahInspectorSelection
     public let repository: TorahInspectorRepository
     public let actions: TorahInspectorHostActions
+    public let session: TorahReaderSessionState
+    public let theme: TorahInspectorTheme
 
     @State private var sections: [TorahTextDocument] = []
     @State private var isLoading = false
@@ -70,17 +112,24 @@ public struct TorahSourceReaderView: View {
     @State private var errorMessage: String?
     @State private var stateMachine = TorahReaderScrollStateMachine()
     @Environment(\.locale) private var locale
+    @State private var viewportHeight: CGFloat = 1
+    @State private var pendingViewport: TorahReaderViewport?
+    @State private var fallbackContentInfo = ReaderFallbackContentInfo.zero
 
     private static let maximumSectionWindow = 7
 
     public init(
         selection: TorahInspectorSelection,
         repository: TorahInspectorRepository,
-        actions: TorahInspectorHostActions = TorahInspectorHostActions()
+        actions: TorahInspectorHostActions = TorahInspectorHostActions(),
+        session: TorahReaderSessionState = TorahReaderSessionState(),
+        theme: TorahInspectorTheme = .native
     ) {
         self.selection = selection
         self.repository = repository
         self.actions = actions
+        self.session = session
+        self.theme = theme
     }
 
     public var body: some View {
@@ -89,11 +138,11 @@ public struct TorahSourceReaderView: View {
                 ProgressView()
             } else if let error = errorMessage, sections.isEmpty {
                 ContentUnavailableView {
-                    Label(TorahStrings.text("No text available"), systemImage: "exclamationmark.triangle")
+                    Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
                 } description: {
                     Text(error)
                 } actions: {
-                    Button(TorahStrings.retry) { Task { await initialLoad() } }
+                    Button(TorahStrings.text("Retry", locale: locale)) { Task { await initialLoad() } }
                 }
             } else {
                 readerContent
@@ -102,18 +151,38 @@ public struct TorahSourceReaderView: View {
         .navigationTitle(displayTitle)
         .torahInlineNavigationTitle()
         .toolbar {
-            if let onClose = actions.onClose {
+            if actions.onRequestSearch != nil {
+                ToolbarItem {
+                    TorahInspectorSearchButton(
+                        actions: actions,
+                        accessibilityIdentifier: "torah-inspector-search-entry"
+                    )
+                }
+            } else if actions.showsCloseButton, let onClose = actions.onClose {
                 ToolbarItem {
                     Button(action: onClose) { Image(systemName: "xmark").foregroundStyle(.secondary) }
-                        .accessibilityLabel(TorahStrings.close)
+                        .accessibilityLabel(TorahStrings.text("Close", locale: locale))
+                        .accessibilityIdentifier("torah-inspector-close")
                 }
             }
         }
         .task(id: selection.id) { await initialLoad() }
+        .tint(theme.accent)
+        .foregroundStyle(theme.primaryText)
+        .background(theme.background)
     }
 
     private var displayTitle: String {
-        guard let section = sections.first else { return selection.canonicalRef }
+        guard let section = sections.first else {
+            return TorahInspectorPresentation.reference(selection: selection, locale: locale)
+        }
+        if TorahInspectorPresentation.prefersHebrew(locale) {
+            return TorahInspectorPresentation.reference(
+                selection: selection,
+                loadedHebrewReference: section.hebrewSectionRef,
+                locale: locale
+            )
+        }
         return TorahInspectorPresentation.reference(
             canonical: section.sectionRef,
             hebrew: section.hebrewSectionRef,
@@ -133,10 +202,27 @@ public struct TorahSourceReaderView: View {
                             containerHeight: geometry.containerSize.height
                         )
                     } action: { _, newValue in
+                        viewportHeight = max(newValue.containerHeight, 1)
                         handleScrollChange(newValue, proxy: proxy)
                     }
+                    .onPreferenceChange(SegmentFramePreferenceKey.self) { frames in
+                        recordViewport(from: frames)
+                    }
+                    .task(id: pendingViewport) { await restorePendingViewport(proxy: proxy) }
             } else {
                 readerScrollView
+                    .onPreferenceChange(SegmentFramePreferenceKey.self) { frames in
+                        recordViewport(from: frames)
+                    }
+                    .onPreferenceChange(ReaderFallbackContentPreferenceKey.self) { info in
+                        fallbackContentInfo = info
+                        handleFallbackScrollChange(proxy: proxy)
+                    }
+                    .onPreferenceChange(ReaderFallbackViewportPreferenceKey.self) { height in
+                        viewportHeight = max(height, 1)
+                        handleFallbackScrollChange(proxy: proxy)
+                    }
+                    .task(id: pendingViewport) { await restorePendingViewport(proxy: proxy) }
             }
         }
     }
@@ -151,53 +237,82 @@ public struct TorahSourceReaderView: View {
                             segmentRow(segment, in: section).id(segment.id)
                         }
                     } header: {
-                        Text(TorahInspectorPresentation.reference(
+                        theme.text(TorahInspectorPresentation.reference(
                             canonical: section.sectionRef,
                             hebrew: section.hebrewSectionRef,
                             locale: locale
-                        ))
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
+                        ), role: .heading)
+                            .foregroundStyle(theme.secondaryText)
                     }
                 }
                 if loadingNext { ProgressView().frame(maxWidth: .infinity) }
             }
             .padding()
+            .background {
+                GeometryReader { geometry in
+                    Color.clear.preference(
+                        key: ReaderFallbackContentPreferenceKey.self,
+                        value: ReaderFallbackContentInfo(
+                            offset: max(0, -geometry.frame(in: .named("torah-reader-viewport")).minY),
+                            contentHeight: geometry.size.height
+                        )
+                    )
+                }
+            }
         }
+        .coordinateSpace(name: "torah-reader-viewport")
+        .background {
+            GeometryReader { geometry in
+                Color.clear.preference(
+                    key: ReaderFallbackViewportPreferenceKey.self,
+                    value: geometry.size.height
+                )
+            }
+        }
+        .background(theme.background)
     }
 
     @ViewBuilder
     private func segmentRow(_ segment: TorahTextSegment, in section: TorahTextDocument) -> some View {
         let transfer = TorahSourceTransfer(segment: segment, document: section)
         NavigationLink(value: TorahInspectorRoute.segment(segment)) {
-            Text(segment.text)
-                .font(.body)
+            theme.text(segment.text, role: .sourceBody)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 7)
                 .padding(.horizontal, 5)
                 .background(
-                    selection.prefers(segment) ? Color.accentColor.opacity(0.10) : Color.clear,
+                    selection.prefers(segment) ? theme.accent.opacity(0.10) : Color.clear,
                     in: RoundedRectangle(cornerRadius: 6)
                 )
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("torah-reader-segment-\(segment.id)")
+        .background {
+            GeometryReader { geometry in
+                Color.clear.preference(
+                    key: SegmentFramePreferenceKey.self,
+                    value: [segment.id: geometry.frame(in: .named("torah-reader-viewport"))]
+                )
+            }
+        }
         .environment(\.layoutDirection, section.version.direction == "rtl" ? .rightToLeft : .leftToRight)
         .contextMenu {
             if let onInsertSegment = actions.onInsertSegment {
                 Button { onInsertSegment(transfer) } label: {
-                    Label(TorahStrings.insertIntoDocument, systemImage: "arrow.down.doc")
+                    Label(TorahStrings.text("Insert into document", locale: locale), systemImage: "arrow.down.doc")
                 }
+                .accessibilityIdentifier("torah-reader-insert-\(segment.id)")
             }
             Button { TorahPlatformClipboard.copy(segment.text) } label: {
-                Label(TorahStrings.copy, systemImage: "doc.on.doc")
+                Label(TorahStrings.text("Copy", locale: locale), systemImage: "doc.on.doc")
             }
             NavigationLink(value: TorahInspectorRoute.segment(segment)) {
-                Label(TorahStrings.viewDetails, systemImage: "info.circle")
+                Label(TorahStrings.text("View details", locale: locale), systemImage: "info.circle")
             }
         } preview: {
-            TorahSegmentPreviewCard(segment: segment, section: section)
+            TorahSegmentPreviewCard(segment: segment, section: section, theme: theme)
         }
         .draggable(transfer) {
             TorahDragPreview(
@@ -206,7 +321,8 @@ public struct TorahSourceReaderView: View {
                     hebrew: segment.hebrewRef,
                     locale: locale
                 ),
-                text: segment.text
+                text: segment.text,
+                theme: theme
             )
         }
         .onDrag { transfer.itemProvider }
@@ -221,7 +337,19 @@ public struct TorahSourceReaderView: View {
             hasNext: sections.last?.nextSectionRef != nil
         )
         if decision.shouldLoadPrevious { Task { await loadPrevious(proxy: proxy) } }
-        if decision.shouldLoadNext { Task { await loadNext() } }
+        if decision.shouldLoadNext { Task { await loadNext(proxy: proxy) } }
+    }
+
+    private func handleFallbackScrollChange(proxy: ScrollViewProxy) {
+        guard fallbackContentInfo.contentHeight > 0, viewportHeight > 1 else { return }
+        handleScrollChange(
+            ScrollOffsetInfo(
+                offsetY: fallbackContentInfo.offset,
+                contentHeight: fallbackContentInfo.contentHeight,
+                containerHeight: viewportHeight
+            ),
+            proxy: proxy
+        )
     }
 
     private func initialLoad() async {
@@ -229,8 +357,27 @@ public struct TorahSourceReaderView: View {
         errorMessage = nil
         defer { isLoading = false }
         do {
+            if let snapshot = session.snapshot(for: selection) {
+                sections = snapshot.sections
+                pendingViewport = snapshot.viewport
+                _ = stateMachine.onInitialLoadComplete(
+                    hasPrevious: sections.first?.previousSectionRef != nil,
+                    hasNext: sections.last?.nextSectionRef != nil,
+                    isUnderfilled: false
+                )
+                return
+            }
             let document = try await repository.document(for: selection.canonicalRef, providerID: selection.providerID)
             sections = [document]
+            if let preferred = selection.preferredSegmentRef {
+                pendingViewport = TorahReaderViewport(
+                    providerID: selection.providerID,
+                    sectionReference: document.sectionRef,
+                    segmentReference: preferred,
+                    relativePosition: 0.18,
+                    loadedSectionReferences: [document.sectionRef]
+                )
+            }
             let decision = stateMachine.onInitialLoadComplete(
                 hasPrevious: document.previousSectionRef != nil,
                 hasNext: document.nextSectionRef != nil,
@@ -239,7 +386,7 @@ public struct TorahSourceReaderView: View {
             if decision.shouldLoadNext { await loadNext() }
         } catch is CancellationError {
         } catch {
-            errorMessage = TorahStrings.message(for: error)
+            errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
 
@@ -247,7 +394,7 @@ public struct TorahSourceReaderView: View {
         guard !loadingPrevious, let reference = sections.first?.previousSectionRef else { return }
         loadingPrevious = true
         defer { loadingPrevious = false }
-        let anchorSegmentID = sections.first?.segments.first?.id
+        let anchorViewport = currentViewportSnapshot()
         do {
             let document = try await repository.document(for: reference, providerID: selection.providerID)
             guard !sections.contains(where: { $0.sectionRef == document.sectionRef }) else {
@@ -258,26 +405,38 @@ public struct TorahSourceReaderView: View {
             sections.insert(document, at: 0)
             trimFromEnd()
             stateMachine.onPreviousLoadCompleted()
-            if let anchorSegmentID { proxy.scrollTo(anchorSegmentID, anchor: .top) }
-            stateMachine.onAnchorRestorationCompleted()
+            if let anchorViewport {
+                pendingViewport = anchorViewport
+                await restorePendingViewport(proxy: proxy)
+            } else {
+                stateMachine.onAnchorRestorationCompleted()
+            }
         } catch {
             stateMachine.onPreviousLoadFailed()
         }
     }
 
-    private func loadNext() async {
+    private func loadNext(proxy: ScrollViewProxy? = nil) async {
         guard !loadingNext, let reference = sections.last?.nextSectionRef else { return }
         loadingNext = true
         defer { loadingNext = false }
+        let anchorViewport = currentViewportSnapshot()
         do {
             let document = try await repository.document(for: reference, providerID: selection.providerID)
             guard !sections.contains(where: { $0.sectionRef == document.sectionRef }) else {
                 stateMachine.onNextLoadCompleted()
                 return
             }
+            let requiresAnchorRestoration = sections.count >= Self.maximumSectionWindow
             sections.append(document)
             trimFromStart()
-            stateMachine.onNextLoadCompleted()
+            stateMachine.onNextLoadCompleted(requiresAnchorRestoration: requiresAnchorRestoration)
+            if requiresAnchorRestoration, let anchorViewport, let proxy {
+                pendingViewport = anchorViewport
+                await restorePendingViewport(proxy: proxy)
+            } else if requiresAnchorRestoration {
+                stateMachine.onAnchorRestorationCompleted()
+            }
         } catch {
             stateMachine.onNextLoadFailed()
         }
@@ -293,5 +452,60 @@ public struct TorahSourceReaderView: View {
         if sections.count > Self.maximumSectionWindow {
             sections.removeFirst(sections.count - Self.maximumSectionWindow)
         }
+    }
+
+    private func recordViewport(from frames: [String: CGRect]) {
+        guard !stateMachine.isRestoringAnchor,
+              let visible = frames
+                .filter({ $0.value.maxY > 0 && $0.value.minY < viewportHeight })
+                .min(by: { abs($0.value.minY) < abs($1.value.minY) }),
+              let section = sections.first(where: { section in
+                  section.segments.contains(where: { $0.id == visible.key })
+              }) else { return }
+        let relative = Double(min(max(visible.value.minY / max(viewportHeight, 1), 0), 1))
+        let viewport = TorahReaderViewport(
+            providerID: selection.providerID,
+            sectionReference: section.sectionRef,
+            segmentReference: visible.key,
+            relativePosition: relative,
+            loadedSectionReferences: sections.map(\.sectionRef)
+        )
+        pendingViewport = nil
+        session.save(selection: selection, sections: sections, viewport: viewport)
+    }
+
+    private func currentViewportSnapshot() -> TorahReaderViewport? {
+        session.snapshot(for: selection)?.viewport
+            ?? selection.preferredSegmentRef.map {
+                TorahReaderViewport(
+                    providerID: selection.providerID,
+                    sectionReference: sections.first?.sectionRef ?? selection.canonicalRef,
+                    segmentReference: $0,
+                    relativePosition: 0.18,
+                    loadedSectionReferences: sections.map(\.sectionRef)
+                )
+            }
+    }
+
+    private func restorePendingViewport(proxy: ScrollViewProxy) async {
+        guard let viewport = pendingViewport,
+              sections.contains(where: { section in
+                  section.segments.contains(where: { $0.id == viewport.segmentReference })
+              }) else { return }
+        await Task.yield()
+        proxy.scrollTo(
+            viewport.segmentReference,
+            anchor: UnitPoint(x: 0.5, y: viewport.relativePosition)
+        )
+        pendingViewport = nil
+        stateMachine.onAnchorRestorationCompleted()
+        let restoredViewport = TorahReaderViewport(
+            providerID: viewport.providerID,
+            sectionReference: viewport.sectionReference,
+            segmentReference: viewport.segmentReference,
+            relativePosition: viewport.relativePosition,
+            loadedSectionReferences: sections.map(\.sectionRef)
+        )
+        session.save(selection: selection, sections: sections, viewport: restoredViewport)
     }
 }

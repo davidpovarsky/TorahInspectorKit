@@ -1,0 +1,76 @@
+{
+  "baseCommit": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+  "executionStatus": "NOT_RUN",
+  "reason": "Bounded Windows SwiftPM discovery/link; no executed cases",
+  "sourceReview": "Independent shared_editor read found no blocker; no test execution by reviewer",
+  "files": {
+    ".gitattributes": {
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    "README.md": {
+      "bytes": 3670,
+      "sha256": "d9e1f4ea396d0a7d7061f139f96932dee499561560e5701035b8ed196a3698fa"
+    },
+    "test-profile.json": {
+      "bytes": 2522,
+      "sha256": "b169deffda12644e7f4a568898fb0f19753c32af9b637829a2f2882c0e459e7b"
+    },
+    "windows-component/attempt-1/execution.json": {
+      "bytes": 4178,
+      "sha256": "0e46943b3505ed7bee9e405dc2d97b627a6cbc31fec6c7388eb20810a10d8899"
+    },
+    "windows-component/attempt-1/source-manifest.json": {
+      "bytes": 3907,
+      "sha256": "8d0eb153dd969424f6d65905b78604c1cdfe654793c8d7eb7491538d176ed369"
+    },
+    "windows-component/attempt-1/test.log": {
+      "bytes": 13801,
+      "sha256": "2cb5b9ffdd91353968f6631b557df8acfead6ce22ec6b05369db3edf2bce20a0"
+    },
+    "windows-component/attempt-2/execution.json": {
+      "bytes": 4683,
+      "sha256": "ba09e2d60a0a1f1d654e346a58d158a08beb2ecdaa0fd83d1d958a9cb7467ee3"
+    },
+    "windows-component/attempt-2/source-manifest.json": {
+      "bytes": 4438,
+      "sha256": "e5c511db7f782e5be74aef6295bd4ba69aa228fbfbf5c69bbab588dc64cd61c3"
+    },
+    "windows-component/attempt-2/test.log": {
+      "bytes": 1745,
+      "sha256": "aeaf066f5467ffc78066097ebae0cf620d0681da06e0088de48b287b7474ae22"
+    },
+    "windows-component/attempt-3/execution.json": {
+      "bytes": 4791,
+      "sha256": "f0dd76afb9199e3ee6b1c80c382678ac58fcb7087938afa762705806ca4f2388"
+    },
+    "windows-component/attempt-3/source-manifest.json": {
+      "bytes": 4541,
+      "sha256": "626939b4c2d76b7d7da2667d3f07408737d5cb1d13a94459727ecb2059ecdc85"
+    },
+    "windows-component/attempt-3/test.log": {
+      "bytes": 1397,
+      "sha256": "d00a7fbc49ce57f12082b0178eac47829063e6d56feebd7633c71d23d31bc720"
+    },
+    "windows-component/final/execution.json": {
+      "bytes": 4954,
+      "sha256": "ce494421768d4573d591d69d8407cce4d8a4dd683f130de4bbf5b3fbaf91c6e0"
+    },
+    "windows-component/final/session-lifetime-syntax.json": {
+      "bytes": 327,
+      "sha256": "ca9d113cbae075a0b6df6ccd1dcffcbc067b07b94e39b0ef0c7a7d35dfbc6941"
+    },
+    "windows-component/final/source-manifest.json": {
+      "bytes": 4704,
+      "sha256": "fde2bef1d1ef08e07090ffb01eb6797d550a912513f6fbce79e8359d9a3d78a6"
+    },
+    "windows-component/final/syntax.json": {
+      "bytes": 4393,
+      "sha256": "32483a44b24c83e81252cd2c9f31a8984aae7b585d3258b6653c481a9bb91fbf"
+    },
+    "windows-component/final/test.log": {
+      "bytes": 615,
+      "sha256": "57e79308596a154cc184dbfaf4f08fb0527ce0ced3cbacfdbc3903969f179b81"
+    }
+  }
+}

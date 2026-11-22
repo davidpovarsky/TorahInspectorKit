@@ -18,6 +18,16 @@ enum TorahPlatformClipboard {
 }
 
 extension Color {
+    static var torahSystemBackground: Color {
+        #if canImport(UIKit)
+        Color(uiColor: .systemBackground)
+        #elseif canImport(AppKit)
+        Color(nsColor: .windowBackgroundColor)
+        #else
+        Color.clear
+        #endif
+    }
+
     static var torahSecondarySystemBackground: Color {
         #if canImport(UIKit)
         Color(uiColor: .secondarySystemBackground)

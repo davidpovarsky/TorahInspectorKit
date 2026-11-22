@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import TorahInspectorCore
 
 enum TorahInspectorPresentation {
@@ -21,6 +22,27 @@ enum TorahInspectorPresentation {
         return prefersHebrew(locale) ? (hebrew ?? canonical) : canonical
     }
 
+    /// Resolves an immediately displayable route title without exposing the
+    /// canonical English identifier while a Hebrew document is still loading.
+    static func reference(
+        selection: TorahInspectorSelection,
+        loadedHebrewReference: String? = nil,
+        locale: Locale
+    ) -> String {
+        if prefersHebrew(locale) {
+            return firstNonempty(
+                selection.displayMetadata?.hebrew,
+                loadedHebrewReference,
+                TorahStrings.text("Source", locale: locale)
+            )
+        }
+        return firstNonempty(
+            selection.displayMetadata?.english,
+            selection.canonicalRef,
+            TorahStrings.text("Source", locale: locale)
+        )
+    }
+
     static func linkedText(_ source: TorahLinkedSource, locale: Locale) -> String? {
         let preferred = prefersHebrew(locale) ? source.hebrewText : source.englishText
         let fallback = prefersHebrew(locale) ? source.englishText : source.hebrewText
@@ -31,6 +53,12 @@ enum TorahInspectorPresentation {
         let preferred = prefersHebrew(locale) ? topic.titleHe : topic.titleEn
         let fallback = prefersHebrew(locale) ? topic.titleEn : topic.titleHe
         return preferred ?? fallback ?? topic.slug
+    }
+
+    static func workTitle(_ work: TorahWorkGroup, locale: Locale) -> String {
+        let preferred = prefersHebrew(locale) ? work.hebrewTitle : work.title
+        let fallback = prefersHebrew(locale) ? work.title : work.hebrewTitle
+        return preferred ?? fallback ?? work.title
     }
 
     static func categoryTitle(_ category: TorahSourceCategory, locale: Locale) -> String {
@@ -46,5 +74,23 @@ enum TorahInspectorPresentation {
         case .other: key = "Other"
         }
         return TorahStrings.text(key, locale: locale)
+    }
+
+    static func layoutDirection(for text: String) -> LayoutDirection {
+        for scalar in text.unicodeScalars {
+            switch scalar.value {
+            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
+                return .rightToLeft
+            default:
+                if CharacterSet.letters.contains(scalar) { return .leftToRight }
+            }
+        }
+        return .leftToRight
+    }
+
+    private static func firstNonempty(_ values: String?...) -> String {
+        values.lazy
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first { !$0.isEmpty } ?? ""
     }
 }
