@@ -1,0 +1,11 @@
+{
+  "head": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "parents_required": [
+    "19d1b35397af4f10ae70cfb3f444c9de87383b53",
+    "511454e49450cb2581ddf77f644146ff3e30dbef"
+  ],
+  "profile_sha256": "4173184475ec205fc3df24bbb709e34170359f94630c78ae768cd0fb14e797c8",
+  "ref": "refs/heads/codex/otzaria-anytype-common-sdk-20261122",
+  "run_attempt": "1",
+  "run_id": "44968013856"
+}

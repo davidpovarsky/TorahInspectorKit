@@ -1,0 +1,203 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[56 / 108] TorahInspectorKit_TorahInspectorUI
+[59 / 108]
+[60 / 109] TorahInspectorCore
+[63 / 149]
+[67 / 149]
+[70 / 149]
+[72 / 149]
+[75 / 149]
+[78 / 149]
+[79 / 149]
+[83 / 149]
+[84 / 149]
+[86 / 149]
+[88 / 149]
+[91 / 149]
+[93 / 149]
+[94 / 149]
+[99 / 149] TorahInspectorCore
+[100 / 149] TorahInspectorCore
+[109 / 150]
+[111 / 150]
+[115 / 151] TorahInspectorCoreTests-product
+[116 / 157]
+[118 / 194]
+[120 / 194]
+[124 / 194]
+[126 / 194]
+[128 / 194] TorahInspectorCoreTests-product
+[136 / 194]
+[138 / 194]
+[141 / 194]
+[143 / 194]
+[144 / 194]
+[147 / 194]
+[150 / 194]
+[152 / 194]
+[153 / 194]
+[154 / 194]
+[155 / 194] TorahInspectorCoreTests-product
+[157 / 194] TorahInspectorCoreTests-product
+[157 / 194]
+[159 / 194]
+[160 / 194] TorahInspectorCore-product
+[161 / 194] TorahInspectorCore-product
+[162 / 194]
+[165 / 194]
+[168 / 194] TorahInspectorUI
+[169 / 194] TorahInspectorUI
+[171 / 194] TorahInspectorUI
+[177 / 194] TorahInspectorUI
+[183 / 195] TorahInspectorUITests-product
+[184 / 195] TorahInspectorUITests-product
+[186 / 201]
+[188 / 201] TorahInspectorUITests-product
+[190 / 201] TorahInspectorUITests-product
+[192 / 201] TorahInspectorUITests-product
+/Users/runner/work/TorahInspectorKit/TorahInspectorKit/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:94:21: [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m92 |[0;0m             #expect(true)
+ [0;36m93 |[0;0m         case .relationships, .segmentRelationships:
+ [0;36m94 |[0;0m             #expect([4;39mfalse[0;0m)
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+ [0;36m97 |[0;0m         case .relationships:
+ [0;36m98 |[0;0m             #expect([4;39mtrue[0;0m)
+    [0;36m|[0;0m                     `- [1;39mnote: [1;39m'#expect(_:_:)' will always pass here; use 'Bool(true)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             #expect(false)
+
+/Users/runner/work/TorahInspectorKit/TorahInspectorKit/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:100:21: [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m98 |[0;0m             #expect(true)
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             #expect([4;39mfalse[0;0m)
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+[0;36m101 |[0;0m         }
+[0;36m102 |[0;0m     }
+
+/Users/runner/work/TorahInspectorKit/TorahInspectorKit/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:90:16: [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m88 |[0;0m         let modeDefault = TorahInspectorEntryMode.sourceReader
+ [0;36m89 |[0;0m         let modeRelationships = TorahInspectorEntryMode.relationships
+ [0;36m90 |[0;0m         switch modeDefault {
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m91 |[0;0m         case .sourceReader:
+ [0;36m92 |[0;0m             #expect(true)
+ [0;36m93 |[0;0m         case .relationships, .segmentRelationships:
+ [0;36m94 |[0;0m             [4;39m#expect(false)[0;0m
+    [0;36m|[0;0m             `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkValue(false,expression: .__fromSyntaxNode("false"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    |[0;0m  [0;36m|[0;0m                      `- [1;39mnote: [1;39mwill never be executed[0;0m
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+
+/Users/runner/work/TorahInspectorKit/TorahInspectorKit/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:96:16: [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m94 |[0;0m             #expect(false)
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m97 |[0;0m         case .relationships:
+ [0;36m98 |[0;0m             #expect(true)
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             [4;39m#expect(false)[0;0m
+    [0;36m|[0;0m             `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkValue(false,expression: .__fromSyntaxNode("false"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    |[0;0m  [0;36m|[0;0m                      `- [1;39mnote: [1;39mwill never be executed[0;0m
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+[0;36m101 |[0;0m         }
+[0;36m102 |[0;0m     }
+[195 / 201] TorahInspectorUITests-product
+[197 / 201] TorahInspectorUITests-product
+Build complete! (48.42 sec)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Related document access presentation" started.
+◇ Test permanentAccessFailureDropsPreviousRows(reason:) started.
+◇ Test transientFailureKeepsPreviousRowsWithItsError() started.
+◇ Test staleDenialCannotClearANewerPanelRequest() started.
+◇ Test case passing 1 argument reason → .denied to permanentAccessFailureDropsPreviousRows(reason:) started.
+◇ Test ownerInvalidationClearsRowsAndRejectsLatePublication() started.
+◇ Test case passing 1 argument reason → .invalidated to permanentAccessFailureDropsPreviousRows(reason:) started.
+✔ Test permanentAccessFailureDropsPreviousRows(reason:) with 2 test cases passed after 0.001 seconds.
+✔ Test staleDenialCannotClearANewerPanelRequest() passed after 0.001 seconds.
+✔ Test ownerInvalidationClearsRowsAndRejectsLatePublication() passed after 0.001 seconds.
+✔ Test transientFailureKeepsPreviousRowsWithItsError() passed after 0.001 seconds.
+✔ Suite "Related document access presentation" passed after 0.001 seconds.
+✔ Test run with 4 tests in 1 suite passed after 0.002 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Reader navigation state" started.
+◇ Suite "Snippet hydration" started.
+◇ Suite "Related document current access" started.
+◇ Suite "Relationship classification & grouping" started.
+◇ Suite "Repository boundary" started.
+◇ Suite "Inspector document consumer cancellation" started.
+◇ Test preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch() started.
+◇ Test invalidatedLateResultCannotReplaceFreshRelatedDocuments() started.
+◇ Test refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback() started.
+◇ Test preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache() started.
+◇ Test fetchSnippetsUsesInlineTextWhenAvailable() started.
+◇ Test preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch() started.
+◇ Test fetchSnippetsFetchesAndCachesUnhydratedSources() started.
+◇ Test localizedDisplayMetadataDoesNotChangeSelectionIdentity() started.
+◇ Test relationshipGroupsPartitionsCommentariesAndLinksAccurately() started.
+◇ Test currentAccessFailureEvictsEverySelection(reason:) started.
+◇ Test infersCommentaryFromHebrewAndEnglishTokens() started.
+◇ Test relationshipCacheIsReusedWhenToolsSwitchBack() started.
+◇ Test simultaneousRequestsShareOneProviderFetch() started.
+◇ Test relatedDocumentsExposeCoverageAndRefreshTypedObjects() started.
+◇ Test mapsCombinedProviderAndRejectsAnotherProviderID() started.
+◇ Test providerErrorsArePreservedAndRetryStartsANewFetch() started.
+◇ Test optionalNotesProviderDefaultsToEmptyAndSupportsRefresh() started.
+◇ Test "A cancelled reader cannot publish a late document or cancel another reader" started.
+◇ Test case passing 1 argument reason → .denied to currentAccessFailureEvictsEverySelection(reason:) started.
+✔ Test localizedDisplayMetadataDoesNotChangeSelectionIdentity() passed after 0.001 seconds.
+✔ Suite "Reader navigation state" passed after 0.002 seconds.
+✔ Test relationshipGroupsPartitionsCommentariesAndLinksAccurately() passed after 0.005 seconds.
+✔ Test infersCommentaryFromHebrewAndEnglishTokens() passed after 0.005 seconds.
+✔ Suite "Relationship classification & grouping" passed after 0.005 seconds.
+✔ Test fetchSnippetsUsesInlineTextWhenAvailable() passed after 0.005 seconds.
+✔ Test fetchSnippetsFetchesAndCachesUnhydratedSources() passed after 0.006 seconds.
+✔ Suite "Snippet hydration" passed after 0.007 seconds.
+✔ Test preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch() passed after 0.007 seconds.
+✔ Test preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache() passed after 0.007 seconds.
+✔ Test preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch() passed after 0.007 seconds.
+✔ Test relationshipCacheIsReusedWhenToolsSwitchBack() passed after 0.006 seconds.
+✔ Test "A cancelled reader cannot publish a late document or cancel another reader" passed after 0.006 seconds.
+✔ Test providerErrorsArePreservedAndRetryStartsANewFetch() passed after 0.006 seconds.
+✔ Test relatedDocumentsExposeCoverageAndRefreshTypedObjects() passed after 0.006 seconds.
+◇ Test "Cancelling a joined reader preserves the original reader and shared cache" started.
+✔ Test invalidatedLateResultCannotReplaceFreshRelatedDocuments() passed after 0.007 seconds.
+✔ Test refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback() passed after 0.007 seconds.
+◇ Test case passing 1 argument reason → .invalidated to currentAccessFailureEvictsEverySelection(reason:) started.
+✔ Test optionalNotesProviderDefaultsToEmptyAndSupportsRefresh() passed after 0.006 seconds.
+✔ Test mapsCombinedProviderAndRejectsAnotherProviderID() passed after 0.007 seconds.
+✔ Test "Cancelling a joined reader preserves the original reader and shared cache" passed after 0.001 seconds.
+◇ Test "A cancelled cached read returns cancellation instead of stale success" started.
+✔ Test currentAccessFailureEvictsEverySelection(reason:) with 2 test cases passed after 0.007 seconds.
+◇ Test retirementRejectsCachedAndNewReadsUntilReactivation() started.
+✔ Test "A cancelled cached read returns cancellation instead of stale success" passed after 0.001 seconds.
+◇ Test "An already cancelled read never starts a provider request" started.
+✔ Test retirementRejectsCachedAndNewReadsUntilReactivation() passed after 0.001 seconds.
+✔ Test "An already cancelled read never starts a provider request" passed after 0.001 seconds.
+◇ Test retiredUncooperativeResultCannotReplaceReactivatedOwner() started.
+✔ Suite "Inspector document consumer cancellation" passed after 0.008 seconds.
+✔ Test retiredUncooperativeResultCannotReplaceReactivatedOwner() passed after 0.001 seconds.
+◇ Test currentDenialFencesAnUncooperativeOtherSelection() started.
+✔ Test currentDenialFencesAnUncooperativeOtherSelection() passed after 0.001 seconds.
+◇ Test lateDenialCannotInvalidateNewOwnerOrAnotherRepository() started.
+✔ Test lateDenialCannotInvalidateNewOwnerOrAnotherRepository() passed after 0.001 seconds.
+◇ Test transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss() started.
+✔ Test transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss() passed after 0.001 seconds.
+✔ Suite "Related document current access" passed after 0.010 seconds.
+✔ Test simultaneousRequestsShareOneProviderFetch() passed after 0.122 seconds.
+✔ Suite "Repository boundary" passed after 0.123 seconds.
+✔ Test run with 26 tests in 6 suites passed after 0.124 seconds.

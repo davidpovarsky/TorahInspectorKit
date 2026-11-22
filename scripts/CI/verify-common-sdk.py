@@ -37,12 +37,59 @@ def source_inputs():
 
 def verify_events(path, profile):
     records = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-    functions = {r['payload']['id']: r['payload'] for r in records
-                 if r.get('kind') == 'test' and r['payload'].get('kind') == 'function'}
+    assert all(r.get('version') == 0 and r.get('kind') in {'test', 'event'} for r in records)
+    declarations = {}
+    for record in records:
+        if record['kind'] == 'test':
+            declaration = record['payload']
+            assert declaration['id'] not in declarations and declaration['kind'] in {'suite', 'function'}
+            declarations[declaration['id']] = declaration
+    functions = {identity: value for identity, value in declarations.items() if value['kind'] == 'function'}
     events = [r['payload'] for r in records if r.get('kind') == 'event']
-    assert sum(e['kind'] == 'runStarted' for e in events) == 1
-    assert sum(e['kind'] == 'runEnded' for e in events) == 1
-    assert not any(e['kind'] in {'issueRecorded', 'testSkipped', 'testCancelled', 'testCaseCancelled'} for e in events)
+    # SwiftPM emits one complete sequential run for each test target in this
+    # package. Pair each target's events rather than requiring a single run.
+    allowed = {'runStarted', 'runEnded', 'testStarted', 'testEnded', 'testCaseStarted', 'testCaseEnded'}
+    active, runs = None, []
+    live_tests, live_cases = set(), set()
+    for event in events:
+        kind = event['kind']
+        assert kind in allowed, ('Unexpected issue, skip, cancellation or event', kind)
+        if kind == 'runStarted':
+            assert active is None
+            active = []
+        elif kind == 'runEnded':
+            assert active is not None and active and not live_tests and not live_cases
+            assert any(message.get('symbol') == 'pass' for message in event.get('messages', []))
+            targets = {identity.split('/')[0].split('.')[0] for identity in active}
+            assert len(targets) == 1
+            runs.append(targets.pop())
+            active = None
+        else:
+            assert active is not None and event['testID'] in declarations
+            identity = event['testID']
+            if kind == 'testStarted':
+                assert identity not in live_tests
+                live_tests.add(identity)
+                active.append(identity)
+            elif kind == 'testEnded':
+                assert identity in live_tests and not any(key[0] == identity for key in live_cases)
+                live_tests.remove(identity)
+            else:
+                assert identity in live_tests and identity in functions
+                case = (identity, event['_testCase']['id'])
+                assert case[1] in {item['id'] for item in functions[identity].get('_testCases', [])}
+                if kind == 'testCaseStarted':
+                    assert case not in live_cases
+                    live_cases.add(case)
+                else:
+                    assert case in live_cases
+                    live_cases.remove(case)
+    assert active is None and len(runs) == 2
+    assert set(runs) == {'TorahInspectorCoreTests', 'TorahInspectorUITests'}
+    all_started = Counter(e['testID'] for e in events if e['kind'] == 'testStarted')
+    all_ended = Counter(e['testID'] for e in events if e['kind'] == 'testEnded')
+    assert set(all_started) == set(declarations) and all_started == all_ended
+    assert all(count == 1 for count in all_started.values())
     started = Counter(e['testID'] for e in events if e['kind'] == 'testStarted' and e.get('testID') in functions)
     ended = Counter(e['testID'] for e in events if e['kind'] == 'testEnded' and e.get('testID') in functions)
     assert started == ended and all(n == 1 for n in started.values())
@@ -52,6 +99,9 @@ def verify_events(path, profile):
     assert set(names.values()) == set(profile['methods'])
     case_started = Counter(e['testID'] for e in events if e['kind'] == 'testCaseStarted')
     case_ended = Counter(e['testID'] for e in events if e['kind'] == 'testCaseEnded')
+    unique_case_started = Counter((e['testID'], e['_testCase']['id']) for e in events if e['kind'] == 'testCaseStarted')
+    unique_case_ended = Counter((e['testID'], e['_testCase']['id']) for e in events if e['kind'] == 'testCaseEnded')
+    assert unique_case_started == unique_case_ended and all(count == 1 for count in unique_case_started.values())
     cases = []
     for identity, name in sorted(names.items(), key=lambda x: x[1]):
         expected = profile['methods'][name]
@@ -63,7 +113,8 @@ def verify_events(path, profile):
         cases.append({'id': identity, 'name': name, 'cases': actual,
                       'case_started': case_started[identity], 'case_ended': case_ended[identity]})
     assert sum(x['cases'] for x in cases) == profile['expected_cases']
-    return {'methods': len(cases), 'cases': sum(x['cases'] for x in cases), 'identities': cases}
+    return {'methods': len(cases), 'cases': sum(x['cases'] for x in cases), 'identities': cases,
+            'target_runs': runs, 'all_suite_and_case_terminals_paired': True}
 
 def main():
     OUT.mkdir(parents=True, exist_ok=False)

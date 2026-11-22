@@ -1,0 +1,162 @@
+{
+  "head": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "parent_ancestry": "PASS",
+  "git_committed_sources": {
+    "Package.swift": {
+      "blob": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+      "bytes": 841,
+      "sha256": "2fd7d2fda776da4ee55a50a67d6cfd8b7171f2311304a8d836fb5e4b7ad86401"
+    },
+    "Sources/TorahInspectorCore/Models.swift": {
+      "blob": "aeb7cc4215456c2db9bda284f7e947c643507408",
+      "bytes": 24592,
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    "Sources/TorahInspectorCore/ProviderProtocols.swift": {
+      "blob": "d5c478fbe89c8d269d49c7b9818888dcd7ef39d0",
+      "bytes": 510,
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273"
+    },
+    "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift": {
+      "blob": "da439bb1cf8019e31bc172986de5b8eecaf30bb0",
+      "bytes": 461,
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116"
+    },
+    "Sources/TorahInspectorCore/TorahInspectorRepository.swift": {
+      "blob": "e1f57e96079f5d93be37e1c014760763bc8d1bc7",
+      "bytes": 17499,
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040"
+    },
+    "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift": {
+      "blob": "c67c042941bc3cbfda802b705ceebe5dff6c559a",
+      "bytes": 3444,
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc"
+    },
+    "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift": {
+      "blob": "7e2e810e4af9e2f9d848efc52739199e645b249d",
+      "bytes": 355,
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6"
+    },
+    "Sources/TorahInspectorCore/TorahSourceTransfer.swift": {
+      "blob": "17e72f52d4cdbd2355e04b384967f6f1b29c25de",
+      "bytes": 3410,
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97"
+    },
+    "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift": {
+      "blob": "64eabfd80cce2a21e403a8adcf887799c16fc738",
+      "bytes": 2005,
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729"
+    },
+    "Sources/TorahInspectorUI/Resources/en.lproj/Localizable.strings": {
+      "blob": "a261bafc60a6ad5fa6436428a1fe185dad8673af",
+      "bytes": 2866,
+      "sha256": "165de3b7f1894669a1bf9f7d0bd4cf01a7f2e29820455d55840efbebef0cda7d"
+    },
+    "Sources/TorahInspectorUI/Resources/he.lproj/Localizable.strings": {
+      "blob": "ce945ef0b7d638cddc99726a05a985dbff3347a7",
+      "bytes": 3525,
+      "sha256": "f81bcdabbf8136bdffb358b373f77c2191d3678f8763b944cff2e7c4c48c0f2b"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorAppearance.swift": {
+      "blob": "0ae46883a83524c6bdb9760c7cbc5ff8180468e4",
+      "bytes": 1902,
+      "sha256": "b6721610c9d7cdc9d7dd8b2bd67b62250cefb8780eb04b602b9d6d58ee0a6391"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorHostActions.swift": {
+      "blob": "5795b8c5473b9ca0ece657a5e5485984f5b59de3",
+      "bytes": 4897,
+      "sha256": "3d40b9315146e6f5e0c611fddc2ad6f3216796346189819b58d0cd5ca3792edf"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorPresentation.swift": {
+      "blob": "41309cc49bcd06c7d84410c6e947f539fe153766",
+      "bytes": 3656,
+      "sha256": "3b82fb35602991e6291ca8b982ca7e213a1d517ab9c4114a3c35c408f724253e"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorPresentationOptions.swift": {
+      "blob": "c527deea4c9ad928c5f817d86d6f835ffc85c15b",
+      "bytes": 1494,
+      "sha256": "74cd8e58df5076d3754009529f434dbfcb5aaedd40e020589d3e3d26852f843c"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorRoute.swift": {
+      "blob": "772c23e853c213ba701ce0d2b78ee91061fea54c",
+      "bytes": 3134,
+      "sha256": "837f7e9b025f0116bbe56b95fe4ccad628041df13c4089e04b0611f610370890"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorSheetPresenter.swift": {
+      "blob": "a874f3d6add12ca63c9c5da8ab3caed5008aa1c9",
+      "bytes": 13522,
+      "sha256": "ddf02a36ff95ebd328541d56a46df22cc4705cab707b0a72907a40696c4ac07e"
+    },
+    "Sources/TorahInspectorUI/TorahInspectorView.swift": {
+      "blob": "ee653e6205a577183548575a896044016178c851",
+      "bytes": 24889,
+      "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33"
+    },
+    "Sources/TorahInspectorUI/TorahPanelLoadState.swift": {
+      "blob": "d17bfe19e37af50d5a5bdec31b680c50d498ea89",
+      "bytes": 2875,
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7"
+    },
+    "Sources/TorahInspectorUI/TorahPlatformSupport.swift": {
+      "blob": "c16af3b74b962cb41a0ff9f9219754b1cc940efe",
+      "bytes": 1173,
+      "sha256": "d18af67058d664aea1bc80752fc92241017286bc408f7c044cb742add0443e12"
+    },
+    "Sources/TorahInspectorUI/TorahReaderSessionState.swift": {
+      "blob": "f7387ace46bd8e4934b578b63bbafa920eaf1df4",
+      "bytes": 649,
+      "sha256": "aad8efcd8a619b23f8e0ae107373364b5ab4853eb7b5678e70821c35465d1861"
+    },
+    "Sources/TorahInspectorUI/TorahSegmentDetailView.swift": {
+      "blob": "30465fe28f86643c3f6607e663e7712aeee6d872",
+      "bytes": 54958,
+      "sha256": "cf23dec33df1df00d85e3fd333a838a60befa7a22a6ea2daed53dc86158df823"
+    },
+    "Sources/TorahInspectorUI/TorahSourceReaderView.swift": {
+      "blob": "484f8361bd853286fc5e75fb811eeb83c6cf55e5",
+      "bytes": 20841,
+      "sha256": "5b0e3044c299242f701af6e6d48d4b7222337432cafc6a0e774f3398e5c49517"
+    },
+    "Sources/TorahInspectorUI/TorahStrings.swift": {
+      "blob": "9f1253bcc081837b35ef16b4829309ea44c4a24e",
+      "bytes": 2442,
+      "sha256": "2f4ab857ef68bf222592023f95e1fb80c157ec57441fa2a158a69d6f39c41200"
+    },
+    "Tests/TorahInspectorCoreTests/DocumentConsumerCancellationTests.swift": {
+      "blob": "20b2742f307061a53b8d63237b06bc588e14affc",
+      "bytes": 5596,
+      "sha256": "828e8ff9935d3148a300a538470e19ddc96c6d334673943f9344718367b001a2"
+    },
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsAuthorityTests.swift": {
+      "blob": "55a322e4ae1809680384f517411472128a91a190",
+      "bytes": 11161,
+      "sha256": "62606747bfeeca0f3ceda096f462258f5ee344839d22ecf3e4fb6ee7d0960514"
+    },
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": {
+      "blob": "5adffd07a7ca86bbde4bbb1269b382edbe27164c",
+      "bytes": 8129,
+      "sha256": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f"
+    },
+    "Tests/TorahInspectorCoreTests/TorahInspectorCoreTests.swift": {
+      "blob": "9d21fc9c767d40a36c062fb8475642e417b5d480",
+      "bytes": 27217,
+      "sha256": "a2ac6d0d29857f7ff1694fa709883d6a0c115a36a0eccf7f37d46b7b306b0487"
+    },
+    "Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift": {
+      "blob": "434ee2269d376b039d5ac2ecf3285b00bda36f42",
+      "bytes": 17154,
+      "sha256": "1c136d98b273ff1ff5f911be218d4ec93a293d059522f76516cf3336ebffd9f9"
+    },
+    "Tests/TorahInspectorUITests/TorahRelatedDocumentsAccessStateTests.swift": {
+      "blob": "060d15de3ccbe77fd86ea7e6b3b5da3c49691833",
+      "bytes": 2234,
+      "sha256": "99e29d7f8e4cda29d0f362930e779a02beb70ef0c1eeefbbfda4781d1e9a6a3e"
+    }
+  },
+  "archive_manifest_matches_exact_commit": true,
+  "source_files": 30,
+  "profile_sha256": "4173184475ec205fc3df24bbb709e34170359f94630c78ae768cd0fb14e797c8",
+  "profile_identity": "PASS",
+  "object_read_method": "git cat-file --batch; raw bytes without Windows checkout/archival EOL conversion",
+  "working_repo_status_readonly": ""
+}

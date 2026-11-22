@@ -1,0 +1,33 @@
+{
+  "compiled_inputs_unchanged": {
+    "Package.swift": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+    "Sources": "a1149e7a3bfd53c5854bea5dcb16db1f8bba85ba",
+    "Tests": "f329264e3450998cfd7e51c1cf0f53e32cd1894d"
+  },
+  "credit": "30 original methods / 32 cases passed at executed source; no Native UI credit",
+  "executed_source": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "github_run_conclusion_preserved": "failure",
+  "neutral_receipt_branch": "codex/otzaria-anytype-common-sdk-receipt-20261122",
+  "original_common_ref": "codex/otzaria-anytype-common-sdk-20261122",
+  "original_common_ref_before": "23db0f84e88d9ee9c7053c49de86903fc7bb5785\trefs/heads/codex/otzaria-anytype-common-sdk-20261122",
+  "parser_sha256": "567af439615cec78dfa6a13293176537d09296f4b3c59edd2f58558723609561",
+  "swift_tests_rerun": 0,
+  "workflow_dispatches": 0,
+  "workflow_triggers": {
+    ".github/workflows/ci.yml": {
+      "prefix": "name: Swift package CI\n\non:\n  workflow_dispatch:\n\n",
+      "receipt_push_matches": false,
+      "sha256": "2a5ef5dbe8dfc2b924e31c3a1535f96eb971c50ede4862863784452a3c0d4d2a"
+    },
+    ".github/workflows/common-sdk-focused.yml": {
+      "prefix": "name: Common SDK affected source tests\n\non:\n  push:\n    branches:\n      - codex/otzaria-anytype-common-sdk-20261122\n    paths:\n      - 'Package.swift'\n      - 'Sources/**'\n      - 'Tests/**'\n      - 'scripts/CI/verify-common-sdk.py'\n      - 'docs/validation/20261122-common-sdk/selection.json'\n      - '.github/workflows/common-sdk-focused.yml'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\n",
+      "receipt_push_matches": false,
+      "sha256": "fe3003027fa9f17416404d2ff04535ca37900cedff2bb6a94d789f2e1b7b3952"
+    },
+    ".github/workflows/ios27-side-sheet.yml": {
+      "prefix": "name: TorahInspectorKit iPadOS 27 Side Sheet\n\non:\n  workflow_dispatch:\n  push:\n    branches:\n      - feature/native-ios27-torah-side-sheet-2026-10-20\n      - feature/torah-inspector-eight-ux-fixes-2026-10-21\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: torah-inspector-kit-ios27-${{ github.ref }}\n  cancel-in-progress: true\n\n",
+      "receipt_push_matches": false,
+      "sha256": "2447c8dc171852c22b0a096e5a22d75017a80517bac2463925f22066a1da6244"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "github": {
+    "run": {
+      "id": 44968013856,
+      "head_sha": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+      "head_branch": "codex/otzaria-anytype-common-sdk-20261122",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_started_at": "2026-11-22T00:43:31Z",
+      "updated_at": "2026-11-22T00:44:59Z",
+      "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/actions/runs/44968013856",
+      "event": "push"
+    },
+    "jobs": {
+      "total_count": 1,
+      "jobs": [
+        {
+          "id": 137041313397,
+          "run_id": 44968013856,
+          "workflow_name": "Common SDK affected source tests",
+          "head_branch": "codex/otzaria-anytype-common-sdk-20261122",
+          "run_url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/actions/runs/44968013856",
+          "run_attempt": 1,
+          "node_id": "CR_kwDOUSynz88AAAAf6Ex-dQ",
+          "head_sha": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+          "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/actions/jobs/137041313397",
+          "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/actions/runs/44968013856/job/137041313397",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-11-22T00:43:31Z",
+          "started_at": "2026-11-22T00:43:35Z",
+          "completed_at": "2026-11-22T00:44:58Z",
+          "name": "affected-source-tests",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-11-22T00:43:35Z",
+              "completed_at": "2026-11-22T00:43:37Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-11-22T00:43:37Z",
+              "completed_at": "2026-11-22T00:43:40Z"
+            },
+            {
+              "name": "Run original affected package tests once",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 3,
+              "started_at": "2026-11-22T00:43:40Z",
+              "completed_at": "2026-11-22T00:44:53Z"
+            },
+            {
+              "name": "Retain exact source, toolchain, and native test events",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-11-22T00:44:53Z",
+              "completed_at": "2026-11-22T00:44:54Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-11-22T00:44:54Z",
+              "completed_at": "2026-11-22T00:44:56Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-11-22T00:44:56Z",
+              "completed_at": "2026-11-22T00:44:56Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/check-runs/137041313397",
+          "labels": [
+            "xcode-27"
+          ],
+          "runner_id": 1000022926,
+          "runner_name": "GitHub Actions 1000022926",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    "artifacts": {
+      "total_count": 1,
+      "artifacts": [
+        {
+          "id": 14732457038,
+          "node_id": "MDg6QXJ0aWZhY3QxNDczMjQ1NzAzOA==",
+          "name": "common-sdk-affected-23db0f84e88d9ee9c7053c49de86903fc7bb5785-1",
+          "size_in_bytes": 16140,
+          "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/actions/artifacts/14732457038",
+          "archive_download_url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/actions/artifacts/14732457038/zip",
+          "expired": false,
+          "digest": "sha256:c4935cf29a0b9eeb365a806ef5b68969c9395e66cef411002c809d1847eae0cc",
+          "created_at": "2026-11-22T00:44:55Z",
+          "updated_at": "2026-11-22T00:44:55Z",
+          "expires_at": "2026-12-22T00:44:54Z",
+          "workflow_run": {
+            "id": 44968013856,
+            "repository_id": 1361881039,
+            "head_repository_id": 1361881039,
+            "head_branch": "codex/otzaria-anytype-common-sdk-20261122",
+            "head_sha": "23db0f84e88d9ee9c7053c49de86903fc7bb5785"
+          }
+        }
+      ]
+    }
+  },
+  "archive": {
+    "bytes": 16140,
+    "sha256": "c4935cf29a0b9eeb365a806ef5b68969c9395e66cef411002c809d1847eae0cc"
+  },
+  "job_log": {
+    "bytes": 16961,
+    "sha256": "9373488badb445a52fcaa62a96f5209cd58514d1f304f302f5423a9dcedc8df6"
+  },
+  "windows_original_zip": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-common-sdk-audit-44968013856\\artifact-original.zip",
+  "windows_original_log": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-common-sdk-audit-44968013856\\job-original.log"
+}

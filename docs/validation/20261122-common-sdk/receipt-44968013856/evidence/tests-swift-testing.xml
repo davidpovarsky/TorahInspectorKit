@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="TestResults" errors="0" tests="4" failures="0" skipped="0" time="0.002006417">
+        <testcase classname="TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests" name="ownerInvalidationClearsRowsAndRejectsLatePublication()" time="0.001001958"/>
+        <testcase classname="TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests" name="staleDenialCannotClearANewerPanelRequest()" time="0.000998"/>
+        <testcase classname="TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests" name="transientFailureKeepsPreviousRowsWithItsError()" time="0.001357625"/>
+        <testcase classname="TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests" name="permanentAccessFailureDropsPreviousRows(reason:)" time="0.001009875"/>
+    </testsuite>
+    <testsuite name="TestResults" errors="0" tests="26" failures="0" skipped="0" time="0.124015458">
+        <testcase classname="TorahInspectorCoreTests" name="preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch()" time="0.007129167"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="currentAccessFailureEvictsEverySelection(reason:)" time="0.007792583"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="retiredUncooperativeResultCannotReplaceReactivatedOwner()" time="0.000304"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="retirementRejectsCachedAndNewReadsUntilReactivation()" time="0.000253375"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="lateDenialCannotInvalidateNewOwnerOrAnotherRepository()" time="0.000346167"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="currentDenialFencesAnUncooperativeOtherSelection()" time="0.00033875"/>
+        <testcase classname="TorahInspectorCoreTests.RelatedDocumentsAuthorityTests" name="transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss()" time="0.000339625"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="relatedDocumentsExposeCoverageAndRefreshTypedObjects()" time="0.006839458"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="simultaneousRequestsShareOneProviderFetch()" time="0.122587667"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="mapsCombinedProviderAndRejectsAnotherProviderID()" time="0.007116792"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="providerErrorsArePreservedAndRetryStartsANewFetch()" time="0.006699333"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="relationshipCacheIsReusedWhenToolsSwitchBack()" time="0.006833292"/>
+        <testcase classname="TorahInspectorCoreTests.RepositoryBoundaryTests" name="optionalNotesProviderDefaultsToEmptyAndSupportsRefresh()" time="0.006912709"/>
+        <testcase classname="TorahInspectorCoreTests.DocumentConsumerCancellationTests" name="cancelledOwnerPreservesSharedFetch()" time="0.006469667"/>
+        <testcase classname="TorahInspectorCoreTests.DocumentConsumerCancellationTests" name="cancelledColdReadDoesNotFetch()" time="0.00021725"/>
+        <testcase classname="TorahInspectorCoreTests.DocumentConsumerCancellationTests" name="cancelledJoinerPreservesOriginalReader()" time="0.000517"/>
+        <testcase classname="TorahInspectorCoreTests.DocumentConsumerCancellationTests" name="cancelledCachedReadIsRejected()" time="0.000255333"/>
+        <testcase classname="TorahInspectorCoreTests" name="refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback()" time="0.007547375"/>
+        <testcase classname="TorahInspectorCoreTests.RelationshipClassificationTests" name="infersCommentaryFromHebrewAndEnglishTokens()" time="0.005089208"/>
+        <testcase classname="TorahInspectorCoreTests.RelationshipClassificationTests" name="relationshipGroupsPartitionsCommentariesAndLinksAccurately()" time="0.005031125"/>
+        <testcase classname="TorahInspectorCoreTests" name="preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache()" time="0.007103084"/>
+        <testcase classname="TorahInspectorCoreTests.SnippetHydrationTests" name="fetchSnippetsUsesInlineTextWhenAvailable()" time="0.005774708"/>
+        <testcase classname="TorahInspectorCoreTests.SnippetHydrationTests" name="fetchSnippetsFetchesAndCachesUnhydratedSources()" time="0.006383834"/>
+        <testcase classname="TorahInspectorCoreTests.ReaderNavigationStateTests" name="localizedDisplayMetadataDoesNotChangeSelectionIdentity()" time="0.001499834"/>
+        <testcase classname="TorahInspectorCoreTests" name="invalidatedLateResultCannotReplaceFreshRelatedDocuments()" time="0.007585459"/>
+        <testcase classname="TorahInspectorCoreTests" name="preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch()" time="0.007124917"/>
+    </testsuite>
+</testsuites>

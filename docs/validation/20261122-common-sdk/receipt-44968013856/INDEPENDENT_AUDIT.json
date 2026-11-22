@@ -1,0 +1,531 @@
+{
+  "all_method_suite_and_parameter_case_starts_pair_once": true,
+  "artifact_bytes": 16140,
+  "artifact_id": 14732457038,
+  "artifact_sha256": "c4935cf29a0b9eeb365a806ef5b68969c9395e66cef411002c809d1847eae0cc",
+  "cases": 32,
+  "exact_failure": "scripts/CI/verify-common-sdk.py:43 asserts exactly one runStarted; actual original Swift stream contains two complete target runs",
+  "excluded": [
+    "iOS/iPad Native UI acceptance",
+    "ACL native runtime",
+    "full package unselected tests",
+    "Anytype Host native Save/reopen"
+  ],
+  "github_run_conclusion": "failure",
+  "github_run_status": "completed",
+  "github_run_url": "https://github.com/davidpovarsky/TorahInspectorKit/actions/runs/44968013856",
+  "identities": [
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/ownerInvalidationClearsRowsAndRejectsLatePublication()/TorahRelatedDocumentsAccessStateTests.swift:28:6",
+      "name": "ownerInvalidationClearsRowsAndRejectsLatePublication",
+      "passed_cases": 1,
+      "target": "TorahInspectorUITests"
+    },
+    {
+      "cases": [
+        {
+          "display_name": ".denied",
+          "ended": 1,
+          "id": "Parameterized test case ID: argumentIDs: [Testing.Test.Case.Argument.ID(bytes: [229, 83, 39, 24, 236, 203, 243, 183, 7, 239, 207, 86, 150, 163, 52, 123, 106, 194, 250, 208, 15, 227, 65, 127, 188, 244, 254, 103, 134, 57, 72, 33])], discriminator: 0, isStable: true",
+          "started": 1
+        },
+        {
+          "display_name": ".invalidated",
+          "ended": 1,
+          "id": "Parameterized test case ID: argumentIDs: [Testing.Test.Case.Argument.ID(bytes: [150, 142, 156, 236, 124, 156, 67, 32, 241, 118, 252, 57, 126, 204, 207, 234, 243, 133, 88, 146, 102, 237, 72, 100, 243, 84, 251, 215, 231, 76, 131, 19])], discriminator: 0, isStable: true",
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/permanentAccessFailureDropsPreviousRows(reason:)/TorahRelatedDocumentsAccessStateTests.swift:8:6",
+      "name": "permanentAccessFailureDropsPreviousRows",
+      "passed_cases": 2,
+      "target": "TorahInspectorUITests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/staleDenialCannotClearANewerPanelRequest()/TorahRelatedDocumentsAccessStateTests.swift:40:6",
+      "name": "staleDenialCannotClearANewerPanelRequest",
+      "passed_cases": 1,
+      "target": "TorahInspectorUITests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/transientFailureKeepsPreviousRowsWithItsError()/TorahRelatedDocumentsAccessStateTests.swift:19:6",
+      "name": "transientFailureKeepsPreviousRowsWithItsError",
+      "passed_cases": 1,
+      "target": "TorahInspectorUITests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.DocumentConsumerCancellationTests/cancelledCachedReadIsRejected()/DocumentConsumerCancellationTests.swift:47:6",
+      "name": "cancelledCachedReadIsRejected",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.DocumentConsumerCancellationTests/cancelledColdReadDoesNotFetch()/DocumentConsumerCancellationTests.swift:65:6",
+      "name": "cancelledColdReadDoesNotFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.DocumentConsumerCancellationTests/cancelledJoinerPreservesOriginalReader()/DocumentConsumerCancellationTests.swift:25:6",
+      "name": "cancelledJoinerPreservesOriginalReader",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.DocumentConsumerCancellationTests/cancelledOwnerPreservesSharedFetch()/DocumentConsumerCancellationTests.swift:8:6",
+      "name": "cancelledOwnerPreservesSharedFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.ReaderNavigationStateTests/localizedDisplayMetadataDoesNotChangeSelectionIdentity()/TorahInspectorCoreTests.swift:437:6",
+      "name": "localizedDisplayMetadataDoesNotChangeSelectionIdentity",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "display_name": ".denied",
+          "ended": 1,
+          "id": "Parameterized test case ID: argumentIDs: [Testing.Test.Case.Argument.ID(bytes: [229, 83, 39, 24, 236, 203, 243, 183, 7, 239, 207, 86, 150, 163, 52, 123, 106, 194, 250, 208, 15, 227, 65, 127, 188, 244, 254, 103, 134, 57, 72, 33])], discriminator: 0, isStable: true",
+          "started": 1
+        },
+        {
+          "display_name": ".invalidated",
+          "ended": 1,
+          "id": "Parameterized test case ID: argumentIDs: [Testing.Test.Case.Argument.ID(bytes: [150, 142, 156, 236, 124, 156, 67, 32, 241, 118, 252, 57, 126, 204, 207, 234, 243, 133, 88, 146, 102, 237, 72, 100, 243, 84, 251, 215, 231, 76, 131, 19])], discriminator: 0, isStable: true",
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/currentAccessFailureEvictsEverySelection(reason:)/RelatedDocumentsAuthorityTests.swift:74:6",
+      "name": "currentAccessFailureEvictsEverySelection",
+      "passed_cases": 2,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/currentDenialFencesAnUncooperativeOtherSelection()/RelatedDocumentsAuthorityTests.swift:158:6",
+      "name": "currentDenialFencesAnUncooperativeOtherSelection",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/lateDenialCannotInvalidateNewOwnerOrAnotherRepository()/RelatedDocumentsAuthorityTests.swift:188:6",
+      "name": "lateDenialCannotInvalidateNewOwnerOrAnotherRepository",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/retiredUncooperativeResultCannotReplaceReactivatedOwner()/RelatedDocumentsAuthorityTests.swift:132:6",
+      "name": "retiredUncooperativeResultCannotReplaceReactivatedOwner",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/retirementRejectsCachedAndNewReadsUntilReactivation()/RelatedDocumentsAuthorityTests.swift:104:6",
+      "name": "retirementRejectsCachedAndNewReadsUntilReactivation",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss()/RelatedDocumentsAuthorityTests.swift:223:6",
+      "name": "transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelationshipClassificationTests/infersCommentaryFromHebrewAndEnglishTokens()/TorahInspectorCoreTests.swift:562:6",
+      "name": "infersCommentaryFromHebrewAndEnglishTokens",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RelationshipClassificationTests/relationshipGroupsPartitionsCommentariesAndLinksAccurately()/TorahInspectorCoreTests.swift:610:6",
+      "name": "relationshipGroupsPartitionsCommentariesAndLinksAccurately",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/mapsCombinedProviderAndRejectsAnotherProviderID()/TorahInspectorCoreTests.swift:49:6",
+      "name": "mapsCombinedProviderAndRejectsAnotherProviderID",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/optionalNotesProviderDefaultsToEmptyAndSupportsRefresh()/TorahInspectorCoreTests.swift:118:6",
+      "name": "optionalNotesProviderDefaultsToEmptyAndSupportsRefresh",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/providerErrorsArePreservedAndRetryStartsANewFetch()/TorahInspectorCoreTests.swift:59:6",
+      "name": "providerErrorsArePreservedAndRetryStartsANewFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/relatedDocumentsExposeCoverageAndRefreshTypedObjects()/TorahInspectorCoreTests.swift:149:6",
+      "name": "relatedDocumentsExposeCoverageAndRefreshTypedObjects",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/relationshipCacheIsReusedWhenToolsSwitchBack()/TorahInspectorCoreTests.swift:88:6",
+      "name": "relationshipCacheIsReusedWhenToolsSwitchBack",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.RepositoryBoundaryTests/simultaneousRequestsShareOneProviderFetch()/TorahInspectorCoreTests.swift:74:6",
+      "name": "simultaneousRequestsShareOneProviderFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.SnippetHydrationTests/fetchSnippetsFetchesAndCachesUnhydratedSources()/TorahInspectorCoreTests.swift:529:6",
+      "name": "fetchSnippetsFetchesAndCachesUnhydratedSources",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.SnippetHydrationTests/fetchSnippetsUsesInlineTextWhenAvailable()/TorahInspectorCoreTests.swift:513:6",
+      "name": "fetchSnippetsUsesInlineTextWhenAvailable",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.invalidatedLateResultCannotReplaceFreshRelatedDocuments()/RelatedDocumentsRefreshTests.swift:119:2",
+      "name": "invalidatedLateResultCannotReplaceFreshRelatedDocuments",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache()/RelatedDocumentsRefreshTests.swift:36:2",
+      "name": "preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch()/RelatedDocumentsRefreshTests.swift:74:2",
+      "name": "preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch()/RelatedDocumentsRefreshTests.swift:55:2",
+      "name": "preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    },
+    {
+      "cases": [
+        {
+          "ended": 1,
+          "nonparameterized_function_start_end": true,
+          "started": 1
+        }
+      ],
+      "id": "TorahInspectorCoreTests.refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback()/RelatedDocumentsRefreshTests.swift:149:2",
+      "name": "refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback",
+      "passed_cases": 1,
+      "target": "TorahInspectorCoreTests"
+    }
+  ],
+  "issue_skip_cancellation_events": 0,
+  "member_sha256": {
+    "command.json": "21611c00611558d578841093665939cf578ddc9967d8734b20a4021dd2e55d6e",
+    "events.jsonl": "3cc33f61156e4dcfa04d9fd593d232d7232cf38557f21b88df03edf340534122",
+    "execution.json": "bc4786f6d0f535e6f5152935049604afa787e1490d428bdd88753c52867076c8",
+    "identity.json": "1eec77cb3d70851ddfeceb4af5b6dddd41e076464b75420c96c2c07af5df1ff0",
+    "selection.json": "737927dce033c85217e8f118ae851587c61ff3c51ca63a286c6b734da9290e02",
+    "source-after.json": "e79f8bc22abdc530425720e8233a899f9e7cd647a43f9808d76cbbd8c4fe5fc0",
+    "source-before.json": "e79f8bc22abdc530425720e8233a899f9e7cd647a43f9808d76cbbd8c4fe5fc0",
+    "swift-test.log": "b43e645638cbddf7395d800a6868ae9e5ac018e1ab52c563acd2b740c8ef8053",
+    "swift-version.log": "1b207d5b85484205225f907ee34c5c63fcf5ba15260fad7ceb129191841e9908",
+    "tests-swift-testing.xml": "20cbbd0f98f6fffb47059b66d2afdeecaf02b042f555bab34c78f6085757702d",
+    "xcode-version.log": "ee3fe26035862d2b9653c1a570be3eca4ee5be2815f0ce99ff2d8ffa3399e4c8"
+  },
+  "methods": 30,
+  "next_action": "Correct the reporting parser and replay this unchanged authenticated stream; no repeated Swift execution needed",
+  "runs": [
+    {
+      "cases": 5,
+      "methods": 4,
+      "run_ended": {
+        "instant": {
+          "absolute": 417.65342470800005,
+          "since1970": 1795308293.0188138
+        },
+        "kind": "runEnded",
+        "messages": [
+          {
+            "symbol": "pass",
+            "text": "Test run with 4 tests in 1 suite passed after 0.002 seconds."
+          }
+        ]
+      },
+      "run_ended_row": 21,
+      "run_started": {
+        "instant": {
+          "absolute": 417.65141829099997,
+          "since1970": 1795308293.016825
+        },
+        "kind": "runStarted",
+        "messages": [
+          {
+            "symbol": "default",
+            "text": "Test run started."
+          },
+          {
+            "symbol": "details",
+            "text": "Testing Library Version: 2084"
+          },
+          {
+            "symbol": "details",
+            "text": "Target Platform: arm64e-apple-macos14.0"
+          }
+        ]
+      },
+      "run_started_row": 6,
+      "suites_started_and_ended_once": 1,
+      "target": "TorahInspectorUITests"
+    },
+    {
+      "cases": 27,
+      "methods": 26,
+      "run_ended": {
+        "instant": {
+          "absolute": 417.856995708,
+          "since1970": 1795308293.222385
+        },
+        "kind": "runEnded",
+        "messages": [
+          {
+            "symbol": "pass",
+            "text": "Test run with 26 tests in 6 suites passed after 0.124 seconds."
+          }
+        ]
+      },
+      "run_ended_row": 123,
+      "run_started": {
+        "instant": {
+          "absolute": 417.73298025,
+          "since1970": 1795308293.098372
+        },
+        "kind": "runStarted",
+        "messages": [
+          {
+            "symbol": "default",
+            "text": "Test run started."
+          },
+          {
+            "symbol": "details",
+            "text": "Testing Library Version: 2084"
+          },
+          {
+            "symbol": "details",
+            "text": "Target Platform: arm64e-apple-macos14.0"
+          }
+        ]
+      },
+      "run_started_row": 54,
+      "suites_started_and_ended_once": 6,
+      "target": "TorahInspectorCoreTests"
+    }
+  ],
+  "source_before_after_and_git_raw_commit_equal": true,
+  "source_input_files": 30,
+  "source_sha": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "status": "ARCHIVED_SWIFT_EXECUTION_VERIFIED_30_METHODS_32_CASES",
+  "swift_exit_code": 0,
+  "swift_seconds": 67.78629750000005
+}

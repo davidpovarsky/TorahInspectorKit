@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "swift",
+    "test",
+    "--jobs",
+    "2",
+    "--filter",
+    "SnippetHydrationTests|RelationshipClassificationTests|DocumentConsumerCancellationTests|RelatedDocumentsAuthorityTests|TorahRelatedDocumentsAccessStateTests|RepositoryBoundaryTests|localizedDisplayMetadataDoesNotChangeSelectionIdentity|preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache|preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch|preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch|invalidatedLateResultCannotReplaceFreshRelatedDocuments|refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback",
+    "--event-stream-output-path",
+    "/Users/runner/work/TorahInspectorKit/TorahInspectorKit/.build/common-sdk-evidence/events.jsonl",
+    "--event-stream-version",
+    "0",
+    "--xunit-output",
+    "/Users/runner/work/TorahInspectorKit/TorahInspectorKit/.build/common-sdk-evidence/tests.xml"
+  ],
+  "timeout_seconds": 1800
+}
