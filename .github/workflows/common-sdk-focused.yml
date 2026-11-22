@@ -8,7 +8,7 @@ on:
       - 'Package.swift'
       - 'Sources/**'
       - 'Tests/**'
-      - 'Scripts/CI/verify-common-sdk.py'
+      - 'scripts/CI/verify-common-sdk.py'
       - 'docs/validation/20261122-common-sdk/selection.json'
       - '.github/workflows/common-sdk-focused.yml'
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
       - name: Run original affected package tests once
         timeout-minutes: 35
-        run: python3 Scripts/CI/verify-common-sdk.py
+        run: python3 scripts/CI/verify-common-sdk.py
       - name: Retain exact source, toolchain, and native test events
         if: always()
         uses: actions/upload-artifact@v4
