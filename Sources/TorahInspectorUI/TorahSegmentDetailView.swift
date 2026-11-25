@@ -327,7 +327,8 @@ public struct TorahSegmentDetailView: View {
                 actions: actions,
                 accessibilityIdentifier: "torah-inspector-search-entry"
             )
-        } else if actions.showsCloseButton, let onClose = actions.onClose {
+        }
+        if actions.showsCloseButton, let onClose = actions.onClose {
             Button(action: onClose) {
                 Image(systemName: "xmark")
                     .foregroundStyle(.secondary)

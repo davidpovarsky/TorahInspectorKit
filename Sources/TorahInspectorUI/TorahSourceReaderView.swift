@@ -158,7 +158,8 @@ public struct TorahSourceReaderView: View {
                         accessibilityIdentifier: "torah-inspector-search-entry"
                     )
                 }
-            } else if actions.showsCloseButton, let onClose = actions.onClose {
+            }
+            if actions.showsCloseButton, let onClose = actions.onClose {
                 ToolbarItem {
                     Button(action: onClose) { Image(systemName: "xmark").foregroundStyle(.secondary) }
                         .accessibilityLabel(TorahStrings.text("Close", locale: locale))

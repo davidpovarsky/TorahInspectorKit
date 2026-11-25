@@ -269,7 +269,8 @@ private struct TorahInspectorSheetPeekView: View {
                         actions: peekSearchActions,
                         accessibilityIdentifier: "torah-inspector-search-entry-peek"
                     )
-                } else if let onClose = actions.onClose {
+                }
+                if let onClose = actions.onClose {
                     Button(action: onClose) {
                         Image(systemName: "xmark")
                             .frame(width: 44, height: 44)

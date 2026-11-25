@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- The native peek and configured reader/detail toolbars must expose Search and Close independently. A host with search capability still needs an explicit dismissal action; neither scrolling content nor the system grabber proved dismissal in the original Pinkha iPadOS 27 Archive acceptance. The shared close callbacks and host selection binding are unchanged. The 2026-11-25 candidate keeps both controls; actual host acceptance remains pending.
+
 - Inspector outer material and redundant headings belong to the package, rather than the host's FloatingPanel. Opt-in `TorahInspectorPresentationOptions` keeps the same content/actions and default presentation for other hosts while allowing a host to trim that chrome. See `docs/FAITHFUL_HOST_CHROME.md`; visual acceptance is still required.
 
 - Related-document access loss is distinct from a transient refresh error: exact typed current denial or owner retirement clears all related caches and mounted previous rows for that repository, while ordinary offline/provider errors retain their warning and prior rows. Generation checks fence late failures before they can affect a new owner. The 2026-11-21 focused selection is 15 methods / 17 cases; Windows compiled the component/test sources but execution remains pending at this checkpoint. See docs/validation/20261121-related-read-authority.
