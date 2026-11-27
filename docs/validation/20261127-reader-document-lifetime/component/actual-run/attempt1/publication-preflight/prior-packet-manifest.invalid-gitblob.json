@@ -1,0 +1,273 @@
+{
+  "OracleWrites": 0,
+  "actualComponentCasesPassed": 9,
+  "actualComponentMethodsPassed": 6,
+  "baseTree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+  "files": [
+    {
+      "bytes": 2788,
+      "gitBlob": "e49c7a662d8e1923e1f8ba76cbaaa1b3d2cdc44d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/actual-compiler-filelists-readback.json",
+      "sha256": "2dfce1989fbfd3f034e7d89703df00a505bc052a83ff374690bc50436c883542",
+      "type": "blob"
+    },
+    {
+      "bytes": 2571,
+      "gitBlob": "92ebbbc3aeff0f15276b78a4632562d297243b30",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/actual-readback.json",
+      "sha256": "8e3893cc22710560bbdd45bd5dda9cd407e4b8197c64ce97d0d091c575174e24",
+      "type": "blob"
+    },
+    {
+      "bytes": 123,
+      "gitBlob": "457672ee53a21d7060922a0a02281a752d7523d8",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUI.SwiftFileList",
+      "sha256": "6ad177918e46ab6031acbf9e36baec9863b2468abb223621eaa110d0238744f5",
+      "type": "blob"
+    },
+    {
+      "bytes": 337,
+      "gitBlob": "72c23d53ac225403d4394b2dea701eb2203c9017",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUITests.SwiftFileList",
+      "sha256": "ad3f1981bc3cb54f25b7ee1c292b8b57454a79bc0d5b8fbc627794a7def04f6f",
+      "type": "blob"
+    },
+    {
+      "bytes": 221,
+      "gitBlob": "2ddbf6d72ed024abf17f83718dc41ce813f7c01c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUITests_test_runner.SwiftFileList",
+      "sha256": "afe7753aa58b728e89b3dd076388c03359146631e32d05aacac26c743c6024df",
+      "type": "blob"
+    },
+    {
+      "bytes": 52,
+      "gitBlob": "887883ba13aa982c872c813ac7077a06c4aa0b66",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/test_anchor.swift",
+      "sha256": "d2b850911ddaecacb7352eb27a226eb689951554747c610045a2337e5a910fbf",
+      "type": "blob"
+    },
+    {
+      "bytes": 18972,
+      "gitBlob": "3940580aa5e6d4435097d17ba6358fa183d6933d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/test_entry_point.swift",
+      "sha256": "2bd3ed107dee6b78c0927cc9602bd81533bc11a1c1b03c36ba827a3d9b669c65",
+      "type": "blob"
+    },
+    {
+      "bytes": 13093,
+      "gitBlob": "7a3fd0f82af2fd6794d4524cef164ea6f23b06b0",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/independent-component-review.json",
+      "sha256": "d463e768a74f7017f7655dd27bfee5c813db8fb0e8264ca9d3a9a94ea0da8b62",
+      "type": "blob"
+    },
+    {
+      "bytes": 7066,
+      "gitBlob": "fbed28ff0ce9c4e7fc6af3f976aade6d3522bcd9",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/interfaces-inspection-output-truncation.json",
+      "sha256": "0cb178981e90bb780c01f6d373390f73ed3b47d895efa47b5776f346a0120a66",
+      "type": "blob"
+    },
+    {
+      "bytes": 604,
+      "gitBlob": "2289e805ba961002f05a3888e06b8db8a1e9ef5a",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/invocation.json",
+      "sha256": "354133589106abfba1a2e22c675d6f1ce69489abe972b957890fb58f6f8c8f90",
+      "type": "blob"
+    },
+    {
+      "bytes": 100,
+      "gitBlob": "1558eee4f827bd3f2946378f0dec1b3515146aef",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/process.json",
+      "sha256": "4b1f7e28c9e00347f70ce85df48000bce3afee0f5518f340d9f1f99b7800de9a",
+      "type": "blob"
+    },
+    {
+      "bytes": 7318,
+      "gitBlob": "1d663e22d06774a5343d385b4b8a16c98360138a",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/receipt.json",
+      "sha256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c",
+      "type": "blob"
+    },
+    {
+      "bytes": 4220,
+      "gitBlob": "65a2d20959566fb05691b1e5a395f95b34bfc7a6",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/resource-samples.json",
+      "sha256": "3e78aa5c077941389e521e643271565c20f72cb37e5887f31507f46c7b1b75ba",
+      "type": "blob"
+    },
+    {
+      "bytes": 856,
+      "gitBlob": "f242fa54b3611bd10a43347b09c129246f1b3bd6",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/root-first-compile-log-inspection.json",
+      "sha256": "83ffa1aa073703b5ea82b61f3d700d5f0bcc5f76fd39eece2023f704869aa999",
+      "type": "blob"
+    },
+    {
+      "bytes": 5797,
+      "gitBlob": "330d734862fd6b116196ffd2daa4e9320b335bfe",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/root-qualification.json",
+      "sha256": "0ee97117c10c528dc5a3e74ceb828c2e019a54abb18c6da4a563275a7db37802",
+      "type": "blob"
+    },
+    {
+      "bytes": 1534,
+      "gitBlob": "35355aec9c48558cebde1b2585f658555392f767",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/sentinel-job.json",
+      "sha256": "f552a35277a9011d4a5df9b8517284624c29e62dff0659285805a40984d12f80",
+      "type": "blob"
+    },
+    {
+      "bytes": 474,
+      "gitBlob": "529b6e86c02329a6dc758fc6b8b63376c1ce2d0d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/source-inputs-after.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563",
+      "type": "blob"
+    },
+    {
+      "bytes": 474,
+      "gitBlob": "529b6e86c02329a6dc758fc6b8b63376c1ce2d0d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/source-inputs-before.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563",
+      "type": "blob"
+    },
+    {
+      "bytes": 61852,
+      "gitBlob": "305943789c0ed37d83f7ffabb7ff183db638074b",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/stderr.original.log",
+      "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf",
+      "type": "blob"
+    },
+    {
+      "bytes": 3491,
+      "gitBlob": "08ee0f6f83593337e829fb86ad600f6df08a6a70",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f",
+      "type": "blob"
+    },
+    {
+      "bytes": 76,
+      "gitBlob": "29dbb8a7077db6396f4cab4f511b67f26d2b46c1",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+      "type": "blob"
+    },
+    {
+      "bytes": 5801,
+      "gitBlob": "5f1ecfb7611a742a7adf9111e662a43c897bc4a0",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/README.md",
+      "sha256": "9a20787e688e564564b05289761b35e87b4c61d9c67476d59235bf771bc4b14e",
+      "type": "blob"
+    },
+    {
+      "bytes": 1967,
+      "gitBlob": "39042740f10ce88c846885c8dac20dc0efc20bd1",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/base-commit.json",
+      "sha256": "7c4b66cbe3121c81e71bf458369b26a7ce940e6b6439a2ac14ab1c37f3c9d262",
+      "type": "blob"
+    },
+    {
+      "bytes": 65245,
+      "gitBlob": "97fd70a45e48775e1041bcfdb06c2aabfc702222",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/base-tree.json",
+      "sha256": "8d3607b91bb8037fa9d23211bfaf9795a5ca339c33c83654c88ca74a5a18217b",
+      "type": "blob"
+    },
+    {
+      "bytes": 482,
+      "gitBlob": "3afca6ea782782278e25a5d636ee5ec7f2e8a7ba",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/default-ref.json",
+      "sha256": "bd2a3f4ae4c5ccbbade7b63315dbd1480954b7acbe96f2b727007435a8ec0546",
+      "type": "blob"
+    },
+    {
+      "bytes": 2507,
+      "gitBlob": "91bf73a31227b7c36e46ee8e5e2bf0a748b462cc",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/default-workflow-list.json",
+      "sha256": "9aee7d18323b9ae16bdbea05433e58f8db99b4a55f5ed01c84f4115d29dcc1cc",
+      "type": "blob"
+    },
+    {
+      "bytes": 2225,
+      "gitBlob": "7dfb784149f494bddff7a72327f6a743844dd56c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflow-preflight.json",
+      "sha256": "c11526e005558ab9ea94e6f9b061d343fe44a077384559a167638d2c098b7eb1",
+      "type": "blob"
+    },
+    {
+      "bytes": 1817,
+      "gitBlob": "47ee5260ad446bc9af45069749eb0ad49f60ce88",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-ci.yml",
+      "sha256": "2a5ef5dbe8dfc2b924e31c3a1535f96eb971c50ede4862863784452a3c0d4d2a",
+      "type": "blob"
+    },
+    {
+      "bytes": 1027,
+      "gitBlob": "150e2b36f9411fd41e2938035c3fa984c5ae7ecd",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-common-sdk-focused.yml",
+      "sha256": "fe3003027fa9f17416404d2ff04535ca37900cedff2bb6a94d789f2e1b7b3952",
+      "type": "blob"
+    },
+    {
+      "bytes": 6198,
+      "gitBlob": "95e4c2f92957fe77819a5a3d19d3d4e37b7e16e3",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-ios27-side-sheet.yml",
+      "sha256": "2447c8dc171852c22b0a096e5a22d75017a80517bac2463925f22066a1da6244",
+      "type": "blob"
+    },
+    {
+      "bytes": 1198,
+      "gitBlob": "95d5031e9432c5373ed024d39c5e422e735589fd",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/default-ci.yml",
+      "sha256": "894e14ce8b2fc57556b96991245c2a894c114861e12aed1a8357127c11e4d778",
+      "type": "blob"
+    },
+    {
+      "bytes": 1223,
+      "gitBlob": "49608fab21858831b744467ee7c88590113ef5d6",
+      "mode": "100644",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/default-live-activity-bridge.yml",
+      "sha256": "25b526a750a0209e5ed5d57d5fbf8b4bee7d10e31cc304a814191604e175ca12",
+      "type": "blob"
+    }
+  ],
+  "fullKitAppNativeAppleUIAcceptance": "NOT_RUN",
+  "newOnlyPrefix": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/",
+  "originalLeafCount": 155,
+  "originalSourceAndEvidenceRetained": true,
+  "parentCommit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "proposedBranch": "codex/chatgpt-wave15-wave2-reader-component-evidence-20261127",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "schema": "g04-component-evidence-packet-v1",
+  "workflowDispatchIssued": false
+}

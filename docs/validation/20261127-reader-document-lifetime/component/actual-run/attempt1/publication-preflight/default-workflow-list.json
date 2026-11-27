@@ -1,0 +1,34 @@
+[
+  {
+    "name": "ci.yml",
+    "path": ".github/workflows/ci.yml",
+    "sha": "75bb46ca883ed9dc4fac66c88e959d6fdaad2b94",
+    "size": 1198,
+    "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/contents/.github/workflows/ci.yml?ref=2127287f537e78d3c01b062b8b46425b246274c2",
+    "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/blob/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/ci.yml",
+    "git_url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/75bb46ca883ed9dc4fac66c88e959d6fdaad2b94",
+    "download_url": "https://raw.githubusercontent.com/davidpovarsky/TorahInspectorKit/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/ci.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/contents/.github/workflows/ci.yml?ref=2127287f537e78d3c01b062b8b46425b246274c2",
+      "git": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/75bb46ca883ed9dc4fac66c88e959d6fdaad2b94",
+      "html": "https://github.com/davidpovarsky/TorahInspectorKit/blob/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/ci.yml"
+    }
+  },
+  {
+    "name": "live-activity-bridge.yml",
+    "path": ".github/workflows/live-activity-bridge.yml",
+    "sha": "b762796c3e2228ae2c197d63319f35907b112707",
+    "size": 1223,
+    "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/contents/.github/workflows/live-activity-bridge.yml?ref=2127287f537e78d3c01b062b8b46425b246274c2",
+    "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/blob/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/live-activity-bridge.yml",
+    "git_url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b762796c3e2228ae2c197d63319f35907b112707",
+    "download_url": "https://raw.githubusercontent.com/davidpovarsky/TorahInspectorKit/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/live-activity-bridge.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/contents/.github/workflows/live-activity-bridge.yml?ref=2127287f537e78d3c01b062b8b46425b246274c2",
+      "git": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b762796c3e2228ae2c197d63319f35907b112707",
+      "html": "https://github.com/davidpovarsky/TorahInspectorKit/blob/2127287f537e78d3c01b062b8b46425b246274c2/.github/workflows/live-activity-bridge.yml"
+    }
+  }
+]

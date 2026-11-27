@@ -1,0 +1,37 @@
+name: Common SDK affected source tests
+
+on:
+  push:
+    branches:
+      - codex/otzaria-anytype-common-sdk-20261122
+    paths:
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+      - 'scripts/CI/verify-common-sdk.py'
+      - 'docs/validation/20261122-common-sdk/selection.json'
+      - '.github/workflows/common-sdk-focused.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  affected-source-tests:
+    runs-on: xcode-27
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run original affected package tests once
+        timeout-minutes: 35
+        run: python3 scripts/CI/verify-common-sdk.py
+      - name: Retain exact source, toolchain, and native test events
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: common-sdk-affected-${{ github.sha }}-${{ github.run_attempt }}
+          path: .build/common-sdk-evidence
+          if-no-files-found: error
+          retention-days: 30

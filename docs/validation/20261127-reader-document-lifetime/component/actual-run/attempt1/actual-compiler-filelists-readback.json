@@ -1,0 +1,52 @@
+{
+  "compilerInvocationRepeated": false,
+  "filelists": [
+    {
+      "bytes": 123,
+      "members": [
+        {
+          "bytes": 1858,
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/component/Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+          "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+        }
+      ],
+      "module": "TorahInspectorUI",
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList",
+      "sha256": "6ad177918e46ab6031acbf9e36baec9863b2468abb223621eaa110d0238744f5"
+    },
+    {
+      "bytes": 337,
+      "members": [
+        {
+          "bytes": 52,
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/test_anchor.swift",
+          "sha256": "d2b850911ddaecacb7352eb27a226eb689951554747c610045a2337e5a910fbf"
+        },
+        {
+          "bytes": 6211,
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/component/Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+          "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+        }
+      ],
+      "module": "TorahInspectorUITests",
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList",
+      "sha256": "ad3f1981bc3cb54f25b7ee1c292b8b57454a79bc0d5b8fbc627794a7def04f6f"
+    },
+    {
+      "bytes": 221,
+      "members": [
+        {
+          "bytes": 18972,
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/test_entry_point.swift",
+          "sha256": "2bd3ed107dee6b78c0927cc9602bd81533bc11a1c1b03c36ba827a3d9b669c65"
+        }
+      ],
+      "module": "TorahInspectorUITests_test_runner",
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList",
+      "sha256": "afe7753aa58b728e89b3dd076388c03359146631e32d05aacac26c743c6024df"
+    }
+  ],
+  "historicalGroupProbed": false,
+  "readOnly": true,
+  "schema": "g04-actual-compiler-filelists-readback-v1"
+}

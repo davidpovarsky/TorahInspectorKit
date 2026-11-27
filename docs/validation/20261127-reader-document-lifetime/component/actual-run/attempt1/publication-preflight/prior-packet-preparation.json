@@ -1,0 +1,12 @@
+{
+  "baseTree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+  "branch": "codex/chatgpt-wave15-wave2-reader-component-evidence-20261127",
+  "bytes": 233794,
+  "existingLeavesChanged": 0,
+  "files": 33,
+  "originals": 155,
+  "packetManifestSHA256": "2f1073726e579b48d647fa07dfa4039bd86d49b9dc7b83475d75c7a4b5167525",
+  "parentCommit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "status": "PREPARED_FOR_ROOT_PACKET_REVIEW_NOT_PUBLISHED",
+  "treeInputSHA256": "6d4d84fb5c2a0633817f61490e5e02d03b786e5ef8c065e0332354a5c9d19827"
+}

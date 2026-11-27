@@ -1,0 +1,291 @@
+{
+  "schema": "pinkha.wave2.reader.actual-component.independent-review.v1",
+  "reviewedAt": "2026-11-27 11:30:09 UTC",
+  "reviewer": "/root/interfaces",
+  "status": "PASS_REVIEW_OF_ACTUAL_EXACT_HELPER_COMPONENT_SIX_METHODS_NINE_CASES",
+  "originalPublishedSource": {
+    "repository": "davidpovarsky/TorahInspectorKit",
+    "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+    "tree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+    "parent": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+  },
+  "originalActualJob": {
+    "id": "job_88bd51d9fb17",
+    "finishedAt": "2026-11-27T11:22:35.961622+00:00",
+    "elapsedSeconds": 16.34,
+    "processExit": 0
+  },
+  "exactExecutedController": {
+    "path": "component/run_component.py",
+    "sha256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+    "ownedCleanupSource": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+    "originalCleanupSource": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2"
+  },
+  "rawEvidenceReview": {
+    "rawArtifactsVerified": [
+      {
+        "bytes": 604,
+        "name": "invocation.json",
+        "sha256": "354133589106abfba1a2e22c675d6f1ce69489abe972b957890fb58f6f8c8f90"
+      },
+      {
+        "bytes": 100,
+        "name": "process.json",
+        "sha256": "4b1f7e28c9e00347f70ce85df48000bce3afee0f5518f340d9f1f99b7800de9a"
+      },
+      {
+        "bytes": 7318,
+        "name": "receipt.json",
+        "sha256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c"
+      },
+      {
+        "bytes": 4220,
+        "name": "resource-samples.json",
+        "sha256": "3e78aa5c077941389e521e643271565c20f72cb37e5887f31507f46c7b1b75ba"
+      },
+      {
+        "bytes": 474,
+        "name": "source-inputs-after.json",
+        "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+      },
+      {
+        "bytes": 474,
+        "name": "source-inputs-before.json",
+        "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+      },
+      {
+        "bytes": 61852,
+        "name": "stderr.original.log",
+        "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf"
+      },
+      {
+        "bytes": 3491,
+        "name": "stdout.original.log",
+        "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+      },
+      {
+        "bytes": 76,
+        "name": "toolchain.original.log",
+        "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+      }
+    ],
+    "receiptSHA256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c",
+    "actualReadbackSHA256": "8e3893cc22710560bbdd45bd5dda9cd407e4b8197c64ce97d0d091c575174e24",
+    "sentinelJobSHA256": "f552a35277a9011d4a5df9b8517284624c29e62dff0659285805a40984d12f80",
+    "sourceInputCustody": {
+      "Package.swift": {
+        "bytes": 510,
+        "sha256": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9"
+      },
+      "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift": {
+        "bytes": 1858,
+        "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+      },
+      "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift": {
+        "bytes": 6211,
+        "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+      }
+    },
+    "methodOutcomes": [
+      {
+        "name": "newerSelectionRejectsLateProviderCompletion",
+        "signature": "providerFails:",
+        "actualCases": 2
+      },
+      {
+        "name": "sameSelectionRetryOrReactivationRejectsItsPriorLifetime",
+        "signature": "disappears:",
+        "actualCases": 2
+      },
+      {
+        "name": "callerCancellationRejectsANonCooperativeProvider",
+        "signature": "providerFails:",
+        "actualCases": 2
+      },
+      {
+        "name": "preCancelledCallerDoesNotDispatchAProviderRead",
+        "signature": "",
+        "actualCases": 1
+      },
+      {
+        "name": "invalidatedOwnerCannotDispatchOrScheduleARetry",
+        "signature": "",
+        "actualCases": 1
+      },
+      {
+        "name": "currentProviderFailureRemainsAnActualFailure",
+        "signature": "",
+        "actualCases": 1
+      }
+    ],
+    "parameterCases": [
+      {
+        "parameter": "providerFails",
+        "value": "false",
+        "method": "newerSelectionRejectsLateProviderCompletion",
+        "signature": "providerFails:"
+      },
+      {
+        "parameter": "providerFails",
+        "value": "true",
+        "method": "newerSelectionRejectsLateProviderCompletion",
+        "signature": "providerFails:"
+      },
+      {
+        "parameter": "disappears",
+        "value": "false",
+        "method": "sameSelectionRetryOrReactivationRejectsItsPriorLifetime",
+        "signature": "disappears:"
+      },
+      {
+        "parameter": "disappears",
+        "value": "true",
+        "method": "sameSelectionRetryOrReactivationRejectsItsPriorLifetime",
+        "signature": "disappears:"
+      },
+      {
+        "parameter": "providerFails",
+        "value": "false",
+        "method": "callerCancellationRejectsANonCooperativeProvider",
+        "signature": "providerFails:"
+      },
+      {
+        "parameter": "providerFails",
+        "value": "true",
+        "method": "callerCancellationRejectsANonCooperativeProvider",
+        "signature": "providerFails:"
+      }
+    ],
+    "ownedCleanup": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-27T11:22:35.935545+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 401602,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "historicalGroupReprobed": false,
+      "processGroup": 401602,
+      "status": "PASS_OWNED_GROUP_ABSENT"
+    },
+    "historicalGroupProbedByReview": false,
+    "resourceSamples": 18,
+    "minimumObservedFreeBytes": 3551469568,
+    "minimumObservedAvailableMemory": 4417097728,
+    "outerSwiftJobs": 1,
+    "observedInternalDriverJobs": 2
+  },
+  "actualCompilerReview": {
+    "readbackSHA256": "2dfce1989fbfd3f034e7d89703df00a505bc052a83ff374690bc50436c883542",
+    "compilerWitnesses": [
+      {
+        "module": "TorahInspectorUI",
+        "fileList": {
+          "bytes": 123,
+          "members": [
+            {
+              "bytes": 1858,
+              "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/component/Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+              "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+            }
+          ],
+          "module": "TorahInspectorUI",
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList",
+          "sha256": "6ad177918e46ab6031acbf9e36baec9863b2468abb223621eaa110d0238744f5"
+        },
+        "actualSwiftcInvocation": {
+          "stderrLine": 154,
+          "lineSHA256": "938a67550aeb1ddd4659ddbdf47be1ac91762afe3106d12f43aa140c4ed590f4",
+          "actualCommandHasExactFileList": true,
+          "target": "aarch64-unknown-linux-gnu",
+          "observedDriverJobs": 2
+        }
+      },
+      {
+        "module": "TorahInspectorUITests",
+        "fileList": {
+          "bytes": 337,
+          "members": [
+            {
+              "bytes": 52,
+              "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/test_anchor.swift",
+              "sha256": "d2b850911ddaecacb7352eb27a226eb689951554747c610045a2337e5a910fbf"
+            },
+            {
+              "bytes": 6211,
+              "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/component/Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+              "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+            }
+          ],
+          "module": "TorahInspectorUITests",
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList",
+          "sha256": "ad3f1981bc3cb54f25b7ee1c292b8b57454a79bc0d5b8fbc627794a7def04f6f"
+        },
+        "actualSwiftcInvocation": {
+          "stderrLine": 203,
+          "lineSHA256": "a8b38034b171e847623293cf9d8b823e480e129596279bf578d7bd62977dcd81",
+          "actualCommandHasExactFileList": true,
+          "target": "aarch64-unknown-linux-gnu",
+          "observedDriverJobs": 2
+        }
+      },
+      {
+        "module": "TorahInspectorUITests_test_runner",
+        "fileList": {
+          "bytes": 221,
+          "members": [
+            {
+              "bytes": 18972,
+              "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/test_entry_point.swift",
+              "sha256": "2bd3ed107dee6b78c0927cc9602bd81533bc11a1c1b03c36ba827a3d9b669c65"
+            }
+          ],
+          "module": "TorahInspectorUITests_test_runner",
+          "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList",
+          "sha256": "afe7753aa58b728e89b3dd076388c03359146631e32d05aacac26c743c6024df"
+        },
+        "actualSwiftcInvocation": {
+          "stderrLine": 266,
+          "lineSHA256": "643f16d6925e4acdd3bd8bc41ecc1663aff391f3ac8d7ae85cfe3bfb97e88de8",
+          "actualCommandHasExactFileList": true,
+          "target": "aarch64-unknown-linux-gnu",
+          "observedDriverJobs": 2
+        }
+      }
+    ],
+    "initialRootInspectionFailureSHA256": "83ffa1aa073703b5ea82b61f3d700d5f0bcc5f76fd39eece2023f704869aa999",
+    "independentInspectionOutputTruncationSHA256": "0cb178981e90bb780c01f6d373390f73ed3b47d895efa47b5776f346a0120a66",
+    "reviewerRemoteCalls": 0,
+    "historicalProcessProbeByReviewer": false
+  },
+  "findings": [],
+  "conclusions": [
+    "All nine original result/log/custody files match the exact retained actual-readback size/SHA and original receipt artifact list; original Sentinel outer result is untruncated, exit0, and binds the same final receipt and cleanup.",
+    "The complete before/after input inventories are byte-identical and match the independently read exact published helper517de and testsab57. The minimal510-byte package manifest is derived and is not the original full Kit package manifest.",
+    "The retained verbose stderr contains actual builtin-SwiftDriver calls consuming exactly the three independently rehashed FileLists. The production module compiles only the1858-byte helper; tests compile only the6211-byte exact suite plus a52-byte generated anchor; the runner compiles its separately retained18972-byte generated entry.",
+    "Actual stdout records exactly six unique passed methods: three Boolean-parameterized methods each report both false and true, and three parameterless methods pass. The resulting nine actual cases match the exact source literal arrays. No extra, skipped or failed selected outcome appears.",
+    "The original300-second bound, exact package --jobs1 and --no-parallel invocation, live resource samples and original owned cleanup remain recorded. Actual inner Swift driver uses-j2; no claim is made that every compiler process had-j1.",
+    "Owned cleanup uses the original recorded positive ABSENT_ESRCH latch. This review performed no host operation, PID/group observation, signal or historical group re-probe.",
+    "The root's first local direct-frontend inspection-shape failure and the independent review's initial output-truncation/JSON-decode diagnostic remain separate retained inspection failures; neither changes the original product/test result or caused a compiler/test rerun."
+  ],
+  "qualificationBoundary": {
+    "actualMethodsPassed": 6,
+    "actualCasesPassed": 9,
+    "productionSource": "Exact new Foundation/MainActor TorahDocumentLoadLifetime helper",
+    "fixture": "Exact published controlled noncooperative-provider test fixture",
+    "package": "Derived minimal TorahReaderLifetimeComponent with original module/target names",
+    "fullOriginalKitTargetCompilation": "NOT_RUN",
+    "threeSwiftUICallersCompilation": "NOT_RUN",
+    "AppleCompilation": "NOT_RUN",
+    "AppCompilation": "NOT_RUN",
+    "NativeServiceAcceptance": "NOT_RUN",
+    "UIOrVisualAcceptance": "NOT_RUN",
+    "PhysicalDeviceAcceptance": "NOT_RUN",
+    "priorAcceptedSuiteReplay": 0,
+    "reviewerCompilerOrTestInvocations": 0,
+    "reviewerRemoteHostCalls": 0,
+    "shippingSourceChangedByReview": false,
+    "runtimeOrProductGatesOpened": false
+  }
+}

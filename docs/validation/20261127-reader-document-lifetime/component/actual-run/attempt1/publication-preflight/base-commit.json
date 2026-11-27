@@ -1,0 +1,35 @@
+{
+  "sha": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "node_id": "C_kwDOUSynz9oAKDI2YmVjYTE3NWQ2NGE0ZDM0ZTM1NjdmMmJiYjRiZjMwOGQ3MTQ0Nzg",
+  "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/commits/26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/commit/26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "author": {
+    "name": "davidpovarsky",
+    "email": "davidpovarski1@gmail.com",
+    "date": "2026-11-27T10:46:41Z"
+  },
+  "committer": {
+    "name": "davidpovarsky",
+    "email": "davidpovarski1@gmail.com",
+    "date": "2026-11-27T10:46:41Z"
+  },
+  "tree": {
+    "sha": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+    "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41"
+  },
+  "message": "Guard reader document loads by mounted owner lifetime\n\nReject late document success, errors, cleanup and viewport updates after selection replacement, retry, cancellation or disappearance. Preserve existing reader navigation, source resolution and shared session behavior.\n\nAdd six focused helper test methods with nine declared cases and retain exact source inverses and independent reviews. Component, full Kit, Apple UI, visual and physical-device execution remain pending; no App package pin changes.\n\nPublished to an isolated owned branch through the GitHub API while the Oracle development-volume growth hold remains in force.",
+  "parents": [
+    {
+      "sha": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/commits/9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "html_url": "https://github.com/davidpovarsky/TorahInspectorKit/commit/9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

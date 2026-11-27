@@ -1,0 +1,27 @@
+{
+  "job": {
+    "created_at": 1795778539.5451746,
+    "duration_s": 16.34,
+    "error": null,
+    "exit_code": 0,
+    "finished_at": "2026-11-27T11:22:35.961622+00:00",
+    "host": "host_299cf75f6b338ecd",
+    "id": "job_88bd51d9fb17",
+    "notified": {
+      "resend": null,
+      "telegram": null
+    },
+    "notify_spec": {},
+    "output": "{\"returncode\": 0, \"stdout\": \"{\\\"status\\\": \\\"PASS_SIX_METHODS_NINE_DECLARED_CASES_EXACT_HELPER_COMPONENT_ONLY\\\", \\\"receipt\\\": \\\"/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/receipt.json\\\", \\\"receiptSHA256\\\": \\\"bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c\\\", \\\"processExit\\\": 0, \\\"elapsedSeconds\\\": 16.222, \\\"failure\\\": null, \\\"ownedCleanup\\\": {\\\"status\\\": \\\"PASS_OWNED_GROUP_ABSENT\\\", \\\"processGroup\\\": 401602, \\\"absenceEvidence\\\": {\\\"atUTC\\\": \\\"2026-11-27T11:22:35.935545+00:00\\\", \\\"processGroup\\\": 401602, \\\"signal\\\": 0, \\\"errno\\\": 3, \\\"error\\\": \\\"[Errno 3] No such process\\\", \\\"status\\\": \\\"ABSENT_ESRCH\\\"}, \\\"historicalGroupReprobed\\\": false}, \\\"evidenceFinalizationFailure\\\": null, \\\"receiptWriteFailure\\\": null}\\n\", \"stderr\": \"\"}",
+    "output_truncated": false,
+    "read": false,
+    "severity": "info",
+    "source": "script_run@host_299cf75f6b338ecd",
+    "started_at": "2026-11-27T11:22:19.623860+00:00",
+    "status": "succeeded",
+    "timeout_s": 360,
+    "tool": "script_run",
+    "type": "job_result"
+  },
+  "ok": true
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "g04-component-evidence-workflow-preflight-v1",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "proposedBranch": "codex/chatgpt-wave15-wave2-reader-component-evidence-20261127",
+  "sourceBase": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "defaultRef": "codex/shared-torah-inspector",
+  "defaultCommit": "2127287f537e78d3c01b062b8b46425b246274c2",
+  "primaryReadWorkflows": [
+    {
+      "source": "base",
+      "ref": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "path": ".github/workflows/ci.yml",
+      "gitBlob": "cc30087de87f0d03658cb1b42dc3d5e2be942048",
+      "localPath": "workflows/base-ci.yml"
+    },
+    {
+      "source": "base",
+      "ref": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "path": ".github/workflows/common-sdk-focused.yml",
+      "gitBlob": "cbf8844a7b32f8e80e7c8e09a4f70f2167f1bca1",
+      "localPath": "workflows/base-common-sdk-focused.yml"
+    },
+    {
+      "source": "base",
+      "ref": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "path": ".github/workflows/ios27-side-sheet.yml",
+      "gitBlob": "d5a89047b87b31f0a40e448c9df4c8683b8a2e2e",
+      "localPath": "workflows/base-ios27-side-sheet.yml"
+    },
+    {
+      "source": "default",
+      "ref": "2127287f537e78d3c01b062b8b46425b246274c2",
+      "path": ".github/workflows/ci.yml",
+      "gitBlob": "75bb46ca883ed9dc4fac66c88e959d6fdaad2b94",
+      "localPath": "workflows/default-ci.yml"
+    },
+    {
+      "source": "default",
+      "ref": "2127287f537e78d3c01b062b8b46425b246274c2",
+      "path": ".github/workflows/live-activity-bridge.yml",
+      "gitBlob": "b762796c3e2228ae2c197d63319f35907b112707",
+      "localPath": "workflows/default-live-activity-bridge.yml"
+    }
+  ],
+  "automaticTriggersMatchingProposedBranch": [],
+  "workflowDispatchIssued": false,
+  "createTriggerPresent": false,
+  "reason": "Base ci and default ci are manual workflow_dispatch only. Base common-sdk-focused pushes only codex/otzaria-anytype-common-sdk-20261122; base ios27-side-sheet pushes only two named feature branches. Default live-activity-bridge observes Swift package CI workflow_run events only; this publication triggers no such CI. No create trigger exists in either inspected workflow inventory."
+}

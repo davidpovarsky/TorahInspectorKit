@@ -1,0 +1,10 @@
+{
+  "ref": "refs/heads/codex/shared-torah-inspector",
+  "node_id": "REF_kwDOUSynz9oAJ3JlZnMvaGVhZHMvY29kZXgvc2hhcmVkLXRvcmFoLWluc3BlY3Rvcg",
+  "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/refs/heads/codex/shared-torah-inspector",
+  "object": {
+    "sha": "2127287f537e78d3c01b062b8b46425b246274c2",
+    "type": "commit",
+    "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/commits/2127287f537e78d3c01b062b8b46425b246274c2"
+  }
+}

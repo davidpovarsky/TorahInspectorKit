@@ -1,0 +1,85 @@
+{
+  "developmentFreeBytes": 1071312896,
+  "files": [
+    {
+      "bytes": 604,
+      "name": "invocation.json",
+      "sha256": "354133589106abfba1a2e22c675d6f1ce69489abe972b957890fb58f6f8c8f90"
+    },
+    {
+      "bytes": 100,
+      "name": "process.json",
+      "sha256": "4b1f7e28c9e00347f70ce85df48000bce3afee0f5518f340d9f1f99b7800de9a"
+    },
+    {
+      "bytes": 7318,
+      "name": "receipt.json",
+      "sha256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c"
+    },
+    {
+      "bytes": 4220,
+      "name": "resource-samples.json",
+      "sha256": "3e78aa5c077941389e521e643271565c20f72cb37e5887f31507f46c7b1b75ba"
+    },
+    {
+      "bytes": 474,
+      "name": "source-inputs-after.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 474,
+      "name": "source-inputs-before.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 61852,
+      "name": "stderr.original.log",
+      "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf"
+    },
+    {
+      "bytes": 3491,
+      "name": "stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+    },
+    {
+      "bytes": 76,
+      "name": "toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "historicalProcessProbe": false,
+  "inputPinsAfter": [
+    {
+      "bytes": 11622,
+      "path": "run_component.py",
+      "sha256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50"
+    },
+    {
+      "bytes": 5529,
+      "path": "owned_process.py",
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+    },
+    {
+      "bytes": 1010,
+      "path": "owned-process-provenance.json",
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1"
+    },
+    {
+      "bytes": 510,
+      "path": "Package.swift",
+      "sha256": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9"
+    },
+    {
+      "bytes": 1858,
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    },
+    {
+      "bytes": 6211,
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+    }
+  ],
+  "rootFreeBytes": 3550519296,
+  "schema": "g04-actual-readback-v1"
+}

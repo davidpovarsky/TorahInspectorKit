@@ -1,0 +1,175 @@
+{
+  "cause": "Local preparation used two literal backslash/zero bytes instead of the NUL separator in Git blob hashing. All content bytes/SHA256 were already correct; every manifest Git-blob value was wrong.",
+  "correction": "Use bytes([0]) for the Git blob header separator, rederive all metadata in a new packet and compare every row independently.",
+  "incorrectRows": [
+    {
+      "correctGitBlob": "ed035e72662b0610be0a881d800ffbbe8a379815",
+      "originalIncorrectGitBlob": "e49c7a662d8e1923e1f8ba76cbaaa1b3d2cdc44d",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/actual-compiler-filelists-readback.json"
+    },
+    {
+      "correctGitBlob": "e5a0ce137f903dd083b296ccd466dd2085125d79",
+      "originalIncorrectGitBlob": "92ebbbc3aeff0f15276b78a4632562d297243b30",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/actual-readback.json"
+    },
+    {
+      "correctGitBlob": "8981e0486f9cef600ab54ecf57eb7ea997a87f90",
+      "originalIncorrectGitBlob": "457672ee53a21d7060922a0a02281a752d7523d8",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUI.SwiftFileList"
+    },
+    {
+      "correctGitBlob": "700ef37f2a27a1878da5fc824e86d8dd586edebb",
+      "originalIncorrectGitBlob": "72c23d53ac225403d4394b2dea701eb2203c9017",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUITests.SwiftFileList"
+    },
+    {
+      "correctGitBlob": "63c5aba130fe84b07f8c685ab2bc1eadd58fa6ae",
+      "originalIncorrectGitBlob": "2ddbf6d72ed024abf17f83718dc41ce813f7c01c",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/TorahInspectorUITests_test_runner.SwiftFileList"
+    },
+    {
+      "correctGitBlob": "a8edff271963b3d1eadd8555457aa08389adfa75",
+      "originalIncorrectGitBlob": "887883ba13aa982c872c813ac7077a06c4aa0b66",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/test_anchor.swift"
+    },
+    {
+      "correctGitBlob": "cb9be739a9eafbd2d3b38bd12f1589c5cdfdb1af",
+      "originalIncorrectGitBlob": "3940580aa5e6d4435097d17ba6358fa183d6933d",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/compiler-filelists/test_entry_point.swift"
+    },
+    {
+      "correctGitBlob": "187b3d16ef0742c4310c8c0863c6d064673891d0",
+      "originalIncorrectGitBlob": "7a3fd0f82af2fd6794d4524cef164ea6f23b06b0",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/independent-component-review.json"
+    },
+    {
+      "correctGitBlob": "d974973806ce7d8ede88a534fab58e7d5c808cb5",
+      "originalIncorrectGitBlob": "fbed28ff0ce9c4e7fc6af3f976aade6d3522bcd9",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/interfaces-inspection-output-truncation.json"
+    },
+    {
+      "correctGitBlob": "5b0eb409d564f059387ab3f80018d4a61c8f5ba8",
+      "originalIncorrectGitBlob": "2289e805ba961002f05a3888e06b8db8a1e9ef5a",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/invocation.json"
+    },
+    {
+      "correctGitBlob": "b4a0438b78e8a91f7b6243b2bd80df45aa4b03bb",
+      "originalIncorrectGitBlob": "1558eee4f827bd3f2946378f0dec1b3515146aef",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/process.json"
+    },
+    {
+      "correctGitBlob": "128391aeeb4eacd86b39e5e60e7873810e9feea0",
+      "originalIncorrectGitBlob": "1d663e22d06774a5343d385b4b8a16c98360138a",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/receipt.json"
+    },
+    {
+      "correctGitBlob": "4665ae4bbdedbad5d771d376ac20dd27d5fbb55a",
+      "originalIncorrectGitBlob": "65a2d20959566fb05691b1e5a395f95b34bfc7a6",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/resource-samples.json"
+    },
+    {
+      "correctGitBlob": "c6e74f848f672dee0af8e0eebfab199d57075404",
+      "originalIncorrectGitBlob": "f242fa54b3611bd10a43347b09c129246f1b3bd6",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/root-first-compile-log-inspection.json"
+    },
+    {
+      "correctGitBlob": "085d2975782361318529168db941bc7fa12b4ed7",
+      "originalIncorrectGitBlob": "330d734862fd6b116196ffd2daa4e9320b335bfe",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/root-qualification.json"
+    },
+    {
+      "correctGitBlob": "74aa4a13fa46d33203dfd2df0ea42a70eb3d90da",
+      "originalIncorrectGitBlob": "35355aec9c48558cebde1b2585f658555392f767",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/sentinel-job.json"
+    },
+    {
+      "correctGitBlob": "933e6d79e0c6256662f3f963d231ac7efb558018",
+      "originalIncorrectGitBlob": "529b6e86c02329a6dc758fc6b8b63376c1ce2d0d",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/source-inputs-after.json"
+    },
+    {
+      "correctGitBlob": "933e6d79e0c6256662f3f963d231ac7efb558018",
+      "originalIncorrectGitBlob": "529b6e86c02329a6dc758fc6b8b63376c1ce2d0d",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/source-inputs-before.json"
+    },
+    {
+      "correctGitBlob": "65a18fa25e9e31ae8ced6590cbc6312b56c91e41",
+      "originalIncorrectGitBlob": "305943789c0ed37d83f7ffabb7ff183db638074b",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/stderr.original.log"
+    },
+    {
+      "correctGitBlob": "7519767a382b07e4e5e24fdeee3b215c573a6fdc",
+      "originalIncorrectGitBlob": "08ee0f6f83593337e829fb86ad600f6df08a6a70",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/stdout.original.log"
+    },
+    {
+      "correctGitBlob": "062b0e447a79048ef55ad68f303ad5b56af665f8",
+      "originalIncorrectGitBlob": "29dbb8a7077db6396f4cab4f511b67f26d2b46c1",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/toolchain.original.log"
+    },
+    {
+      "correctGitBlob": "cb8aaa9291c1f830717e6923d5b102291718b26d",
+      "originalIncorrectGitBlob": "5f1ecfb7611a742a7adf9111e662a43c897bc4a0",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/README.md"
+    },
+    {
+      "correctGitBlob": "8dd22772ef6c3ee951bac5e7570634109e3996c3",
+      "originalIncorrectGitBlob": "39042740f10ce88c846885c8dac20dc0efc20bd1",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/base-commit.json"
+    },
+    {
+      "correctGitBlob": "a49259e3a69557b667605f62fe30a7d4066101d9",
+      "originalIncorrectGitBlob": "97fd70a45e48775e1041bcfdb06c2aabfc702222",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/base-tree.json"
+    },
+    {
+      "correctGitBlob": "abed30100239835b035af2a58e0e9536a31537a6",
+      "originalIncorrectGitBlob": "3afca6ea782782278e25a5d636ee5ec7f2e8a7ba",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/default-ref.json"
+    },
+    {
+      "correctGitBlob": "665fc1bb523e33351db15627941527ecb1a306f7",
+      "originalIncorrectGitBlob": "91bf73a31227b7c36e46ee8e5e2bf0a748b462cc",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/default-workflow-list.json"
+    },
+    {
+      "correctGitBlob": "73c90712a5d31227769c207918b0557e53cf77c8",
+      "originalIncorrectGitBlob": "7dfb784149f494bddff7a72327f6a743844dd56c",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflow-preflight.json"
+    },
+    {
+      "correctGitBlob": "cc30087de87f0d03658cb1b42dc3d5e2be942048",
+      "originalIncorrectGitBlob": "47ee5260ad446bc9af45069749eb0ad49f60ce88",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-ci.yml"
+    },
+    {
+      "correctGitBlob": "cbf8844a7b32f8e80e7c8e09a4f70f2167f1bca1",
+      "originalIncorrectGitBlob": "150e2b36f9411fd41e2938035c3fa984c5ae7ecd",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-common-sdk-focused.yml"
+    },
+    {
+      "correctGitBlob": "d5a89047b87b31f0a40e448c9df4c8683b8a2e2e",
+      "originalIncorrectGitBlob": "95e4c2f92957fe77819a5a3d19d3d4e37b7e16e3",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/base-ios27-side-sheet.yml"
+    },
+    {
+      "correctGitBlob": "75bb46ca883ed9dc4fac66c88e959d6fdaad2b94",
+      "originalIncorrectGitBlob": "95d5031e9432c5373ed024d39c5e422e735589fd",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/default-ci.yml"
+    },
+    {
+      "correctGitBlob": "b762796c3e2228ae2c197d63319f35907b112707",
+      "originalIncorrectGitBlob": "49608fab21858831b744467ee7c88590113ef5d6",
+      "path": "docs/validation/20261127-reader-document-lifetime/component/actual-run/attempt1/publication-preflight/workflows/default-live-activity-bridge.yml"
+    }
+  ],
+  "originalPacketRetainedLocally": "packet-attempt1",
+  "originalPayloadRetainedLocally": "create-tree-input.attempt1.json",
+  "priorManifestSHA256": "2f1073726e579b48d647fa07dfa4039bd86d49b9dc7b83475d75c7a4b5167525",
+  "priorTreeInputSHA256": "6d4d84fb5c2a0633817f61490e5e02d03b786e5ef8c065e0332354a5c9d19827",
+  "rawEvidenceOrProductResultChanged": false,
+  "remoteMutation": false,
+  "schema": "g04-evidence-packet-preparation-correction-v1",
+  "status": "PRIOR_LOCAL_PACKET_METADATA_REJECTED_BEFORE_ANY_API_MUTATION",
+  "testsOrCompilerRerun": false
+}
