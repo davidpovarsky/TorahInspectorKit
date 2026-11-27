@@ -1,0 +1,37 @@
+{
+  "base": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "branch": "codex/chatgpt-wave15-wave2-reader-lifetime-20261127",
+  "status": "SOURCE_READ_NO_MATCHING_AUTOMATIC_TRIGGER",
+  "workflowDispatchRequested": false,
+  "workflows": [
+    {
+      "gitBlob": "cc30087de87f0d03658cb1b42dc3d5e2be942048",
+      "newBranchMatchesAutomaticTrigger": false,
+      "path": ".github/workflows/ci.yml",
+      "pushBranches": [],
+      "sha256": "2a5ef5dbe8dfc2b924e31c3a1535f96eb971c50ede4862863784452a3c0d4d2a",
+      "workflowDispatch": true
+    },
+    {
+      "gitBlob": "cbf8844a7b32f8e80e7c8e09a4f70f2167f1bca1",
+      "newBranchMatchesAutomaticTrigger": false,
+      "path": ".github/workflows/common-sdk-focused.yml",
+      "pushBranches": [
+        "codex/otzaria-anytype-common-sdk-20261122"
+      ],
+      "sha256": "fe3003027fa9f17416404d2ff04535ca37900cedff2bb6a94d789f2e1b7b3952",
+      "workflowDispatch": true
+    },
+    {
+      "gitBlob": "d5a89047b87b31f0a40e448c9df4c8683b8a2e2e",
+      "newBranchMatchesAutomaticTrigger": false,
+      "path": ".github/workflows/ios27-side-sheet.yml",
+      "pushBranches": [
+        "feature/native-ios27-torah-side-sheet-2026-10-20",
+        "feature/torah-inspector-eight-ux-fixes-2026-10-21"
+      ],
+      "sha256": "2447c8dc171852c22b0a096e5a22d75017a80517bac2463925f22066a1da6244",
+      "workflowDispatch": true
+    }
+  ]
+}

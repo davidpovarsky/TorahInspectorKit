@@ -1,0 +1,51 @@
+{
+  "execution": {
+    "commands": 0,
+    "compilers": 0,
+    "nativeCalls": 0,
+    "remoteCalls": 0,
+    "runtimeAcceptance": "NOT_RUN",
+    "tests": 0
+  },
+  "files": {
+    "Package.swift": {
+      "bytes": 510,
+      "sha256": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9"
+    },
+    "owned-process-provenance.json": {
+      "bytes": 1010,
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1"
+    },
+    "owned_process.py": {
+      "bytes": 5529,
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+    },
+    "run_component.py": {
+      "bytes": 10932,
+      "sha256": "c079c67d218200af5100f22a503e603c16f9daf8badc014d9dc295d45ed1ab3c"
+    }
+  },
+  "findings": [
+    {
+      "fact": "The runtime gate pins only originalRunnerSHA256, then trusts the unpinned provenance.outputSHA256; imported owned_process is not bound to the file whose bytes are checked.",
+      "id": "G04-COMP-01",
+      "location": "run_component.py cleanup import and initial provenance gate",
+      "requiredCorrection": "Pin exact reviewed provenance and helper hashes and require the loaded module physical path to equal the checked helper, before resource/compiler dispatch.",
+      "severity": "blocking-before-execution"
+    }
+  ],
+  "reviewedAtUTC": "2026-11-27T10:34:55.547945+00:00",
+  "reviewer": "wave2-editor",
+  "schema": "pinkha.wave2.g04.component-controller-source-review.v1",
+  "scope": "Controller only; no production model review and no execution.",
+  "status": "SOURCE_REVIEW_BLOCKED_ONE_CUSTODY_FINDING",
+  "verifiedSourceFacts": [
+    "All four cleanup function AST source slices independently equal the actual original 99dc Properties runner.",
+    "The compiler Popen is assigned before its first process ledger write and guaranteed finally invokes owned cleanup.",
+    "Positive signal-zero ESRCH is irreversible; no historical PGID is accessed.",
+    "One job, finite 300-second deadline, 2GiB live disk floor plus 256MiB estimated allocation and 1.5GiB memory admission are explicit.",
+    "The minimal package has exact source/test pins, no dependencies, and an explicit component-only acceptance boundary.",
+    "Outcome parsing requires six actual Swift Testing methods and names, while nine remains explicitly declared cases.",
+    "First operational failure is retained; evidence finalization failure is recorded separately."
+  ]
+}

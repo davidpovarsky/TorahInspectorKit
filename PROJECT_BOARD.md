@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- Reader document requests need an explicit mounted-owner lifetime in addition to provider cancellation. The November 27 G04 correction captures Retry/pagination ownership before scheduling, rejects late success and error at each publication boundary, invalidates expanded/snippet ownership on disappearance, and preserves the reader session/viewport state. Six new helper methods/nine cases are recorded separately from full SwiftUI/App/visual acceptance. See `docs/validation/20261127-reader-document-lifetime`.
+
 - The native peek and configured reader/detail toolbars must expose Search and Close independently. A host with search capability still needs an explicit dismissal action; neither scrolling content nor the system grabber proved dismissal in the original Pinkha iPadOS 27 Archive acceptance. The shared close callbacks and host selection binding are unchanged. The 2026-11-25 candidate keeps both controls; actual host acceptance remains pending.
 
 - Inspector outer material and redundant headings belong to the package, rather than the host's FloatingPanel. Opt-in `TorahInspectorPresentationOptions` keeps the same content/actions and default presentation for other hosts while allowing a host to trim that chrome. See `docs/FAITHFUL_HOST_CHROME.md`; visual acceptance is still required.

@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""One finite run of the exact new Foundation helper and its exact six tests.
+
+This is a component boundary, not a compilation of TorahInspectorUI/SwiftUI,
+the full Kit package, the app, or Native. Never reuse an existing attempt.
+"""
+from pathlib import Path
+import argparse
+import hashlib
+import json
+import os
+import re
+import shutil
+import subprocess
+import time
+import traceback
+
+from owned_process import now, group_members, observe_owned_group, finish_owned_process
+
+ROOT = Path('/var/lib/pinkha-wave2-reader-document-lifetime-20261127')
+INPUTS = ROOT / 'inputs'
+COMPONENT = ROOT / 'component'
+PINS = {
+    'Package.swift': '3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9',
+    'Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift':
+        '517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7',
+    'Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift':
+        'ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c',
+}
+METHODS = [
+    'newerSelectionRejectsLateProviderCompletion',
+    'sameSelectionRetryOrReactivationRejectsItsPriorLifetime',
+    'callerCancellationRejectsANonCooperativeProvider',
+    'preCancelledCallerDoesNotDispatchAProviderRead',
+    'invalidatedOwnerCannotDispatchOrScheduleARetry',
+    'currentProviderFailureRemainsAnActualFailure',
+]
+FLOOR = 2 * 1024**3
+ALLOWANCE = 256 * 1024**2
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
+
+
+def resource_sample():
+    memory = {line.split(':', 1)[0]: int(line.split()[1]) * 1024
+              for line in Path('/proc/meminfo').read_text().splitlines()
+              if line.startswith(('MemAvailable:', 'SwapFree:'))}
+    return {'atUTC': now(), 'freeBytes': shutil.disk_usage(ROOT).free,
+            'memAvailableBytes': memory['MemAvailable'],
+            'swapFreeBytes': memory['SwapFree'], 'load': os.getloadavg()}
+
+
+def source_inventory(folder):
+    observed = set()
+    for base in ('Sources', 'Tests'):
+        root = folder / base
+        for directory, dirs, files in os.walk(root, followlinks=False):
+            for name in dirs + files:
+                p = Path(directory) / name
+                assert not p.is_symlink(), 'Component source cannot be an alias: ' + str(p)
+            observed.update((Path(directory) / name).relative_to(folder).as_posix() for name in files)
+    assert observed == set(PINS) - {'Package.swift'}, 'Unexpected component compile input'
+    result = {}
+    for relative, expected in PINS.items():
+        p = folder / relative
+        assert p.is_file() and not p.is_symlink(), str(p)
+        raw = p.read_bytes()
+        assert sha(raw) == expected, relative
+        result[relative] = {'sha256': expected, 'bytes': len(raw)}
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', required=True)
+    parser.add_argument('--coordination-story', required=True)
+    args = parser.parse_args()
+    assert re.fullmatch(r'attempt[1-9][0-9]*', args.attempt)
+    assert re.fullmatch(r'[0-9]{16}', args.coordination_story)
+    evidence = ROOT / args.attempt
+    evidence.mkdir(exist_ok=False)
+    started = time.monotonic()
+    receipt = {'schema': 'pinkha.wave2.reader.actual-helper-component.v1',
+               'status': 'FAIL', 'startedAtUTC': now(),
+               'runnerSHA256': sha(Path(__file__).read_bytes()),
+               'coordinationStory': args.coordination_story,
+               'methods': 6, 'declaredCases': 9, 'selectedSuite': 'TorahDocumentLoadLifetimeTests',
+               'originalKitBase': '9058b489e9acc271b4f8ef69e2ed24648f93b4ed',
+               'minimalPackageIsDerived': True, 'productionHelperBytesAreExact': True,
+               'newTestBytesAreExact': True, 'providerIsControlledNonCooperativeFixture': True,
+               'baselineReplay': 'NONE_NEW_HELPER', 'fullKitCompilation': 'NOT_RUN',
+               'AppleCompilation': 'NOT_RUN', 'UIAcceptance': 'NOT_RUN',
+               'nativeAcceptance': 'NOT_RUN', 'nativeServiceCalls': 0,
+               'shippingSourceMutationsByRunner': 0, 'priorAcceptedTestsRerun': 0}
+    process = None
+    state = {}
+    samples = []
+    try:
+        provenance = json.loads((INPUTS / 'owned-process-provenance.json').read_bytes())
+        assert provenance['originalRunnerSHA256'] == '99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2'
+        assert sha((INPUTS / 'owned_process.py').read_bytes()) == provenance['outputSHA256']
+        receipt['cleanupSourceProvenance'] = provenance
+        admission = resource_sample()
+        receipt['resourceAdmission'] = {**admission, 'incrementalAllowanceBytes': ALLOWANCE,
+            'liveDiskFloorBytes': FLOOR, 'minimumAvailableMemoryBytes': 1536 * 1024**2,
+            'jobs': 1, 'allowanceIsEstimate': True}
+        assert admission['freeBytes'] >= FLOOR + ALLOWANCE, 'Coordinated disk floor plus allocation estimate do not fit'
+        assert admission['memAvailableBytes'] >= 1536 * 1024**2, 'Available memory below one-job admission'
+        before = source_inventory(INPUTS)
+        write(evidence / 'source-inputs-before.json', before)
+        COMPONENT.mkdir(exist_ok=False)
+        for relative in PINS:
+            destination = COMPONENT / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(INPUTS / relative, destination)
+        assert source_inventory(COMPONENT) == before
+        toolchain = subprocess.run(['/usr/local/bin/swift', '--version'], capture_output=True, timeout=10, check=True)
+        (evidence / 'toolchain.original.log').write_bytes(toolchain.stdout + toolchain.stderr)
+        argv = ['/usr/local/bin/swift', 'test', '--package-path', str(COMPONENT),
+                '--scratch-path', str(ROOT / 'build'), '--cache-path', str(ROOT / 'cache'),
+                '--jobs', '1', '--no-parallel', '--disable-experimental-prebuilts', '-v',
+                '--filter', 'TorahDocumentLoadLifetimeTests']
+        environment = dict(os.environ)
+        environment['CLANG_MODULE_CACHE_PATH'] = str(ROOT / 'clang-module-cache')
+        environment['SWIFTPM_MODULECACHE_OVERRIDE'] = str(ROOT / 'swiftpm-module-cache')
+        environment['GIT_TERMINAL_PROMPT'] = '0'
+        receipt['argv'] = argv
+        write(evidence / 'invocation.json', {'argv': argv, 'timeoutSeconds': 300,
+              'startedAtUTC': now(), 'coordinationStory': args.coordination_story})
+        with (evidence / 'stdout.original.log').open('wb') as stdout, (evidence / 'stderr.original.log').open('wb') as stderr:
+            process = subprocess.Popen(argv, cwd=COMPONENT, env=environment, stdout=stdout,
+                                       stderr=stderr, start_new_session=True)
+            write(evidence / 'process.json', {'pid': process.pid, 'processGroup': process.pid, 'startedAtUTC': now()})
+            deadline = time.monotonic() + 300
+            while process.poll() is None:
+                sample = resource_sample()
+                samples.append(sample)
+                if sample['freeBytes'] < FLOOR or sample['memAvailableBytes'] < 512 * 1024**2:
+                    receipt['resourceStop'] = sample
+                    raise RuntimeError('Owned component stopped at the coordinated live resource floor')
+                if time.monotonic() >= deadline:
+                    receipt['timedOut'] = True
+                    raise TimeoutError('Owned component exceeded300 seconds')
+                try:
+                    process.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    pass
+            samples.append(resource_sample())
+        receipt['processExit'] = process.returncode
+        receipt['remainingOwnedProcessGroup'] = group_members(process.pid)
+        receipt['memberListIsDiagnosticOnly'] = True
+        receipt['ownedGroupAtExit'] = observe_owned_group(process, state)
+        assert receipt['ownedGroupAtExit']['status'] == 'ABSENT_ESRCH', 'Owned group absence is not proven'
+        after = source_inventory(INPUTS)
+        assert after == before and source_inventory(COMPONENT) == before
+        write(evidence / 'source-inputs-after.json', after)
+        text = (evidence / 'stdout.original.log').read_text(errors='replace') + '\n' + (evidence / 'stderr.original.log').read_text(errors='replace')
+        receipt['observedTestOutcomeLines'] = [line for line in text.splitlines()
+            if (' Test ' in line and (' passed after ' in line or ' failed after ' in line)) or 'Test run with ' in line]
+        assert process.returncode == 0, 'Actual compiler/test command failed'
+        assert re.search(r'Test run with 6 tests in .* passed', text), 'Require the six actual Swift Testing methods, not zero XCTest methods'
+        for name in METHODS:
+            assert re.search(re.escape(name) + r'\([^\n]*\) passed after ', text), name + ' did not report PASS'
+        assert not re.search(r' Test .* (skipped|failed)', text), 'Unexpected skipped or failed selected method'
+        receipt['status'] = 'PASS_SIX_METHODS_NINE_DECLARED_CASES_EXACT_HELPER_COMPONENT_ONLY'
+    except BaseException:
+        receipt['status'] = 'FAIL'
+        receipt['failure'] = traceback.format_exc()
+    finally:
+        if process is not None:
+            finish_owned_process(process, state, receipt)
+        receipt['finishedAtUTC'] = now()
+        receipt['elapsedSeconds'] = round(time.monotonic() - started, 3)
+        receipt_sha = None
+        try:
+            write(evidence / 'resource-samples.json', samples)
+            receipt['freeBytesAfter'] = shutil.disk_usage(ROOT).free
+            receipt['artifacts'] = [{'path': str(p), 'bytes': p.stat().st_size, 'sha256': sha(p.read_bytes())}
+                for p in sorted(evidence.iterdir()) if p.is_file() and p.name != 'receipt.json']
+        except BaseException:
+            receipt['status'] = 'FAIL'
+            receipt['evidenceFinalizationFailure'] = traceback.format_exc()
+        try:
+            write(evidence / 'receipt.json', receipt)
+            receipt_sha = sha((evidence / 'receipt.json').read_bytes())
+        except BaseException:
+            receipt['status'] = 'FAIL'
+            receipt['receiptWriteFailure'] = traceback.format_exc()
+        print(json.dumps({'status': receipt['status'], 'receipt': str(evidence / 'receipt.json'),
+              'receiptSHA256': receipt_sha, 'processExit': receipt.get('processExit'),
+              'elapsedSeconds': receipt['elapsedSeconds'], 'failure': receipt.get('failure'),
+              'ownedCleanup': receipt.get('ownedCleanup'),
+              'evidenceFinalizationFailure': receipt.get('evidenceFinalizationFailure'),
+              'receiptWriteFailure': receipt.get('receiptWriteFailure')}), flush=True)
+    raise SystemExit(1 if receipt['status'] == 'FAIL' else 0)
+
+
+if __name__ == '__main__':
+    main()

@@ -21,6 +21,7 @@ public struct TorahSegmentDetailView: View {
     @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
     @State private var expandedSourceErrors: [TorahLinkedSource.ID: String] = [:]
     @State private var loadingSourceIDs: Set<TorahLinkedSource.ID> = []
+    @State private var expandedSourceLoads = TorahDocumentLoadLifetime()
     @State private var expandedCommentaryGroupIDs: Set<TorahSourceGroup.ID> = []
     @State private var snippetGeneration = UUID()
     @State private var snippetTexts: [TorahLinkedSource.ID: String] = [:]
@@ -184,10 +185,17 @@ public struct TorahSegmentDetailView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-inspector-panel")
         .task(id: TorahPanelLoadTaskID(focusID: focus.id, tool: selectedTool)) {
+            guard !Task.isCancelled else { return }
             prepareForCurrentFocus()
             await loadSelectedTool()
         }
         .onAppear { ensureValidSelectedTool() }
+        .onDisappear {
+            expandedSourceLoads.invalidate()
+            snippetGeneration = UUID()
+            loadingSourceIDs.removeAll()
+            loadingSnippetIDs.removeAll()
+        }
         .onChange(of: configuration.availableTools) { _, _ in ensureValidSelectedTool() }
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorRelatedDocumentsAccessDidChange)) { notification in
             guard let owner = notification.object as? TorahInspectorRepository,
@@ -485,7 +493,7 @@ public struct TorahSegmentDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Button(TorahStrings.text("Retry", locale: locale)) {
-                        Task { await loadFullSource(source) }
+                        scheduleFullSourceLoad(source)
                     }
                     .font(.caption.weight(.semibold))
                 }
@@ -736,7 +744,7 @@ public struct TorahSegmentDetailView: View {
         expandedSourceIDs.insert(source.id)
         guard expandedSourceText[source.id] == nil,
               !loadingSourceIDs.contains(source.id) else { return }
-        Task { await loadFullSource(source) }
+        scheduleFullSourceLoad(source)
     }
 
     private func openInReader(_ source: TorahLinkedSource) {
@@ -757,15 +765,26 @@ public struct TorahSegmentDetailView: View {
     }
 
     @MainActor
-    private func loadFullSource(_ source: TorahLinkedSource) async {
+    private func scheduleFullSourceLoad(_ source: TorahLinkedSource) {
+        guard let request = expandedSourceLoads.request(for: focus.id) else { return }
+        Task { await loadFullSource(source, request: request) }
+    }
+
+    @MainActor
+    private func loadFullSource(_ source: TorahLinkedSource, request: TorahDocumentLoadLifetime.Request) async {
+        guard expandedSourceLoads.isCurrent(request), !Task.isCancelled,
+              !loadingSourceIDs.contains(source.id) else { return }
         loadingSourceIDs.insert(source.id)
         expandedSourceErrors.removeValue(forKey: source.id)
-        defer { loadingSourceIDs.remove(source.id) }
+        defer { if expandedSourceLoads.isCurrent(request) { loadingSourceIDs.remove(source.id) } }
         do {
-            let document = try await repository.document(
-                for: source.sourceRef,
-                providerID: providerID
-            )
+            let document = try await expandedSourceLoads.load(for: request) {
+                try await repository.document(
+                    for: source.sourceRef,
+                    providerID: providerID
+                )
+            }
+            guard expandedSourceLoads.isCurrent(request), !Task.isCancelled else { return }
             guard let text = TorahInspectorSourceTextResolver.text(
                 in: document,
                 exactReference: source.sourceRef
@@ -775,6 +794,7 @@ public struct TorahSegmentDetailView: View {
             expandedSourceText[source.id] = text
         } catch is CancellationError {
         } catch {
+            guard expandedSourceLoads.isCurrent(request), !Task.isCancelled else { return }
             expandedSourceErrors[source.id] = TorahStrings.message(for: error, locale: locale)
         }
     }
@@ -1056,6 +1076,9 @@ public struct TorahSegmentDetailView: View {
 
     @MainActor
     private func prepareForCurrentFocus() {
+        if expandedSourceLoads.request(for: focus.id) == nil {
+            expandedSourceLoads.activate(selectionID: focus.id)
+        }
         guard loadedFocusID != focus.id else { return }
         loadedFocusID = focus.id
         snippetGeneration = UUID()

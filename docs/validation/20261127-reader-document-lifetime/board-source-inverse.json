@@ -1,0 +1,15 @@
+{
+  "base": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "candidateBase64": "CgotIFJlYWRlciBkb2N1bWVudCByZXF1ZXN0cyBuZWVkIGFuIGV4cGxpY2l0IG1vdW50ZWQtb3duZXIgbGlmZXRpbWUgaW4gYWRkaXRpb24gdG8gcHJvdmlkZXIgY2FuY2VsbGF0aW9uLiBUaGUgTm92ZW1iZXIgMjcgRzA0IGNvcnJlY3Rpb24gY2FwdHVyZXMgUmV0cnkvcGFnaW5hdGlvbiBvd25lcnNoaXAgYmVmb3JlIHNjaGVkdWxpbmcsIHJlamVjdHMgbGF0ZSBzdWNjZXNzIGFuZCBlcnJvciBhdCBlYWNoIHB1YmxpY2F0aW9uIGJvdW5kYXJ5LCBpbnZhbGlkYXRlcyBleHBhbmRlZC9zbmlwcGV0IG93bmVyc2hpcCBvbiBkaXNhcHBlYXJhbmNlLCBhbmQgcHJlc2VydmVzIHRoZSByZWFkZXIgc2Vzc2lvbi92aWV3cG9ydCBzdGF0ZS4gU2l4IG5ldyBoZWxwZXIgbWV0aG9kcy9uaW5lIGNhc2VzIGFyZSByZWNvcmRlZCBzZXBhcmF0ZWx5IGZyb20gZnVsbCBTd2lmdFVJL0FwcC92aXN1YWwgYWNjZXB0YW5jZS4gU2VlIGBkb2NzL3ZhbGlkYXRpb24vMjAyNjExMjctcmVhZGVyLWRvY3VtZW50LWxpZmV0aW1lYC4=",
+  "candidateByteOffset": 530,
+  "candidateGitBlob": "24fe50c0e54c51a3534b0bc2d591c09d08aa3f3a",
+  "candidateSHA256": "c66d2d931a5b42a3006258b0c86536c61e0ead070d573c88f0c3bda8a9a63db8",
+  "existingBoardBytesRetained": 3472,
+  "originalBase64": "",
+  "originalByteOffset": 530,
+  "originalGitBlob": "cde132f85412a3343cb65f741311e18b25a9622a",
+  "originalSHA256": "494191bb24dbdeb21e3fbf028e652953504a7efbcbb386a792266e3c19b3802d",
+  "path": "PROJECT_BOARD.md",
+  "reverseApplicationExact": true,
+  "schema": "pinkha.wave2.g04.board-source-inverse.v1"
+}

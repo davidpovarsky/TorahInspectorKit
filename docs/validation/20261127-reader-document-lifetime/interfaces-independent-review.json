@@ -1,0 +1,77 @@
+{
+  "schema": "pinkha.wave2.g04.interfaces-independent-source-review.v1",
+  "reviewer": "/root/interfaces",
+  "reviewedAtUTC": "2026-11-27T10:34:35.253746+00:00",
+  "status": "PASS_SOURCE_REVIEW_NO_REMAINING_SCOPED_BLOCKER",
+  "base": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "candidateManifestSHA256": "07095eef913e46be27aa61a86e239b3439b4b8fda3664a651c333c82bce14954",
+  "sourceInverseSHA256": "e296e6206bb39a2d55ed735318531069eac0b7dabc94a168fe31a0d5d53bb5de",
+  "files": [
+    {
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "originalSHA256": null,
+      "candidateSHA256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7",
+      "bytes": 1858
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "originalSHA256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "candidateSHA256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655",
+      "bytes": 26545,
+      "independentlyReversedToPinnedOriginal": true
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "originalSHA256": "5e6799ab608d9dfcf9d8d895ce050dd878ce743c19f5ffe864e1863e1037c7b5",
+      "candidateSHA256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+      "bytes": 56161,
+      "independentlyReversedToPinnedOriginal": true
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "originalSHA256": "88371bf98ab8cd4273c459abb9a896924b680d1d7c422da8aa5501da76942dd8",
+      "candidateSHA256": "1c85e7e11d2b62b05beb68e83e835691a343c5bdf30321678b0d5241a6b54d89",
+      "bytes": 23576,
+      "independentlyReversedToPinnedOriginal": true
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "originalSHA256": null,
+      "candidateSHA256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+      "bytes": 6211
+    }
+  ],
+  "additionalCompileDependencyRead": {
+    "path": "Sources/TorahInspectorCore/Models.swift",
+    "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+    "gitBlob": "aeb7cc4215456c2db9bda284f7e947c643507408",
+    "bytes": 24592,
+    "fact": "TorahTextDocument explicitly conforms to Sendable; it satisfies the new helper generic constraint.",
+    "source": "Root retained exact9058 primary connector bytes; inspected locally without a separate external recrawl."
+  },
+  "findings": [],
+  "reviewedBehavior": [
+    "The explicit MainActor helper issues a fresh UUID per activation/retry, retains selection identity, and rejects dispatch or publication after invalidation, replacement or caller cancellation. Late provider failures are retired with their original owner; a current provider error is rethrown unchanged.",
+    "The two Inspector entry loads, Reader initial/previous/next loads and expanded-source load all retain an explicit post-await current-request/cancellation guard before UI publication; error publication is similarly guarded. Source resolution uses the existing repository arguments and exact resolvers.",
+    "Retry obtains its request synchronously before creating its Task. Delayed retry tasks cannot reactivate a disappeared or differently selected owner. Structured entry tasks check cancellation before activation.",
+    "Reader initial load resets its local window/loading/state-machine state, then preserves the existing session snapshot and pending viewport restoration. Old defers cannot clear the new owner loading flags. The original seven-section cap, append/prepend order, window trimming and scroll decisions remain.",
+    "Pagination captures the current request before scheduling; state-machine completion/failure and pending viewport writes are fenced by that request. Viewport restore rechecks request, caller cancellation, pending viewport equality and segment membership after Task.yield before scrolling or saving the session.",
+    "Expanded-source scheduling captures the current focus request and duplicate in-flight source IDs are refused at actual task entry. Its successful/error/defer writes remain under that owner. Disappear invalidates expanded reads and advances the existing snippet generation; original snippet post-await/error/defer generation checks remain intact.",
+    "The original shared session, navigation path, full-source/search/return actions, provider arguments, theme/locale and source-rendering logic were read around the edits and are not replaced by the lifetime helper. All three supplied source files independently reverse exactly to their pinned9058 originals.",
+    "The six Foundation/MainActor helper test methods declare nine cases covering late success/error, different selection, same-ID retry/reactivation, caller/pre-call cancellation, invalidated dispatch and current provider error. The provider checks cancellation at entry and the real read continuation has a finite deadline and cleanup. No test relies on a fabricated UI/native assertion."
+  ],
+  "actualExecution": {
+    "compiler": false,
+    "swiftTypecheck": false,
+    "tests": false,
+    "hostOrMacCallsForReview": false,
+    "native": false,
+    "UI": false,
+    "candidateSourceMutations": false
+  },
+  "remainingAcceptance": [
+    "The source review is not execution of the six methods/nine cases or typechecking of the complete SwiftUI target.",
+    "Actual App/Kit compilation, mounted selection/retry/pagination/return flows, viewport behavior, locales/appearance/AX, visual and physical-device checks remain required on the matching shared product.",
+    "The pure helper tests cannot establish provider/native permissions, source identity on an actual screen, or full G04/reader acceptance."
+  ]
+}

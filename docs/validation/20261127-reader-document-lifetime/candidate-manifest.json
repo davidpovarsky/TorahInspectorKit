@@ -1,0 +1,42 @@
+{
+  "base": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "status": "FROZEN_SOURCE_INDEPENDENT_REVIEW_PENDING",
+  "files": [
+    {
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "originalSHA256": null,
+      "candidateSHA256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7",
+      "bytes": 1858
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "originalSHA256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "candidateSHA256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655",
+      "bytes": 26545
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "originalSHA256": "5e6799ab608d9dfcf9d8d895ce050dd878ce743c19f5ffe864e1863e1037c7b5",
+      "candidateSHA256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+      "bytes": 56161
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "originalSHA256": "88371bf98ab8cd4273c459abb9a896924b680d1d7c422da8aa5501da76942dd8",
+      "candidateSHA256": "1c85e7e11d2b62b05beb68e83e835691a343c5bdf30321678b0d5241a6b54d89",
+      "bytes": 23576
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "originalSHA256": null,
+      "candidateSHA256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+      "bytes": 6211
+    }
+  ],
+  "compiler": "NOT_RUN",
+  "tests": "NOT_RUN",
+  "testsDeclared": {
+    "methods": 6,
+    "cases": 9
+  }
+}

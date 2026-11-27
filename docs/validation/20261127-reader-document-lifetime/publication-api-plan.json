@@ -1,0 +1,13 @@
+{
+  "baseTree": "43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "branch": "codex/chatgpt-wave15-wave2-reader-lifetime-20261127",
+  "cliPush": false,
+  "componentController": "Prepared source only; pending root-owned coordinated execution.",
+  "historicalReviewStatus": "candidate-manifest retains the original freeze status; the exact independent review records subsequent source approval. Neither is test execution.",
+  "oracleMutation": false,
+  "oracleWorktreeCreated": false,
+  "parent": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "reason": "Coordinated Oracle development-volume capacity hold; isolated owned remote branch preserves the exact immutable parent without growing that volume.",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "route": "GitHub create_tree, full-tree readback, create_commit, fresh absent-ref check, create_branch, commit/ref/source readback"
+}

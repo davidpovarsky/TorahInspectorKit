@@ -1,0 +1,1381 @@
+{
+  "sha": "43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "tree": [
+    {
+      "path": ".agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cc5f62cb9be94091de2471e24af2ad7253151a26",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/cc5f62cb9be94091de2471e24af2ad7253151a26"
+    },
+    {
+      "path": ".agents/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d5dfb2851e2a3aebb496518169e32cc81eb86722",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/d5dfb2851e2a3aebb496518169e32cc81eb86722"
+    },
+    {
+      "path": ".agents/agents/dana.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e179ea234efbe179884749f5c906615060da5ed",
+      "size": 860,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6e179ea234efbe179884749f5c906615060da5ed"
+    },
+    {
+      "path": ".agents/agents/eitan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e18941461e40fcac7c3bfe0ade02f6eab7e8ebf0",
+      "size": 860,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/e18941461e40fcac7c3bfe0ade02f6eab7e8ebf0"
+    },
+    {
+      "path": ".agents/agents/maya.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2e9ee3f432de13571662582c4f2ace1bce6b971",
+      "size": 829,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d2e9ee3f432de13571662582c4f2ace1bce6b971"
+    },
+    {
+      "path": ".agents/agents/noam.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6192753368af0cceea84259a3a4ac9388fb3aff6",
+      "size": 838,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6192753368af0cceea84259a3a4ac9388fb3aff6"
+    },
+    {
+      "path": ".agents/agents/roni.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be66a370a1fa163b54f37aa8f6651c2703720f43",
+      "size": 862,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/be66a370a1fa163b54f37aa8f6651c2703720f43"
+    },
+    {
+      "path": ".agents/agents/tomer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87ef9fdcdd2e4942ca3e2b1c59bb99c41df08498",
+      "size": 840,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/87ef9fdcdd2e4942ca3e2b1c59bb99c41df08498"
+    },
+    {
+      "path": ".agents/agents/yael.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5f8781ff56de5fed6ba003c31f8e7c99f273924",
+      "size": 829,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/c5f8781ff56de5fed6ba003c31f8e7c99f273924"
+    },
+    {
+      "path": ".agents/roles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bc90771447a84ca9ce0e55231de435b89cae9ea6",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/bc90771447a84ca9ce0e55231de435b89cae9ea6"
+    },
+    {
+      "path": ".agents/roles/dana.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcd9fd5d0277d3f0c16058e9b31ae966082ff77f",
+      "size": 859,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/dcd9fd5d0277d3f0c16058e9b31ae966082ff77f"
+    },
+    {
+      "path": ".agents/roles/eitan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7473b706c2badb392ef2419ab41b48756a5bce65",
+      "size": 841,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/7473b706c2badb392ef2419ab41b48756a5bce65"
+    },
+    {
+      "path": ".agents/roles/maya.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ccd59466880a94e60e2fa7008273043b3482cf0",
+      "size": 844,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/4ccd59466880a94e60e2fa7008273043b3482cf0"
+    },
+    {
+      "path": ".agents/roles/noam.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3be1a49a9a4f3d691a54ffa10089b78e13f7a449",
+      "size": 844,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/3be1a49a9a4f3d691a54ffa10089b78e13f7a449"
+    },
+    {
+      "path": ".agents/roles/roni.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "820cbf129d0a60452c9429734329dccaaf852e7a",
+      "size": 868,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/820cbf129d0a60452c9429734329dccaaf852e7a"
+    },
+    {
+      "path": ".agents/roles/tomer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7802249746d60227ef132508b8c0c229b13ec865",
+      "size": 837,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/7802249746d60227ef132508b8c0c229b13ec865"
+    },
+    {
+      "path": ".agents/roles/yael.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3ba6ee80767001873a2da09fadec6e5e5f032a5",
+      "size": 846,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d3ba6ee80767001873a2da09fadec6e5e5f032a5"
+    },
+    {
+      "path": ".agents/rules",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f735e600e493b3798f69fb71f38750c9156b3df2",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/f735e600e493b3798f69fb71f38750c9156b3df2"
+    },
+    {
+      "path": ".agents/rules/ai-team-router.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85370464d6c616ceed5132b7f96f9f78b12d2952",
+      "size": 2053,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/85370464d6c616ceed5132b7f96f9f78b12d2952"
+    },
+    {
+      "path": ".agents/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "65c4f29b826813cfcb506f8f0ceae99320b3a1e1",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/65c4f29b826813cfcb506f8f0ceae99320b3a1e1"
+    },
+    {
+      "path": ".agents/skills/asana-team-coordination",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "093f2b7697036c8a9295e93794680bb4ffb91044",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/093f2b7697036c8a9295e93794680bb4ffb91044"
+    },
+    {
+      "path": ".agents/skills/asana-team-coordination/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52a6215593df1b2f9eef2fe12bcc6be1bf68f63c",
+      "size": 2196,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/52a6215593df1b2f9eef2fe12bcc6be1bf68f63c"
+    },
+    {
+      "path": ".codex",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "656c1b2bf45bc4740f0b19ccdace63dc5f6a7ae4",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/656c1b2bf45bc4740f0b19ccdace63dc5f6a7ae4"
+    },
+    {
+      "path": ".codex/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "551cea6ee3611ecd4e92c97d6a6f39adecf1a095",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/551cea6ee3611ecd4e92c97d6a6f39adecf1a095"
+    },
+    {
+      "path": ".codex/agents/dana.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d6158f9f3331f8ad6b96c09dfb85f333a56784c",
+      "size": 749,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/2d6158f9f3331f8ad6b96c09dfb85f333a56784c"
+    },
+    {
+      "path": ".codex/agents/eitan.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75c7e10e34bfd171d5cc9953e59e6edb07abd58d",
+      "size": 766,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/75c7e10e34bfd171d5cc9953e59e6edb07abd58d"
+    },
+    {
+      "path": ".codex/agents/maya.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f24be2e4546f3f31a32d739ecd4e5066c5f8127",
+      "size": 707,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/8f24be2e4546f3f31a32d739ecd4e5066c5f8127"
+    },
+    {
+      "path": ".codex/agents/noam.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73b7bcd59db2fbbfa6fe9193d9ac0c9facd9edd6",
+      "size": 728,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/73b7bcd59db2fbbfa6fe9193d9ac0c9facd9edd6"
+    },
+    {
+      "path": ".codex/agents/roni.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f989fce75200797ae400ba84fe24ba682931f8b",
+      "size": 762,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/8f989fce75200797ae400ba84fe24ba682931f8b"
+    },
+    {
+      "path": ".codex/agents/tomer.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ae01fafa82c988fb41770cd8f3357033b005eee",
+      "size": 730,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/7ae01fafa82c988fb41770cd8f3357033b005eee"
+    },
+    {
+      "path": ".codex/agents/yael.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "154edd867b5574fed856273bd41e18a9eddb8060",
+      "size": 737,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/154edd867b5574fed856273bd41e18a9eddb8060"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e3c1c92fbc9e64741015b3321eac5c7d988ba092",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/e3c1c92fbc9e64741015b3321eac5c7d988ba092"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1d7e988b0315fd88e756aba59b8e64916b9442c9",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/1d7e988b0315fd88e756aba59b8e64916b9442c9"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc30087de87f0d03658cb1b42dc3d5e2be942048",
+      "size": 1817,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/cc30087de87f0d03658cb1b42dc3d5e2be942048"
+    },
+    {
+      "path": ".github/workflows/common-sdk-focused.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbf8844a7b32f8e80e7c8e09a4f70f2167f1bca1",
+      "size": 1027,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/cbf8844a7b32f8e80e7c8e09a4f70f2167f1bca1"
+    },
+    {
+      "path": ".github/workflows/ios27-side-sheet.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5a89047b87b31f0a40e448c9df4c8683b8a2e2e",
+      "size": 6198,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d5a89047b87b31f0a40e448c9df4c8683b8a2e2e"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29a1e94533d4a4d71fb8d4516cdc25fb7eaf591e",
+      "size": 28,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/29a1e94533d4a4d71fb8d4516cdc25fb7eaf591e"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ccc53d3a630ca44c3ecb1667d3828e2c88294dd6",
+      "size": 5032,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/ccc53d3a630ca44c3ecb1667d3828e2c88294dd6"
+    },
+    {
+      "path": "Demo",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "737a64e508cbf5a28242439e6f0706d4a7d54ff8",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/737a64e508cbf5a28242439e6f0706d4a7d54ff8"
+    },
+    {
+      "path": "Demo/App",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5734b17fe736903f8b01660545870db74c6db879",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/5734b17fe736903f8b01660545870db74c6db879"
+    },
+    {
+      "path": "Demo/App/TorahInspectorSheetDemoApp.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2b2340336afab63242e73d4c8d4e8fc60c8b716",
+      "size": 9904,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/a2b2340336afab63242e73d4c8d4e8fc60c8b716"
+    },
+    {
+      "path": "Demo/UITests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2a9c78f77c2146394577f48ed34104fbe08bf57e",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/2a9c78f77c2146394577f48ed34104fbe08bf57e"
+    },
+    {
+      "path": "Demo/UITests/TorahInspectorSheetDemoUITests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a455d29ca1368107c3879e7f219f60d2fd452ad",
+      "size": 4195,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/5a455d29ca1368107c3879e7f219f60d2fd452ad"
+    },
+    {
+      "path": "Demo/project.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a1f9301aac15af6197d5977a23b3882ff4116d0",
+      "size": 1047,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/4a1f9301aac15af6197d5977a23b3882ff4116d0"
+    },
+    {
+      "path": "GEMINI.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cff753443ec9d54de9ee93377b77f005dbdd6319",
+      "size": 1534,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/cff753443ec9d54de9ee93377b77f005dbdd6319"
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cde132f85412a3343cb65f741311e18b25a9622a",
+      "size": 3472,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/cde132f85412a3343cb65f741311e18b25a9622a"
+    },
+    {
+      "path": "Package.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+      "size": 841,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/5ec0de7727f3e99768c8f49d95734c74d90c1571"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a94b1796448bda154287443d81e198a77044a678",
+      "size": 212,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/a94b1796448bda154287443d81e198a77044a678"
+    },
+    {
+      "path": "Sources",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "08b77a36deaeb07b08ad0a77a6a18437200fd02c",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/08b77a36deaeb07b08ad0a77a6a18437200fd02c"
+    },
+    {
+      "path": "Sources/TorahInspectorCore",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d48dc734d90a3b609d2bc10ba4aa8b932e4c9aed",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/d48dc734d90a3b609d2bc10ba4aa8b932e4c9aed"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aeb7cc4215456c2db9bda284f7e947c643507408",
+      "size": 24592,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/aeb7cc4215456c2db9bda284f7e947c643507408"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5c478fbe89c8d269d49c7b9818888dcd7ef39d0",
+      "size": 510,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d5c478fbe89c8d269d49c7b9818888dcd7ef39d0"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da439bb1cf8019e31bc172986de5b8eecaf30bb0",
+      "size": 461,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/da439bb1cf8019e31bc172986de5b8eecaf30bb0"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1f57e96079f5d93be37e1c014760763bc8d1bc7",
+      "size": 17499,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/e1f57e96079f5d93be37e1c014760763bc8d1bc7"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c67c042941bc3cbfda802b705ceebe5dff6c559a",
+      "size": 3444,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/c67c042941bc3cbfda802b705ceebe5dff6c559a"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e2e810e4af9e2f9d848efc52739199e645b249d",
+      "size": 355,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/7e2e810e4af9e2f9d848efc52739199e645b249d"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17e72f52d4cdbd2355e04b384967f6f1b29c25de",
+      "size": 3410,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/17e72f52d4cdbd2355e04b384967f6f1b29c25de"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64eabfd80cce2a21e403a8adcf887799c16fc738",
+      "size": 2005,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/64eabfd80cce2a21e403a8adcf887799c16fc738"
+    },
+    {
+      "path": "Sources/TorahInspectorUI",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "41ba699440e8d10b5cafac0de3bf968d715e5639",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/41ba699440e8d10b5cafac0de3bf968d715e5639"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/Resources",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a515089fcc8b8e1b90e518794b5243427a15f373",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/a515089fcc8b8e1b90e518794b5243427a15f373"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/Resources/en.lproj",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f0035a5d8436e718854d768ae397f16c083d620f",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/f0035a5d8436e718854d768ae397f16c083d620f"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/Resources/en.lproj/Localizable.strings",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a261bafc60a6ad5fa6436428a1fe185dad8673af",
+      "size": 2866,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/a261bafc60a6ad5fa6436428a1fe185dad8673af"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/Resources/he.lproj",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d78610aa9a49d43fc752cf7ce9cc816b01cc4ce4",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/d78610aa9a49d43fc752cf7ce9cc816b01cc4ce4"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/Resources/he.lproj/Localizable.strings",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce945ef0b7d638cddc99726a05a985dbff3347a7",
+      "size": 3525,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/ce945ef0b7d638cddc99726a05a985dbff3347a7"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorAppearance.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ae46883a83524c6bdb9760c7cbc5ff8180468e4",
+      "size": 1902,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/0ae46883a83524c6bdb9760c7cbc5ff8180468e4"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorHostActions.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5795b8c5473b9ca0ece657a5e5485984f5b59de3",
+      "size": 4897,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/5795b8c5473b9ca0ece657a5e5485984f5b59de3"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorPresentation.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41309cc49bcd06c7d84410c6e947f539fe153766",
+      "size": 3656,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/41309cc49bcd06c7d84410c6e947f539fe153766"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorPresentationOptions.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c527deea4c9ad928c5f817d86d6f835ffc85c15b",
+      "size": 1494,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/c527deea4c9ad928c5f817d86d6f835ffc85c15b"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorRoute.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "772c23e853c213ba701ce0d2b78ee91061fea54c",
+      "size": 3134,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/772c23e853c213ba701ce0d2b78ee91061fea54c"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorSheetPresenter.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1544e3631887e73d164d3081f9a99444ec3fcc8",
+      "size": 13533,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/f1544e3631887e73d164d3081f9a99444ec3fcc8"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee653e6205a577183548575a896044016178c851",
+      "size": 24889,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/ee653e6205a577183548575a896044016178c851"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d17bfe19e37af50d5a5bdec31b680c50d498ea89",
+      "size": 2875,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d17bfe19e37af50d5a5bdec31b680c50d498ea89"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahPlatformSupport.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c16af3b74b962cb41a0ff9f9219754b1cc940efe",
+      "size": 1173,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/c16af3b74b962cb41a0ff9f9219754b1cc940efe"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahReaderSessionState.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7387ace46bd8e4934b578b63bbafa920eaf1df4",
+      "size": 649,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/f7387ace46bd8e4934b578b63bbafa920eaf1df4"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "366712cf677f71464b2255155149d08ae14601ae",
+      "size": 54961,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/366712cf677f71464b2255155149d08ae14601ae"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "150c1780db7e93009bda86447e36906af0b439bf",
+      "size": 20848,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/150c1780db7e93009bda86447e36906af0b439bf"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahStrings.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f1253bcc081837b35ef16b4829309ea44c4a24e",
+      "size": 2442,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9f1253bcc081837b35ef16b4829309ea44c4a24e"
+    },
+    {
+      "path": "Tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f329264e3450998cfd7e51c1cf0f53e32cd1894d",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/f329264e3450998cfd7e51c1cf0f53e32cd1894d"
+    },
+    {
+      "path": "Tests/TorahInspectorCoreTests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4d6995e16033a1c523ef296ada680b437a6f64cc",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/4d6995e16033a1c523ef296ada680b437a6f64cc"
+    },
+    {
+      "path": "Tests/TorahInspectorCoreTests/DocumentConsumerCancellationTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20b2742f307061a53b8d63237b06bc588e14affc",
+      "size": 5596,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/20b2742f307061a53b8d63237b06bc588e14affc"
+    },
+    {
+      "path": "Tests/TorahInspectorCoreTests/RelatedDocumentsAuthorityTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55a322e4ae1809680384f517411472128a91a190",
+      "size": 11161,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/55a322e4ae1809680384f517411472128a91a190"
+    },
+    {
+      "path": "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5adffd07a7ca86bbde4bbb1269b382edbe27164c",
+      "size": 8129,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/5adffd07a7ca86bbde4bbb1269b382edbe27164c"
+    },
+    {
+      "path": "Tests/TorahInspectorCoreTests/TorahInspectorCoreTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d21fc9c767d40a36c062fb8475642e417b5d480",
+      "size": 27217,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9d21fc9c767d40a36c062fb8475642e417b5d480"
+    },
+    {
+      "path": "Tests/TorahInspectorUITests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9cdc7a6416b232072bda6b2d874a64f331e155a6",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/9cdc7a6416b232072bda6b2d874a64f331e155a6"
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "434ee2269d376b039d5ac2ecf3285b00bda36f42",
+      "size": 17154,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/434ee2269d376b039d5ac2ecf3285b00bda36f42"
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahRelatedDocumentsAccessStateTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "060d15de3ccbe77fd86ea7e6b3b5da3c49691833",
+      "size": 2234,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/060d15de3ccbe77fd86ea7e6b3b5da3c49691833"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "710be7108a9e93a826bd3598d2aa3c01cef9353a",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/710be7108a9e93a826bd3598d2aa3c01cef9353a"
+    },
+    {
+      "path": "docs/FAITHFUL_HOST_CHROME.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d54826dbac44eaa2ee7f971e4032641f2be20bea",
+      "size": 1312,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d54826dbac44eaa2ee7f971e4032641f2be20bea"
+    },
+    {
+      "path": "docs/ai-team",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "756c66cb331421d71af8763764ce1df7654da4bd",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/756c66cb331421d71af8763764ce1df7654da4bd"
+    },
+    {
+      "path": "docs/ai-team/ASANA_POLICY.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01d7b8aec78d69032942b7d5a60142a73755b0c7",
+      "size": 6375,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/01d7b8aec78d69032942b7d5a60142a73755b0c7"
+    },
+    {
+      "path": "docs/ai-team/BRANCH_INTEGRATION.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d29019587fa2dcda8dd2fd9873670ba2ce6bb21",
+      "size": 747,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9d29019587fa2dcda8dd2fd9873670ba2ce6bb21"
+    },
+    {
+      "path": "docs/ai-team/PLATFORMS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53fe52d0ceb22893ead87305cc0d99d3b1e88675",
+      "size": 2134,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/53fe52d0ceb22893ead87305cc0d99d3b1e88675"
+    },
+    {
+      "path": "docs/ai-team/PROJECT_ASSIGNMENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0605fa7af86e6eede33967ed0fe5ca2189c10c50",
+      "size": 2753,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/0605fa7af86e6eede33967ed0fe5ca2189c10c50"
+    },
+    {
+      "path": "docs/ai-team/TASK_HANDOFF_TEMPLATE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4a323800f2e16a0a7dffff73b4d36c6e24d26c6",
+      "size": 1418,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d4a323800f2e16a0a7dffff73b4d36c6e24d26c6"
+    },
+    {
+      "path": "docs/ai-team/TEAM.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "306473f9c3527790aff5a2834d5d68ad4eca623d",
+      "size": 7008,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/306473f9c3527790aff5a2834d5d68ad4eca623d"
+    },
+    {
+      "path": "docs/ai-team/VALIDATION.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdada970338a1a49e342da280a00e54b923746a3",
+      "size": 1828,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/fdada970338a1a49e342da280a00e54b923746a3"
+    },
+    {
+      "path": "docs/anytype",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a73597a2712e0317b7ee3071bb45317c69e7114",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/9a73597a2712e0317b7ee3071bb45317c69e7114"
+    },
+    {
+      "path": "docs/anytype/integration-20261115",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b946df1d398db9b49c4c18a40449592a59981aaf",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/b946df1d398db9b49c4c18a40449592a59981aaf"
+    },
+    {
+      "path": "docs/anytype/integration-20261115/V3_SOURCE_HANDOFF.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c41321286d9683b1f4e91ba34f58d91626ae938b",
+      "size": 4999,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/c41321286d9683b1f4e91ba34f58d91626ae938b"
+    },
+    {
+      "path": "docs/validation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "71cc5c0115be25df905263578762ac74a3436efc",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/71cc5c0115be25df905263578762ac74a3436efc"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "17dece329bb2a16fb440304673caf7d2d855227d",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/17dece329bb2a16fb440304673caf7d2d855227d"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98b1a8dc713f343224e32107eacf75b5bd45e692",
+      "size": 4169,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/98b1a8dc713f343224e32107eacf75b5bd45e692"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/after.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eff0d4bbfd29db22d69f4ca3e347ecb103014c5b",
+      "size": 2007,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/eff0d4bbfd29db22d69f4ca3e347ecb103014c5b"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/after.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7a0c47524cedd65b7cd2a04618c83793ba07bc8",
+      "size": 3878,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/f7a0c47524cedd65b7cd2a04618c83793ba07bc8"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/baseline.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "445873f24a39d08cc7f604388fa06f51ae6871df",
+      "size": 1679,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/445873f24a39d08cc7f604388fa06f51ae6871df"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/baseline.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32295e396d9b2c7e380ceea7e1c12eac9bfd7774",
+      "size": 5490,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/32295e396d9b2c7e380ceea7e1c12eac9bfd7774"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/handoff.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d7c7d5bfc9e8a4b9e95de92c0335cad4c179299",
+      "size": 794,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/5d7c7d5bfc9e8a4b9e95de92c0335cad4c179299"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/implementation.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02191a1530d3aa63f724741c1cea7b2a44f0350e",
+      "size": 7621,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/02191a1530d3aa63f724741c1cea7b2a44f0350e"
+    },
+    {
+      "path": "docs/validation/20261118-document-cancellation/portable-Package.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "332bd861a083824bb37edb5dee04a4b95db62b48",
+      "size": 376,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/332bd861a083824bb37edb5dee04a4b95db62b48"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "731a3d19d1d8fea50e8ee45537c8fc3f3fa288cd",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/731a3d19d1d8fea50e8ee45537c8fc3f3fa288cd"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/.gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "625449502ba4b4d7c229c6ccee42e3ec41cc780c",
+      "size": 9,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/625449502ba4b4d7c229c6ccee42e3ec41cc780c"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9310232e52d1fef8e47a8698c5ad39ec4f0e346b",
+      "size": 1727,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9310232e52d1fef8e47a8698c5ad39ec4f0e346b"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/kit.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34822d434f2986e6dfa06e890410bf5f23d9cf17",
+      "size": 13911,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/34822d434f2986e6dfa06e890410bf5f23d9cf17"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/kit.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ed15bc4f8b71c7a51fb86098d4d130736bfa077",
+      "size": 897,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9ed15bc4f8b71c7a51fb86098d4d130736bfa077"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/portable-Package.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab39299faa930ddb03070c5e4875348bdb53d75d",
+      "size": 427,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/ab39299faa930ddb03070c5e4875348bdb53d75d"
+    },
+    {
+      "path": "docs/validation/20261118-t5-coverage-contract/swift-parse.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f5c6022ca5169e0f7ff0362b9ec9a7b85d3e9599",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/f5c6022ca5169e0f7ff0362b9ec9a7b85d3e9599"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/.gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+      "size": 8,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/fa1385d99a319b43c06f5309d1aae9fdd3adea46"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/MANIFEST.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6d414f10ac3984d114773f379cc1bebd44e6690",
+      "size": 2957,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/a6d414f10ac3984d114773f379cc1bebd44e6690"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d27df88a237af420c7ec2da7664ff6475b5b35ed",
+      "size": 3670,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d27df88a237af420c7ec2da7664ff6475b5b35ed"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/test-profile.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "219640f5f20dff7869e64655096b34d649c4c296",
+      "size": 2522,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/219640f5f20dff7869e64655096b34d649c4c296"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a083e20be3003c4eba3b6246f76895d162aec299",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/a083e20be3003c4eba3b6246f76895d162aec299"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-1",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9e8771bbce8ced3756ad70cfac055a82be987c37",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/9e8771bbce8ced3756ad70cfac055a82be987c37"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-1/execution.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "189f8a5a344b029776f76face0c0e159f3ff0607",
+      "size": 4178,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/189f8a5a344b029776f76face0c0e159f3ff0607"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-1/source-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc541fd6fb1f9fe7e2d605770e2ce2ae806f874f",
+      "size": 3907,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/dc541fd6fb1f9fe7e2d605770e2ce2ae806f874f"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-1/test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea5b2b1add719e657341a09a37c3df6ae6dee56b",
+      "size": 13801,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/ea5b2b1add719e657341a09a37c3df6ae6dee56b"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-2",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e53fad9f733fad97f9b10141eec6b09bad4311a3",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/e53fad9f733fad97f9b10141eec6b09bad4311a3"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-2/execution.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "953c28d0f438a24c6ed2f97c0ff57996bd99c82b",
+      "size": 4683,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/953c28d0f438a24c6ed2f97c0ff57996bd99c82b"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-2/source-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b23635d81e0a15ab6a55f465a1db01558627fcd",
+      "size": 4438,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/2b23635d81e0a15ab6a55f465a1db01558627fcd"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-2/test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75d1dbebb081a424bc8f6fff30d372f9192b23cb",
+      "size": 1745,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/75d1dbebb081a424bc8f6fff30d372f9192b23cb"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-3",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "27459c710ef91481637f21e7ded8928986e71545",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/27459c710ef91481637f21e7ded8928986e71545"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-3/execution.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0af36e3c984a284f1fcae82be62c06a1075924de",
+      "size": 4791,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/0af36e3c984a284f1fcae82be62c06a1075924de"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-3/source-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd500650b65f6969d83430be1883e8ee33ab9158",
+      "size": 4541,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/cd500650b65f6969d83430be1883e8ee33ab9158"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/attempt-3/test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ba8bb31ec9de32b8ef5d2513561382abd09a94e",
+      "size": 1397,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/2ba8bb31ec9de32b8ef5d2513561382abd09a94e"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4d6161cf888a7ffb96ea8599ef220acd55298781",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/4d6161cf888a7ffb96ea8599ef220acd55298781"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final/execution.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "887f1f14c14e0942f62ad53f222f2b557de2da71",
+      "size": 4954,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/887f1f14c14e0942f62ad53f222f2b557de2da71"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final/session-lifetime-syntax.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "965a6a422d0cd9480a4435d8fe80f6d7a9f50a04",
+      "size": 327,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/965a6a422d0cd9480a4435d8fe80f6d7a9f50a04"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final/source-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "719d7bc60395befad24ac8ce3d26ec9d28458ef6",
+      "size": 4704,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/719d7bc60395befad24ac8ce3d26ec9d28458ef6"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final/syntax.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d39b25fc47e3a14ac35f0a92c1364eeb317f33b",
+      "size": 4393,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/4d39b25fc47e3a14ac35f0a92c1364eeb317f33b"
+    },
+    {
+      "path": "docs/validation/20261121-related-read-authority/windows-component/final/test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "316c5efd64128825db4e0351755e61e2a582959d",
+      "size": 615,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/316c5efd64128825db4e0351755e61e2a582959d"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1321a33307d72d91f9865504a5dedc09dbadf5f8",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/1321a33307d72d91f9865504a5dedc09dbadf5f8"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/FINAL_SEGMENT_SYNTAX.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2131d47d53b8162684aa2a6e35df1fddcf06eb29",
+      "size": 806,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/2131d47d53b8162684aa2a6e35df1fddcf06eb29"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/INITIAL_SWIFT_SYNTAX_RESULT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "237f3053391cf5598689e67a27578d0c0be8e357",
+      "size": 3534,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/237f3053391cf5598689e67a27578d0c0be8e357"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c6f307b11f227e4002aa5d2d428a030ddca6571",
+      "size": 3323,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/0c6f307b11f227e4002aa5d2d428a030ddca6571"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/RESOLUTION_MANIFEST.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d796fa63f15521ca6d2c64dfc145fdf59a6723aa",
+      "size": 2006,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/d796fa63f15521ca6d2c64dfc145fdf59a6723aa"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "839ab5df74c713518952f6fd3abf78de46e322d0",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/839ab5df74c713518952f6fd3abf78de46e322d0"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/.gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+      "size": 8,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/fa1385d99a319b43c06f5309d1aae9fdd3adea46"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/COMMITTED_SOURCE_VERIFICATION.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "428df0d14c7b58870b88cdddd36dfc687cbeacfb",
+      "size": 7498,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/428df0d14c7b58870b88cdddd36dfc687cbeacfb"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/DOWNLOAD_IDENTITY.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f424497489fab6e329d0dfbae4c9d159682410e",
+      "size": 5211,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6f424497489fab6e329d0dfbae4c9d159682410e"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/INDEPENDENT_AUDIT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b61003832f2ea51fdb4ce3dedf9b401400c65799",
+      "size": 19159,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b61003832f2ea51fdb4ce3dedf9b401400c65799"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/PARSER_REPLAY.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b4761a452f343fbd3b52055e6d032073ab9b2934",
+      "size": 10584,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b4761a452f343fbd3b52055e6d032073ab9b2934"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/PUBLICATION_SCOPE.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5b944bd6bd7461fd50166211ddab2d3ae8a9ef1",
+      "size": 2272,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/e5b944bd6bd7461fd50166211ddab2d3ae8a9ef1"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a85f9072d06a2c1dad3c3d2f0735ceaa22d905c7",
+      "size": 2305,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/a85f9072d06a2c1dad3c3d2f0735ceaa22d905c7"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/TRANSFER_MANIFEST.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "030757301015d2b5b5ae16684b569e73ba61b8ac",
+      "size": 1475,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/030757301015d2b5b5ae16684b569e73ba61b8ac"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/artifact-original.zip",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a784ed6d3579617e15709bcb4123963a8e7563d",
+      "size": 16140,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/9a784ed6d3579617e15709bcb4123963a8e7563d"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/audit_archived_execution.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5349def0d11b5f4a61fa53cfd73b69d93c6a91f",
+      "size": 9407,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b5349def0d11b5f4a61fa53cfd73b69d93c6a91f"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "87a4832197cb4dda6a18bff8c71d28b25fd97107",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/87a4832197cb4dda6a18bff8c71d28b25fd97107"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/command.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3f6e6714b406be21ae32a0a20659ea9846fe56b",
+      "size": 967,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/b3f6e6714b406be21ae32a0a20659ea9846fe56b"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/events.jsonl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78dbb3860139e15edad458f90a57a4f32525d3c2",
+      "size": 50423,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/78dbb3860139e15edad458f90a57a4f32525d3c2"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/execution.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6bcb92042dc5da071cfecfb8ad4018b4bb3db94a",
+      "size": 53,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6bcb92042dc5da071cfecfb8ad4018b4bb3db94a"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/identity.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e5adc79daf9b4268d31b55774e57e2616133539",
+      "size": 383,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/1e5adc79daf9b4268d31b55774e57e2616133539"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/selection.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82ab3a9743fc9d9d125db8f1b3ce8f5ef57c7116",
+      "size": 2569,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/82ab3a9743fc9d9d125db8f1b3ce8f5ef57c7116"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-after.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6fba4b0923f9df7e5f346f119687db61cec442d4",
+      "size": 6747,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6fba4b0923f9df7e5f346f119687db61cec442d4"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-before.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6fba4b0923f9df7e5f346f119687db61cec442d4",
+      "size": 6747,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6fba4b0923f9df7e5f346f119687db61cec442d4"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-test.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a3b143ecc5951fdeb57830682b59e0ba776d4e6",
+      "size": 12804,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6a3b143ecc5951fdeb57830682b59e0ba776d4e6"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-version.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f7d64c5e9d3fb2b1a9e590312a4e2a589cce339",
+      "size": 128,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/0f7d64c5e9d3fb2b1a9e590312a4e2a589cce339"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/tests-swift-testing.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "962a175df922d0e2afde1ca4f146c3e728cda8c0",
+      "size": 5052,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/962a175df922d0e2afde1ca4f146c3e728cda8c0"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/xcode-version.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afafac955b51122ddf007df57eefcb7c2d807090",
+      "size": 33,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/afafac955b51122ddf007df57eefcb7c2d807090"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/receipt-44968013856/job-original.log",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02e03c6c3b202af9ef9d25db7d946b2016f6d81b",
+      "size": 16961,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/02e03c6c3b202af9ef9d25db7d946b2016f6d81b"
+    },
+    {
+      "path": "docs/validation/20261122-common-sdk/selection.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3eadab7f72c9fb909cabcfd64a54b9cdb53e9e6b",
+      "size": 2569,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/3eadab7f72c9fb909cabcfd64a54b9cdb53e9e6b"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9482d52063a8aa5a78c73e5a3d3a293cfc4ec661",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/9482d52063a8aa5a78c73e5a3d3a293cfc4ec661"
+    },
+    {
+      "path": "scripts/CI",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6732aea52451db5695f39ac79fe1bd029c663d95",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/6732aea52451db5695f39ac79fe1bd029c663d95"
+    },
+    {
+      "path": "scripts/CI/verify-common-sdk.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54862f5fea85c4c25eb10218ef7ee81a139b1fdc",
+      "size": 9052,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/54862f5fea85c4c25eb10218ef7ee81a139b1fdc"
+    },
+    {
+      "path": "scripts/validate-project-board.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "830231a8479d23b1b6cc86c17317d73b11289f81",
+      "size": 500,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/830231a8479d23b1b6cc86c17317d73b11289f81"
+    },
+    {
+      "path": "tools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "279ef4a16d37d9a5519f42b10e17447350fff5ad",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/279ef4a16d37d9a5519f42b10e17447350fff5ad"
+    },
+    {
+      "path": "tools/ai-team",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f77849dbe72bb93db59062d022cf5ace79e2ac32",
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/trees/f77849dbe72bb93db59062d022cf5ace79e2ac32"
+    },
+    {
+      "path": "tools/ai-team/ensure-team.ps1",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6da00b7dac0c5a564aadcc2a5d22c1a7c4a6f543",
+      "size": 1732,
+      "url": "https://api.github.com/repos/davidpovarsky/TorahInspectorKit/git/blobs/6da00b7dac0c5a564aadcc2a5d22c1a7c4a6f543"
+    }
+  ],
+  "truncated": false
+}

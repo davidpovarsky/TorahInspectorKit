@@ -1,0 +1,60 @@
+{
+  "schema": "pinkha.wave2.g04.source-binding.v1",
+  "kitBase": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "appObservedBase": "2207b131f45d305ba828c93deb0633e275e59cba",
+  "files": [
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "gitBlob": "ee653e6205a577183548575a896044016178c851",
+      "bytes": 24889
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "sha256": "5e6799ab608d9dfcf9d8d895ce050dd878ce743c19f5ffe864e1863e1037c7b5",
+      "gitBlob": "366712cf677f71464b2255155149d08ae14601ae",
+      "bytes": 54961
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "sha256": "88371bf98ab8cd4273c459abb9a896924b680d1d7c422da8aa5501da76942dd8",
+      "gitBlob": "150c1780db7e93009bda86447e36906af0b439bf",
+      "bytes": 20848
+    },
+    {
+      "path": "Package.swift",
+      "sha256": "2fd7d2fda776da4ee55a50a67d6cfd8b7171f2311304a8d836fb5e4b7ad86401",
+      "gitBlob": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+      "bytes": 841,
+      "unchangedDependency": true
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "sha256": "494191bb24dbdeb21e3fbf028e652953504a7efbcbb386a792266e3c19b3802d",
+      "gitBlob": "cde132f85412a3343cb65f741311e18b25a9622a",
+      "bytes": 3472,
+      "unchangedDependency": false
+    },
+    {
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "gitBlob": "aeb7cc4215456c2db9bda284f7e947c643507408",
+      "bytes": 24592,
+      "unchangedDependency": true
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahReaderSessionState.swift",
+      "sha256": "aad8efcd8a619b23f8e0ae107373364b5ab4853eb7b5678e70821c35465d1861",
+      "gitBlob": "f7387ace46bd8e4934b578b63bbafa920eaf1df4",
+      "bytes": 649,
+      "unchangedDependency": true
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7",
+      "gitBlob": "d17bfe19e37af50d5a5bdec31b680c50d498ea89",
+      "bytes": 2875,
+      "unchangedDependency": true
+    }
+  ]
+}

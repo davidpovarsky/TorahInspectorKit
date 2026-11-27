@@ -288,6 +288,7 @@ private struct _InspectorLinkedSourceEntry: View {
 
     @State private var segment: TorahTextSegment?
     @State private var errorMessage: String?
+    @State private var documentLoads = TorahDocumentLoadLifetime()
     @Environment(\.locale) private var locale
 
     var body: some View {
@@ -311,23 +312,37 @@ private struct _InspectorLinkedSourceEntry: View {
                 } description: {
                     Text(errorMessage)
                 } actions: {
-                    Button(TorahStrings.text("Retry", locale: locale)) { Task { await loadSegment() } }
+                    Button(TorahStrings.text("Retry", locale: locale), action: retrySegment)
                 }
             } else {
                 ProgressView()
             }
         }
-        .task(id: selection.id) { await loadSegment() }
+        .task(id: selection.id) {
+            guard !Task.isCancelled else { return }
+            let request = documentLoads.activate(selectionID: selection.id)
+            await loadSegment(request)
+        }
+        .onDisappear { documentLoads.invalidate() }
     }
 
-    private func loadSegment() async {
+    private func retrySegment() {
+        guard let request = documentLoads.restart(for: selection.id) else { return }
+        Task { await loadSegment(request) }
+    }
+
+    private func loadSegment(_ request: TorahDocumentLoadLifetime.Request) async {
+        guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
         segment = nil
         errorMessage = nil
         do {
-            let document = try await repository.document(
-                for: selection.canonicalRef,
-                providerID: selection.providerID
-            )
+            let document = try await documentLoads.load(for: request) {
+                try await repository.document(
+                    for: selection.canonicalRef,
+                    providerID: selection.providerID
+                )
+            }
+            guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
             guard let resolved = TorahInspectorSegmentResolver.segment(
                 in: document,
                 preferredReference: selection.preferredSegmentRef ?? selection.canonicalRef
@@ -337,6 +352,7 @@ private struct _InspectorLinkedSourceEntry: View {
             segment = resolved
         } catch is CancellationError {
         } catch {
+            guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
             errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }
@@ -431,6 +447,7 @@ private struct _InspectorRelationshipsEntry: View {
     @State private var path: [TorahInspectorRoute] = []
     @State private var focus: TorahInspectorFocus?
     @State private var errorMessage: String?
+    @State private var documentLoads = TorahDocumentLoadLifetime()
     @Environment(\.locale) private var locale
 
     init(
@@ -473,7 +490,7 @@ private struct _InspectorRelationshipsEntry: View {
                     } description: {
                         Text(errorMessage)
                     } actions: {
-                        Button(TorahStrings.text("Retry", locale: locale)) { Task { await loadSegment() } }
+                        Button(TorahStrings.text("Retry", locale: locale), action: retrySegment)
                     }
                 } else {
                     ProgressView()
@@ -489,7 +506,12 @@ private struct _InspectorRelationshipsEntry: View {
                 actions: actions,
                 path: $path
             ))
-            .task(id: selection.id) { await loadSegment() }
+            .task(id: selection.id) {
+                guard !Task.isCancelled else { return }
+                let request = documentLoads.activate(selectionID: selection.id)
+                await loadSegment(request)
+            }
+            .onDisappear { documentLoads.invalidate() }
             .toolbar {
                 if TorahInspectorNavigationChrome.showsFullSourceButton(
                     pathIsEmpty: path.isEmpty,
@@ -557,14 +579,23 @@ private struct _InspectorRelationshipsEntry: View {
         .accessibilityIdentifier("torah-inspector-open-full-source")
     }
 
-    private func loadSegment() async {
+    private func retrySegment() {
+        guard let request = documentLoads.restart(for: selection.id) else { return }
+        Task { await loadSegment(request) }
+    }
+
+    private func loadSegment(_ request: TorahDocumentLoadLifetime.Request) async {
+        guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
         focus = nil
         errorMessage = nil
         do {
-            let document = try await repository.document(
-                for: selection.canonicalRef,
-                providerID: selection.providerID
-            )
+            let document = try await documentLoads.load(for: request) {
+                try await repository.document(
+                    for: selection.canonicalRef,
+                    providerID: selection.providerID
+                )
+            }
+            guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
             switch selection.scope {
             case .segment:
                 guard let preferred = selection.preferredSegmentRef,
@@ -589,6 +620,7 @@ private struct _InspectorRelationshipsEntry: View {
             }
         } catch is CancellationError {
         } catch {
+            guard documentLoads.isCurrent(request), !Task.isCancelled else { return }
             errorMessage = TorahStrings.message(for: error, locale: locale)
         }
     }

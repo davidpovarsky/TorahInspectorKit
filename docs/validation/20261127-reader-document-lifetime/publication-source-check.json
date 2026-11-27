@@ -1,0 +1,39 @@
+{
+  "actualComponentCompiler": "NOT_RUN",
+  "actualComponentTests": "NOT_RUN",
+  "allComponentPinsVerified": {
+    "Package.swift": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9",
+    "custody-correction.json": "0f01ece2d060adff6a570097f3b77e0ffa28fe0afee4302cb1e367faff98e1cd",
+    "editor-controller-source-review-2e9.json": "17217798b0821d1f67744627d69ac113a0dd378bd642f017203db2adf52aa89e",
+    "editor-controller-source-review-c079.json": "76b2d74472efd5037e56806229bf7ed327751d881e6a5507bb456031e7845178",
+    "owned-process-provenance.json": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1",
+    "owned_process.py": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+    "run_component.prereview-c079.py": "c079c67d218200af5100f22a503e603c16f9daf8badc014d9dc295d45ed1ab3c",
+    "run_component.py": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50"
+  },
+  "allThreeSourceInversesVerified": true,
+  "apiPublishedTreeRetention": "PENDING_ACTUAL_CREATE_TREE_READBACK",
+  "appPackagePinChanged": false,
+  "base": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "baseTree": "43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "declaredTests": {
+    "cases": 9,
+    "methods": 6
+  },
+  "exactCandidatePinsVerified": true,
+  "fullAppleUIVisualPhysical": "NOT_RUN",
+  "independentReviewSHA256": "76bfdf3c758ce0f5d0a2c6ec2316082fdcbd7e6eb789ee835c8bbd7059d3db98",
+  "modifiedOriginalPaths": [
+    "PROJECT_BOARD.md",
+    "Sources/TorahInspectorUI/TorahInspectorView.swift",
+    "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+    "Sources/TorahInspectorUI/TorahSourceReaderView.swift"
+  ],
+  "newSwiftPaths": [
+    "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+    "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift"
+  ],
+  "originalLeafCount": 135,
+  "schema": "pinkha.wave2.g04.api-publication-source-check.v1",
+  "wholeBoardInverseVerified": true
+}
