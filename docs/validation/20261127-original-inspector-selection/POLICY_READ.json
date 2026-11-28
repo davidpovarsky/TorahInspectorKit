@@ -1,0 +1,66 @@
+{
+  "base": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "team": [
+    {
+      "path": ".agents/roles/dana.md",
+      "sha256": "26bec42f8bd2fdc437506674be8ef5e168a3c37453ccbbc2845794e607598c51",
+      "read": false
+    },
+    {
+      "path": ".agents/roles/eitan.md",
+      "sha256": "83a92d77319cdfe46762b35a942d242bb4a456d1930f281edb0a417432d9c3aa",
+      "read": false
+    },
+    {
+      "path": ".agents/roles/maya.md",
+      "sha256": "8b325e3848297daab000d8026c563171c4ac0707e07b6597833ca6a0944c03fb",
+      "read": false
+    },
+    {
+      "path": ".agents/roles/noam.md",
+      "sha256": "b2f1aec90b55ec5ff5315eb0dd65b928f2a25bb2d74c76bd7b97572c8b676aef",
+      "read": true
+    },
+    {
+      "path": ".agents/roles/roni.md",
+      "sha256": "45cea319d08b9e5341cc409974cbcb738a94a9feeb255dd2da7d5b222ab5d4c1",
+      "read": false
+    },
+    {
+      "path": ".agents/roles/tomer.md",
+      "sha256": "ea43aa04dc957a4a8629d1cf0f19b435ad7c4f1c7b37220989aa9652a59a960b",
+      "read": false
+    },
+    {
+      "path": ".agents/roles/yael.md",
+      "sha256": "7932230330f80c495bb9fbac56f32b41249ecdfe95677b1136b120eefddaa34e",
+      "read": false
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "sha256": "c66d2d931a5b42a3006258b0c86536c61e0ead070d573c88f0c3bda8a9a63db8",
+      "read": true
+    },
+    {
+      "path": "docs/ai-team/ASANA_POLICY.md",
+      "sha256": "becf71a1b99195553ad04625d63f2f985df14d9653577963865bbc99f5f01c05",
+      "read": true
+    },
+    {
+      "path": "docs/ai-team/PROJECT_ASSIGNMENTS.md",
+      "sha256": "926d8212b8cf5cd40f2c19ecddd1e75ed32bb16ba563d5372eef17e25e8a26bd",
+      "read": true
+    },
+    {
+      "path": "docs/ai-team/TEAM.md",
+      "sha256": "49628f3330e9c5b9b57584ccca65e15d72223dfadee035c57dc738a7dbf626a6",
+      "read": true
+    }
+  ],
+  "authorization": "Standing owner authorization in original AGENTS.md; root scoped Kit lease. No new signing/release/target pin.",
+  "executionMode": "SUBAGENT",
+  "agent": "/root/release_preflight",
+  "sdkRuns": 0,
+  "nativeRuns": 0
+}
+

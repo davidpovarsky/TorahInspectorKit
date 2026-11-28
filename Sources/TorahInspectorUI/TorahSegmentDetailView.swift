@@ -16,6 +16,7 @@ public struct TorahSegmentDetailView: View {
     @State private var notesState = TorahPanelLoadState<[TorahInspectorNote]>.idle
     @State private var relatedDocumentsState = TorahPanelLoadState<TorahRelatedDocumentsSnapshot>.idle
     @State private var loadedFocusID: String?
+    @State private var navigationLifetime = TorahInspectorNavigationLifetime()
     @State private var selectorState = TorahToolSelectorStateMachine()
     @State private var expandedSourceIDs: Set<TorahLinkedSource.ID> = []
     @State private var expandedSourceText: [TorahLinkedSource.ID: String] = [:]
@@ -29,6 +30,8 @@ public struct TorahSegmentDetailView: View {
     @State private var unavailableSnippetIDs: Set<TorahLinkedSource.ID> = []
     @State private var snippetErrors: [TorahLinkedSource.ID: String] = [:]
     @Environment(\.locale) private var locale
+    @Environment(\.torahInspectorNavigationHooks) private var navigationHooks
+    @Environment(\.torahInspectorNavigationScope) private var navigationScope
     @Environment(\.torahInspectorPresentationOptions) private var presentationOptions
     @Environment(\.torahInspectorUsesLegacyDetailLayout) private var inheritedLegacyDetailLayout
 
@@ -172,14 +175,22 @@ public struct TorahSegmentDetailView: View {
     }
 
     private var panelContent: some View {
-        Group {
-            if usesLegacyDetailLayout {
-                panelLayout
-            } else {
-                panelLayout
-                    .navigationTitle(segmentDisplayRef)
-                    .torahInlineNavigationTitle()
-                    .toolbar { detailToolbar }
+        ScrollViewReader { originalScroll in
+            Group {
+                if usesLegacyDetailLayout {
+                    panelLayout
+                } else {
+                    panelLayout
+                        .navigationTitle(segmentDisplayRef)
+                        .torahInlineNavigationTitle()
+                        .toolbar { detailToolbar }
+                }
+            }
+            .background {
+                if let navigationHooks, let navigationScope {
+                    navigationHooks.panel(originalNavigationPanel(
+                        scope: navigationScope, scroll: originalScroll))
+                }
             }
         }
         .accessibilityElement(children: .contain)
@@ -191,6 +202,7 @@ public struct TorahSegmentDetailView: View {
         }
         .onAppear { ensureValidSelectedTool() }
         .onDisappear {
+            navigationLifetime.identityWillChange()
             expandedSourceLoads.invalidate()
             snippetGeneration = UUID()
             loadingSourceIDs.removeAll()
@@ -200,6 +212,7 @@ public struct TorahSegmentDetailView: View {
         .onReceive(NotificationCenter.default.publisher(for: .torahInspectorRelatedDocumentsAccessDidChange)) { notification in
             guard let owner = notification.object as? TorahInspectorRepository,
                   owner === repository else { return }
+            navigationLifetime.contentWillChange()
             relatedDocumentsState.discardPreviousValue(
                 TorahStrings.text("Could not load related documents", locale: locale)
             )
@@ -208,9 +221,89 @@ public struct TorahSegmentDetailView: View {
             if selectedTool == .notes {
                 Task { @MainActor in await loadNotes(force: true) }
             } else {
+                navigationLifetime.contentWillChange()
                 notesState.reset()
             }
         }
+    }
+
+    @ViewBuilder
+    private func originalNavigationWitness(_ anchor: TorahInspectorNavigationAnchor) -> some View {
+        if let navigationHooks, navigationScope != nil {
+            navigationHooks.witness(navigationLifetime.id, anchor)
+        }
+    }
+
+    private func originalGroupExpansion(_ id: String) -> Binding<Bool> {
+        Binding(get: { expandedCommentaryGroupIDs.contains(id) }, set: { isExpanded in
+            navigationLifetime.expansionWillChange()
+            if isExpanded {
+                expandedCommentaryGroupIDs.insert(id)
+            } else {
+                expandedCommentaryGroupIDs.remove(id)
+            }
+        })
+    }
+
+    private func originalContentWillPublish<Value: Sendable>(_ state: TorahPanelLoadState<Value>,
+                                                  request: TorahPanelRequest) {
+        guard case .loading(let current, _) = state, current == request else { return }
+        navigationLifetime.contentWillChange()
+    }
+
+    private var originalNavigationState: TorahInspectorNavigationPanelState {
+        var ready = Set<TorahStudyToolID>()
+        if loadedFocusID == focus.id {
+            if case .loaded = linksState {
+                ready.insert(.commentaries)
+                if case .loaded = topicsState { ready.insert(.links) }
+            }
+            if case .loaded = notesState { ready.insert(.notes) }
+        }
+        let finite: [TorahStudyToolID] = [.commentaries, .links, .notes]
+        var targets = finite.filter { configuration.availableTools.contains($0) }.map {
+            TorahInspectorNavigationTarget(anchor: .tool($0),
+                title: $0.localizedTitle(locale: locale), tool: $0)
+        }
+        if selectedTool == .commentaries, ready.contains(.commentaries) {
+            for (items, quoting) in [(groups.commentaryGroups, false), (groups.quotingCommentaryGroups, true)] {
+                for group in items {
+                    targets.append(TorahInspectorNavigationTarget(
+                        anchor: .commentaryGroup(id: group.id, quoting: quoting),
+                        title: commentaryGroupTitle(group), tool: .commentaries, group: group))
+                    // Follow the original renderer's work/entry branch exactly.
+                    let entries = group.works.count > 1 ? group.works.flatMap(\.entries) : group.entries
+                    for source in entries {
+                        targets.append(TorahInspectorNavigationTarget(
+                            anchor: .source(id: source.id, groupID: group.id, quoting: quoting),
+                            title: displayReference(source), tool: .commentaries, group: group, source: source))
+                    }
+                }
+            }
+        } else if selectedTool == .links, ready.contains(.links) {
+            for source in groups.linkedSources {
+                targets.append(TorahInspectorNavigationTarget(
+                    anchor: .source(id: source.id, groupID: nil, quoting: false),
+                    title: displayReference(source), tool: .links, source: source))
+            }
+        } else if selectedTool == .notes, ready.contains(.notes) {
+            for note in notes {
+                targets.append(TorahInspectorNavigationTarget(anchor: .note(id: note.id),
+                    title: note.note, tool: .notes, note: note))
+            }
+        }
+        return TorahInspectorNavigationPanelState(selectedTool: selectedTool,
+            readyTools: ready, targets: targets, expandedGroupIDs: expandedCommentaryGroupIDs,
+            expandedSourceIDs: expandedSourceIDs)
+    }
+
+    private func originalNavigationPanel(scope: TorahInspectorNavigationScope,
+                                         scroll: ScrollViewProxy) -> TorahInspectorOriginalPanel {
+        TorahInspectorOriginalPanel(lifetime: navigationLifetime, scope: scope,
+            focus: focus, repository: repository, read: { originalNavigationState },
+            selectTool: { selectedTool = $0 },
+            expandGroup: { originalGroupExpansion($0).wrappedValue = true },
+            scroll: { scroll.scrollTo($0, anchor: .top) })
     }
 
     private var panelLayout: some View {
@@ -241,7 +334,10 @@ public struct TorahSegmentDetailView: View {
                 }
                 Spacer(minLength: 8)
                 if actions.showsCloseButton, let onClose = actions.onClose {
-                    Button(action: onClose) {
+                    Button {
+                        navigationLifetime.identityWillChange()
+                        onClose()
+                    } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.secondary)
                             .frame(width: 30, height: 30)
@@ -262,6 +358,7 @@ public struct TorahSegmentDetailView: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("torah-inspector-tools")
+            .background { originalNavigationWitness(.tool(selectedTool)) }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
@@ -301,6 +398,7 @@ public struct TorahSegmentDetailView: View {
         }
         .pickerStyle(.segmented)
         .accessibilityIdentifier("torah-inspector-tools")
+        .background { originalNavigationWitness(.tool(selectedTool)) }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
     }
@@ -337,7 +435,10 @@ public struct TorahSegmentDetailView: View {
             )
         }
         if actions.showsCloseButton, let onClose = actions.onClose {
-            Button(action: onClose) {
+            Button {
+                navigationLifetime.identityWillChange()
+                onClose()
+            } label: {
                 Image(systemName: "xmark")
                     .foregroundStyle(.secondary)
                     .frame(width: 44, height: 44)
@@ -405,7 +506,7 @@ public struct TorahSegmentDetailView: View {
                         .font(.headline)
                         .padding(.top, groups.commentaryGroups.isEmpty ? 0 : 8)
                     ForEach(groups.quotingCommentaryGroups) { group in
-                        commentaryGroupCard(group)
+                        commentaryGroupCard(group, quoting: true)
                             .accessibilityIdentifier("torah-inspector-quoting-commentary-group-\(group.id)")
                     }
                 }
@@ -413,18 +514,9 @@ public struct TorahSegmentDetailView: View {
         }
     }
 
-    private func commentaryGroupCard(_ group: TorahSourceGroup) -> some View {
+    private func commentaryGroupCard(_ group: TorahSourceGroup, quoting: Bool = false) -> some View {
         DisclosureGroup(
-            isExpanded: Binding(
-                get: { expandedCommentaryGroupIDs.contains(group.id) },
-                set: { isExpanded in
-                    if isExpanded {
-                        expandedCommentaryGroupIDs.insert(group.id)
-                    } else {
-                        expandedCommentaryGroupIDs.remove(group.id)
-                    }
-                }
-            )
+            isExpanded: originalGroupExpansion(group.id)
         ) {
             LazyVStack(alignment: .leading, spacing: 10) {
                 if group.works.count > 1 {
@@ -435,13 +527,13 @@ public struct TorahSegmentDetailView: View {
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 4)
                             ForEach(work.entries) { source in
-                                expandableSourceRow(source, commentary: true)
+                                expandableSourceRow(source, commentary: true, group: group, quoting: quoting)
                             }
                         }
                     }
                 } else {
                     ForEach(group.entries) { source in
-                        expandableSourceRow(source, commentary: true)
+                        expandableSourceRow(source, commentary: true, group: group, quoting: quoting)
                     }
                 }
             }
@@ -451,6 +543,8 @@ public struct TorahSegmentDetailView: View {
                 Text(commentaryGroupTitle(group))
                     .font(.headline)
                     .lineLimit(2)
+                    .background { originalNavigationWitness(
+                        .commentaryGroup(id: group.id, quoting: quoting)) }
                 Spacer(minLength: 8)
                 Text(group.count, format: .number)
                     .font(.caption.weight(.semibold))
@@ -464,6 +558,7 @@ public struct TorahSegmentDetailView: View {
         .background(Color.torahSecondarySystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .contain)
+        .id(TorahInspectorNavigationAnchor.commentaryGroup(id: group.id, quoting: quoting))
     }
 
     private func resolvedSnippet(for source: TorahLinkedSource) -> String? {
@@ -533,12 +628,13 @@ public struct TorahSegmentDetailView: View {
         }
     }
 
-    private func commentaryCard(_ source: TorahLinkedSource) -> some View {
+    private func commentaryCard(_ source: TorahLinkedSource, anchor: TorahInspectorNavigationAnchor) -> some View {
         let isExpanded = expandedSourceIDs.contains(source.id)
         return VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(displayReference(source))
                     .font(.subheadline.weight(.semibold))
+                    .background { originalNavigationWitness(anchor) }
                 Spacer(minLength: 4)
                 expansionIndicator(source)
             }
@@ -597,6 +693,7 @@ public struct TorahSegmentDetailView: View {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(displayReference(source))
                         .font(.subheadline.weight(.semibold))
+                        .background { originalNavigationWitness(.source(id: source.id, groupID: nil, quoting: false)) }
                     Spacer(minLength: 4)
                     expansionIndicator(source)
                 }
@@ -636,12 +733,14 @@ public struct TorahSegmentDetailView: View {
             .foregroundStyle(.tertiary)
     }
 
-    private func expandableSourceRow(_ source: TorahLinkedSource, commentary: Bool) -> some View {
+    private func expandableSourceRow(_ source: TorahLinkedSource, commentary: Bool,
+                                     group: TorahSourceGroup? = nil, quoting: Bool = false) -> some View {
+        let anchor = TorahInspectorNavigationAnchor.source(id: source.id, groupID: group?.id, quoting: quoting)
         let isExpanded = expandedSourceIDs.contains(source.id)
         return VStack(alignment: .leading, spacing: 0) {
             Group {
                 if commentary {
-                    commentaryCard(source)
+                    commentaryCard(source, anchor: anchor)
                 } else {
                     linkedSourceCard(source)
                 }
@@ -691,6 +790,7 @@ public struct TorahSegmentDetailView: View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .id(anchor)
         .task(id: source.id) {
             if resolvedSnippet(for: source) == nil,
                !unavailableSnippetIDs.contains(source.id),
@@ -740,6 +840,7 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func toggleExpansion(_ source: TorahLinkedSource) {
+        navigationLifetime.expansionWillChange()
         if expandedSourceIDs.remove(source.id) != nil { return }
         expandedSourceIDs.insert(source.id)
         guard expandedSourceText[source.id] == nil,
@@ -748,6 +849,7 @@ public struct TorahSegmentDetailView: View {
     }
 
     private func openInReader(_ source: TorahLinkedSource) {
+        navigationLifetime.identityWillChange()
         actions.onOpenInNewTab?(sourceSelection(source))
     }
 
@@ -829,6 +931,7 @@ public struct TorahSegmentDetailView: View {
     private var notesContent: some View {
         if let onAddNote = actions.onAddNote {
             Button {
+                navigationLifetime.identityWillChange()
                 onAddNote(selection, notesDidChange)
             } label: {
                 Label(TorahStrings.text("Add Note", locale: locale), systemImage: "plus")
@@ -853,16 +956,20 @@ public struct TorahSegmentDetailView: View {
             VStack(spacing: 0) {
                 ForEach(notes) { note in
                     Button {
+                        navigationLifetime.identityWillChange()
                         actions.onOpenNote?(note, selection, notesDidChange)
                     } label: {
                         noteRow(note)
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("torah-inspector-note-\(note.id)")
+                    .id(TorahInspectorNavigationAnchor.note(id: note.id))
+                    .background { originalNavigationWitness(.note(id: note.id)) }
                     .accessibilityLabel(note.note)
                     .contextMenu {
                         if let onDeleteNote = actions.onDeleteNote {
                             Button(role: .destructive) {
+                                navigationLifetime.identityWillChange()
                                 onDeleteNote(note, selection, notesDidChange)
                             } label: {
                                 Label(
@@ -1080,6 +1187,7 @@ public struct TorahSegmentDetailView: View {
             expandedSourceLoads.activate(selectionID: focus.id)
         }
         guard loadedFocusID != focus.id else { return }
+        navigationLifetime.identityWillChange()
         loadedFocusID = focus.id
         snippetGeneration = UUID()
         loadingSnippetIDs.removeAll()
@@ -1117,6 +1225,7 @@ public struct TorahSegmentDetailView: View {
     @MainActor
     private func loadLinks(force: Bool = false) async {
         if !force, case .loaded = linksState { return }
+        navigationLifetime.contentWillChange()
         let request = linksState.begin(focusID: focus.id)
         do {
             let fetched = try await repository.links(for: selection.relationshipRef, providerID: providerID)
@@ -1129,11 +1238,14 @@ public struct TorahSegmentDetailView: View {
             guard loadedFocusID == request.focusID,
                   case .loading(let current, _) = linksState,
                   current == request else { return }
+            originalContentWillPublish(linksState, request: request)
             linksState.publish(snapshot, for: request)
             await hydrateInitialSnippets(Array(fetched.prefix(15)))
         } catch is CancellationError {
+            originalContentWillPublish(linksState, request: request)
             linksState.cancel(request)
         } catch {
+            originalContentWillPublish(linksState, request: request)
             linksState.fail(
                 TorahStrings.text("Could not load related sources", locale: locale),
                 for: request
@@ -1144,6 +1256,7 @@ public struct TorahSegmentDetailView: View {
     @MainActor
     private func loadTopics(force: Bool = false) async {
         if !force, case .loaded = topicsState { return }
+        navigationLifetime.contentWillChange()
         let request = topicsState.begin(focusID: focus.id)
         do {
             let fetched = try await repository.topics(
@@ -1151,10 +1264,13 @@ public struct TorahSegmentDetailView: View {
                 providerID: providerID
             )
             try Task.checkCancellation()
+            originalContentWillPublish(topicsState, request: request)
             topicsState.publish(fetched, for: request)
         } catch is CancellationError {
+            originalContentWillPublish(topicsState, request: request)
             topicsState.cancel(request)
         } catch {
+            originalContentWillPublish(topicsState, request: request)
             topicsState.fail(
                 TorahStrings.text("Could not load related sources", locale: locale),
                 for: request
@@ -1165,14 +1281,18 @@ public struct TorahSegmentDetailView: View {
     @MainActor
     private func loadNotes(force: Bool = false) async {
         if !force, case .loaded = notesState { return }
+        navigationLifetime.contentWillChange()
         let request = notesState.begin(focusID: focus.id)
         do {
             let fetched = try await repository.notes(for: selection)
             try Task.checkCancellation()
+            originalContentWillPublish(notesState, request: request)
             notesState.publish(fetched, for: request)
         } catch is CancellationError {
+            originalContentWillPublish(notesState, request: request)
             notesState.cancel(request)
         } catch {
+            originalContentWillPublish(notesState, request: request)
             notesState.fail(
                 TorahStrings.text("Could not load notes", locale: locale),
                 for: request
@@ -1196,14 +1316,18 @@ public struct TorahSegmentDetailView: View {
     @MainActor
     private func loadRelatedDocuments(force: Bool = false) async {
         if !force, case .loaded = relatedDocumentsState { return }
+        navigationLifetime.contentWillChange()
         let request = relatedDocumentsState.begin(focusID: focus.id)
         do {
             let fetched = try await repository.relatedDocuments(for: selection, forceRefresh: force)
             try Task.checkCancellation()
+            originalContentWillPublish(relatedDocumentsState, request: request)
             relatedDocumentsState.publish(fetched, for: request)
         } catch is CancellationError {
+            originalContentWillPublish(relatedDocumentsState, request: request)
             relatedDocumentsState.cancel(request)
         } catch {
+            originalContentWillPublish(relatedDocumentsState, request: request)
             relatedDocumentsState.fail(
                 TorahStrings.text("Could not load related documents", locale: locale),
                 for: request,

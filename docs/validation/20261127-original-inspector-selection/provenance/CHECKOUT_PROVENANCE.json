@@ -1,0 +1,177 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "HEAD",
+        "refs/heads/main"
+      ],
+      "exit": 0,
+      "stdout_sha256": "1872485cf99e71884e0cbd0473850bbcf77b4d9af932d9d71434757fa967e87f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "clone",
+        "--filter=blob:none",
+        "--no-checkout",
+        "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "/mnt/development/projects/worktrees/TorahInspectorKit-wave3-original-selection-20261127"
+      ],
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2114a5ba862724e1c97b269af5ed76f3a224ab423ddb3fb46ed6fac609adf341"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "-C",
+        "/mnt/development/projects/worktrees/TorahInspectorKit-wave3-original-selection-20261127",
+        "sparse-checkout",
+        "init",
+        "--cone"
+      ],
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "-C",
+        "/mnt/development/projects/worktrees/TorahInspectorKit-wave3-original-selection-20261127",
+        "sparse-checkout",
+        "set",
+        "Sources",
+        "Tests",
+        "docs/ai-team",
+        ".agents"
+      ],
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "-C",
+        "/mnt/development/projects/worktrees/TorahInspectorKit-wave3-original-selection-20261127",
+        "checkout",
+        "-b",
+        "codex/otzaria-wave3-original-inspector-selection-20261127",
+        "23db0f84e88d9ee9c7053c49de86903fc7bb5785"
+      ],
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "8a5b1fd007e597b73f9cd4d61368be56b03cd5f344a7454b1794f20ff1210a59"
+    }
+  ],
+  "scope": "ISOLATED_EXACT_ORIGINAL_KIT_CHECKOUT_NO_REPIN_NO_APP_EDIT",
+  "pinned_source": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "repository": "/mnt/development/projects/worktrees/TorahInspectorKit-wave3-original-selection-20261127",
+  "head": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "status": "",
+  "preimages": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5032,
+      "sha256": "597448f0b85b0469a9dbb366924e58df9a41aab18d31baafc9f8cb88b2b65168",
+      "git_blob": "ccc53d3a630ca44c3ecb1667d3828e2c88294dd6"
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "bytes": 3025,
+      "sha256": "31f65bac6e473d1c379a30894a6fd64602ca2127b204a1e03188eec552c96452",
+      "git_blob": "502a4abc0b20afe38c902050a692f3e3b8272125"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 841,
+      "sha256": "2fd7d2fda776da4ee55a50a67d6cfd8b7171f2311304a8d836fb5e4b7ad86401",
+      "git_blob": "5ec0de7727f3e99768c8f49d95734c74d90c1571"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "bytes": 24889,
+      "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "git_blob": "ee653e6205a577183548575a896044016178c851"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "bytes": 54958,
+      "sha256": "cf23dec33df1df00d85e3fd333a838a60befa7a22a6ea2daed53dc86158df823",
+      "git_blob": "30465fe28f86643c3f6607e663e7712aeee6d872"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      "bytes": 2875,
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7",
+      "git_blob": "d17bfe19e37af50d5a5bdec31b680c50d498ea89"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorHostActions.swift",
+      "bytes": 4897,
+      "sha256": "3d40b9315146e6f5e0c611fddc2ad6f3216796346189819b58d0cd5ca3792edf",
+      "git_blob": "5795b8c5473b9ca0ece657a5e5485984f5b59de3"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "bytes": 24592,
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "git_blob": "aeb7cc4215456c2db9bda284f7e947c643507408"
+    }
+  ]
+}

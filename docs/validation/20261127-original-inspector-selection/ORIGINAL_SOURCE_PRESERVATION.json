@@ -1,0 +1,166 @@
+{
+  "scope": "Static exact original-source preservation, not a new control run or Apple typecheck. No original test edits. Partial overlay files are not deletion requests.",
+  "base": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "candidateProductPaths": [
+    {
+      "path": "TorahInspectorNavigationSurface.swift",
+      "bytes": 20634,
+      "sha256": "8ebf45c900f30ccf48fd5f6efa61a0d204f4bb08c178f1b3fa473b9307e31114"
+    },
+    {
+      "path": "TorahInspectorView.swift",
+      "bytes": 30948,
+      "sha256": "00e26fa48c0f5313fb223bd0025d370f66e46ea7421b14dbe4da535fadb44a36"
+    },
+    {
+      "path": "TorahSegmentDetailView.swift",
+      "bytes": 63385,
+      "sha256": "9410237c166e262f601c5db8be5bb4ce7200ae4d56afef458e6f758382680ac4"
+    }
+  ],
+  "originalComparisons": [
+    {
+      "file": "TorahInspectorView.swift",
+      "method": "retrySegment",
+      "occurrence": 0,
+      "bytes": 168,
+      "sha256": "76f1053526b3e6c54b6faf452efb033dd5ca0272b7b2a913ea8c4af817a5b31d",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahInspectorView.swift",
+      "method": "retrySegment",
+      "occurrence": 1,
+      "bytes": 168,
+      "sha256": "76f1053526b3e6c54b6faf452efb033dd5ca0272b7b2a913ea8c4af817a5b31d",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahInspectorView.swift",
+      "method": "loadSegment",
+      "occurrence": 0,
+      "bytes": 1100,
+      "sha256": "a5d49cfb86628494243b5cd4abc95578417bc394ae70cc1bc9460909478d9712",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahInspectorView.swift",
+      "method": "loadSegment",
+      "occurrence": 1,
+      "bytes": 1747,
+      "sha256": "d9fda68934a3288e26d69e4aa6ae4ab71cc0dd461f1c4527d33d8abe562e61b8",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "scheduleFullSourceLoad",
+      "occurrence": 0,
+      "bytes": 227,
+      "sha256": "25daae2583aa7ec29610182849de591bf18d10089d0173ec5f60602d81af1ba8",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadFullSource",
+      "occurrence": 0,
+      "bytes": 1334,
+      "sha256": "817800911344d9aaa12a5a87b828c97d205fd2a283af5d5125b6f98f54e9d842",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadSnippet",
+      "occurrence": 0,
+      "bytes": 118,
+      "sha256": "cf33c88c984415ec217ee50050d191bc8bf5438e45a0bd81660c0b7128667a31",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadSelectedTool",
+      "occurrence": 0,
+      "bytes": 537,
+      "sha256": "76d240965a41299ddc34f3cbeaabc738682fb1f4b1158c6c88317b16f5eab7bb",
+      "comparison": "complete original body byte-identical"
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "prepareForCurrentFocus",
+      "originalBytes": 779,
+      "originalSHA256": "c2506fa4df6cc1332f670622f07c18c408a1aa2b393f492ce56becb1039701a5",
+      "candidateSHA256": "97c3cd2277be69ab9c616f06fcc8f8fb3c1c4d24490d4065306f2c157f1a9c06",
+      "comparison": "exact original body remains after removing only listed passive source-publication lines",
+      "additions": [
+        "        navigationLifetime.identityWillChange()"
+      ]
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadLinks",
+      "originalBytes": 1093,
+      "originalSHA256": "65a6365194747e01f0dbcd570036a6f42973056e6f906540b306cc8e6a06e62f",
+      "candidateSHA256": "1948562816274cb14e5aa845b642afeead8a1634d3ee7c7c4170ee58c19c47d8",
+      "comparison": "exact original body remains after removing only listed passive source-publication lines",
+      "additions": [
+        "        navigationLifetime.contentWillChange()",
+        "            originalContentWillPublish(linksState, request: request)",
+        "            originalContentWillPublish(linksState, request: request)",
+        "            originalContentWillPublish(linksState, request: request)"
+      ]
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadTopics",
+      "originalBytes": 708,
+      "originalSHA256": "7801f356bc9a75f69ef93e56c1f693e3525c375824ec6f531f8d229b88f43d96",
+      "candidateSHA256": "d778b7b16246c7840ac5807f72db06ddca9fdea23491dc694683e152aecc4c89",
+      "comparison": "exact original body remains after removing only listed passive source-publication lines",
+      "additions": [
+        "        navigationLifetime.contentWillChange()",
+        "            originalContentWillPublish(topicsState, request: request)",
+        "            originalContentWillPublish(topicsState, request: request)",
+        "            originalContentWillPublish(topicsState, request: request)"
+      ]
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadNotes",
+      "originalBytes": 605,
+      "originalSHA256": "33a21e7cd6030a24489185f994e59e8dcf6af7a1f908c263161cf5a291aad29d",
+      "candidateSHA256": "062ae32ae00b9c067c9d6b68bbac2c31dfffee7f378ae4d675e4641a2dd55f7f",
+      "comparison": "exact original body remains after removing only listed passive source-publication lines",
+      "additions": [
+        "        navigationLifetime.contentWillChange()",
+        "            originalContentWillPublish(notesState, request: request)",
+        "            originalContentWillPublish(notesState, request: request)",
+        "            originalContentWillPublish(notesState, request: request)"
+      ]
+    },
+    {
+      "file": "TorahSegmentDetailView.swift",
+      "method": "loadRelatedDocuments",
+      "originalBytes": 755,
+      "originalSHA256": "de57ab3813ed1f4e9412f292731dc04cabe2a283dd23ea7e5b3fe7a951414392",
+      "candidateSHA256": "d35947f5987e00955ab639e26261edfa8cf9d01ff0f50074e890c5449cd6a09a",
+      "comparison": "exact original body remains after removing only listed passive source-publication lines",
+      "additions": [
+        "        navigationLifetime.contentWillChange()",
+        "            originalContentWillPublish(relatedDocumentsState, request: request)",
+        "            originalContentWillPublish(relatedDocumentsState, request: request)",
+        "            originalContentWillPublish(relatedDocumentsState, request: request)"
+      ]
+    },
+    {
+      "file": "TorahDocumentLoadLifetime.swift",
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7",
+      "comparison": "whole original file byte-identical; not a product edit"
+    },
+    {
+      "file": "TorahInspectorRoute.swift",
+      "bytes": 3134,
+      "sha256": "837f7e9b025f0116bbe56b95fe4ccad628041df13c4089e04b0611f610370890",
+      "comparison": "whole original file byte-identical; not a product edit"
+    }
+  ]
+}

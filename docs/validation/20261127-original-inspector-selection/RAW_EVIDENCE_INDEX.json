@@ -1,0 +1,261 @@
+{
+  "sourceArchive": {
+    "path": "initial-component-source-controls.tar.gz",
+    "bytes": 116902,
+    "sha256": "4c3bc4821fbe0d992dd6dd20b42078c4653ed0dd4a51a4ef0e8b54631b8e5541"
+  },
+  "derivation": "Exact original regular-file contents for the two Kit runs only; tar headers normalized for this Git artifact, all source/log/result bytes unchanged. No compiled objects/cache included. Original full archive retained separately.",
+  "archive": {
+    "path": "original-source-controls.tar.gz",
+    "bytes": 46279,
+    "sha256": "f863871af4bef7a793dfd0f8d5b7431432f456155cd94731c4af4608ecb68f7f"
+  },
+  "members": [
+    {
+      "path": "controls-kit-attempt-1/COMPILED_INPUTS.json",
+      "bytes": 4499,
+      "sha256": "16a89deff1eb634ee97615e7feea835ba8d86c8dbf7d1689291014b7eda135ec"
+    },
+    {
+      "path": "controls-kit-attempt-1/RESULT.json",
+      "bytes": 10534,
+      "sha256": "b363680b5130d1bd93123273382c4f37fa6cadea8543488cea35a61057d5578a"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-compile.PROCESS.json",
+      "bytes": 2157,
+      "sha256": "31f9512771e0aa23443f16ca3ef576100dae06a207cd7d387d7c1ee19d0bfc08"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-compile.RESULT.json",
+      "bytes": 2490,
+      "sha256": "fb9d214a144c3f04cd88fbe16739bb6631df80c78c085acf47b1aa4f58e862fe"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-compile.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-run.PROCESS.json",
+      "bytes": 364,
+      "sha256": "5c1eba461da070eec19f158a38367ec13dd0b885fc69ed11e9050f81994498df"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-run.RESULT.json",
+      "bytes": 696,
+      "sha256": "7cb4173161c063fe17c9bcc6dff82d826223bd0a8c627d875a731eae52283db1"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-run.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-attempt-1/controls-run.stdout",
+      "bytes": 2800,
+      "sha256": "0602d6eef6bf790dcb804e8c5331f9afbade61ad3a8a3e19d9ff1a96fb17eb78"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/Models.swift",
+      "bytes": 24592,
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/ProviderProtocols.swift",
+      "bytes": 510,
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahInspectorCoordinator.swift",
+      "bytes": 461,
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahInspectorRepository.swift",
+      "bytes": 17499,
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahReaderScrollStateMachine.swift",
+      "bytes": 3444,
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahRelatedDocumentsAccessError.swift",
+      "bytes": 355,
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahSourceTransfer.swift",
+      "bytes": 3410,
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97"
+    },
+    {
+      "path": "controls-kit-attempt-1/core/TorahToolSelectorStateMachine.swift",
+      "bytes": 2005,
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729"
+    },
+    {
+      "path": "controls-kit-attempt-1/core-compile.PROCESS.json",
+      "bytes": 2122,
+      "sha256": "41cea74476297a05f9126d1e2741da91990c1beb2d74c31cdaa4ac6da6b31443"
+    },
+    {
+      "path": "controls-kit-attempt-1/core-compile.RESULT.json",
+      "bytes": 2455,
+      "sha256": "364ef7cebda20e005ac7692c589d73a32c6197e1e50dd80854184ecd28ab7d43"
+    },
+    {
+      "path": "controls-kit-attempt-1/core-compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-attempt-1/core-compile.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/KitNavigationBoundary.swift",
+      "bytes": 4027,
+      "sha256": "a972522df6597b934c77b50bea30e4db9be873c30f2896b627e19c59ef271747"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/KitNavigationControls.swift",
+      "bytes": 14643,
+      "sha256": "f046daeef0a509cd730c911cc2814367afde02d05225c4631d7bca89730aeb97"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/OriginalNavigationSurface.swift",
+      "bytes": 18288,
+      "sha256": "416e3dd5d35ea5e087719ff65027b0c5ba833e5e8e5cc23531d347293a2e9276"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/OriginalRouteTypes.swift",
+      "bytes": 1922,
+      "sha256": "6f5455212ba0b3b8450c14c8efd41a5214c355caebced781a3073f98640bfd8f"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/OriginalViewMethodShells.swift",
+      "bytes": 9259,
+      "sha256": "1ef20cacf28df5475e93de3e0d2ccaabafae98b0cc0676e5ca05bfb5a2f9c4e0"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/SOURCE_EXTRACTION.json",
+      "bytes": 7490,
+      "sha256": "680b30459b15e4ebb63b5b1183ad8e6ab86e02486e9c4f57e3d6d55b53c03cbd"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/TorahDocumentLoadLifetime.swift",
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    },
+    {
+      "path": "controls-kit-attempt-1/input/TorahPanelLoadState.swift",
+      "bytes": 2875,
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7"
+    },
+    {
+      "path": "controls-kit-attempt-1/run_kit_controls.py",
+      "bytes": 6106,
+      "sha256": "212cafe8b9ee6da55558939b926c63edf996dfb03a3f803900ae6c29a1bda346"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/COUNTERFACTUAL_INPUTS.json",
+      "bytes": 1301,
+      "sha256": "c95f4e1e09d3ab4df55b1bf0ca6ebe53ac372eb50aeda434ab95ebd294b037ce"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/RESULT.json",
+      "bytes": 8115,
+      "sha256": "74565da72f77411682c081be5f007a92f2c3510d1c48e2c086458db80aa272d2"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-compile.PROCESS.json",
+      "bytes": 2236,
+      "sha256": "53bb6e501b09ef10d5aedb73ad025b0804e2e58e258f91c9121f66ba4ea75bbb"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-compile.RESULT.json",
+      "bytes": 2571,
+      "sha256": "d739d499a700ef70fa9d152604b1817571b48a62e82bec00aa9ec843b4cdd9d9"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-compile.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-run.PROCESS.json",
+      "bytes": 374,
+      "sha256": "30b5872fc09f0c6e6cda7c1ea007064650b71c16bed9be3c914aacf053b07c4a"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-run.RESULT.json",
+      "bytes": 705,
+      "sha256": "f555534b101b64558048f272dcd64ab53d4193a5faf63bc5cf3de3c782c39005"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-run.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/controls-run.stdout",
+      "bytes": 2864,
+      "sha256": "c216a4a0bc006f05670e979218e80c434a63b1531d62347e825e60a0bcd8a365"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/KitNavigationBoundary.swift",
+      "bytes": 4027,
+      "sha256": "a972522df6597b934c77b50bea30e4db9be873c30f2896b627e19c59ef271747"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/KitNavigationControls.swift",
+      "bytes": 14643,
+      "sha256": "f046daeef0a509cd730c911cc2814367afde02d05225c4631d7bca89730aeb97"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/OriginalNavigationSurface.swift",
+      "bytes": 18236,
+      "sha256": "7fcd14483689d90baa6ddcf3526e9920f131a75ec99f47df3138e2e66e60dc70"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/OriginalRouteTypes.swift",
+      "bytes": 1922,
+      "sha256": "6f5455212ba0b3b8450c14c8efd41a5214c355caebced781a3073f98640bfd8f"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/OriginalViewMethodShells.swift",
+      "bytes": 9259,
+      "sha256": "1ef20cacf28df5475e93de3e0d2ccaabafae98b0cc0676e5ca05bfb5a2f9c4e0"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/TorahDocumentLoadLifetime.swift",
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/input/TorahPanelLoadState.swift",
+      "bytes": 2875,
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7"
+    },
+    {
+      "path": "controls-kit-path-counterfactual/run_counterfactual.py",
+      "bytes": 5709,
+      "sha256": "124e4e11065ed0521ddca41222ce438ada6c4e8c42bc8f7aadc6078db05e3145"
+    }
+  ],
+  "verified": true
+}

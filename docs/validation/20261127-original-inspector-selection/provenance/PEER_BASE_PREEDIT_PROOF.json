@@ -1,0 +1,114 @@
+{
+  "old_source": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "peer_source": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "merge_base": "23db0f84e88d9ee9c7053c49de86903fc7bb5785",
+  "package_unchanged": true,
+  "original_tests_diff": "A\tTests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift\n",
+  "old_common_archive": {
+    "bytes": 16140,
+    "sha256": "c4935cf29a0b9eeb365a806ef5b68969c9395e66cef411002c809d1847eae0cc",
+    "members": [
+      {
+        "name": "events.jsonl",
+        "bytes": 50423,
+        "sha256": "3cc33f61156e4dcfa04d9fd593d232d7232cf38557f21b88df03edf340534122",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/events.jsonl",
+        "equal": true
+      },
+      {
+        "name": "identity.json",
+        "bytes": 383,
+        "sha256": "1eec77cb3d70851ddfeceb4af5b6dddd41e076464b75420c96c2c07af5df1ff0",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/identity.json",
+        "equal": true
+      },
+      {
+        "name": "execution.json",
+        "bytes": 53,
+        "sha256": "bc4786f6d0f535e6f5152935049604afa787e1490d428bdd88753c52867076c8",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/execution.json",
+        "equal": true
+      },
+      {
+        "name": "command.json",
+        "bytes": 967,
+        "sha256": "21611c00611558d578841093665939cf578ddc9967d8734b20a4021dd2e55d6e",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/command.json",
+        "equal": true
+      },
+      {
+        "name": "selection.json",
+        "bytes": 2569,
+        "sha256": "737927dce033c85217e8f118ae851587c61ff3c51ca63a286c6b734da9290e02",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/selection.json",
+        "equal": true
+      },
+      {
+        "name": "source-after.json",
+        "bytes": 6747,
+        "sha256": "e79f8bc22abdc530425720e8233a899f9e7cd647a43f9808d76cbbd8c4fe5fc0",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-after.json",
+        "equal": true
+      },
+      {
+        "name": "source-before.json",
+        "bytes": 6747,
+        "sha256": "e79f8bc22abdc530425720e8233a899f9e7cd647a43f9808d76cbbd8c4fe5fc0",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-before.json",
+        "equal": true
+      },
+      {
+        "name": "swift-test.log",
+        "bytes": 12804,
+        "sha256": "b43e645638cbddf7395d800a6868ae9e5ac018e1ab52c563acd2b740c8ef8053",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-test.log",
+        "equal": true
+      },
+      {
+        "name": "swift-version.log",
+        "bytes": 128,
+        "sha256": "1b207d5b85484205225f907ee34c5c63fcf5ba15260fad7ceb129191841e9908",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-version.log",
+        "equal": true
+      },
+      {
+        "name": "tests-swift-testing.xml",
+        "bytes": 5052,
+        "sha256": "20cbbd0f98f6fffb47059b66d2afdeecaf02b042f555bab34c78f6085757702d",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/tests-swift-testing.xml",
+        "equal": true
+      },
+      {
+        "name": "xcode-version.log",
+        "bytes": 33,
+        "sha256": "ee3fe26035862d2b9653c1a570be3eca4ee5be2815f0ce99ff2d8ffa3399e4c8",
+        "compared_committed_evidence_path": "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/xcode-version.log",
+        "equal": true
+      }
+    ]
+  },
+  "no_remaining_demonstrated_source_blocker": true,
+  "scope": "READ_ONLY_SOURCE_AND_EVIDENCE_BINDING; NO_TEST_EXECUTION; NO_DEPENDENCY_ADOPTION",
+  "new_helper_declared_cases": 9,
+  "new_helper_executed_here": 0,
+  "app_pin_changed": false,
+  "pre_edit_head": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "pre_edit_status": "",
+  "leased_preimages": [
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "bytes": 26545,
+      "sha256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "bytes": 56161,
+      "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    }
+  ]
+}

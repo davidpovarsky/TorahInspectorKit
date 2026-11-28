@@ -28,6 +28,7 @@ public struct TorahInspectorView: View {
     private let onSearchPresentationChanged: (Bool) -> Void
     @State private var localSelectedToolID: TorahStudyToolID = .commentaries
     @State private var readerSession = TorahReaderSessionState()
+    @State private var navigationLifetime = TorahInspectorNavigationLifetime()
 
     public init(
         repository: TorahInspectorRepository,
@@ -173,6 +174,8 @@ public struct TorahInspectorView: View {
         }
         .environment(\.torahInspectorPresentationOptions, presentationOptions)
         .environment(\.torahInspectorUsesLegacyDetailLayout, usesLegacyDetailLayout)
+        .environment(\.torahInspectorNavigationLifetime, navigationLifetime)
+        .onDisappear { navigationLifetime.identityWillChange() }
     }
 
     private var selectedToolBinding: Binding<TorahStudyToolID> {
@@ -183,6 +186,7 @@ public struct TorahInspectorView: View {
                     ?? localSelectedToolID
             },
             set: { newValue in
+                navigationLifetime.toolWillChange()
                 if let externalSelectedToolID {
                     externalSelectedToolID.wrappedValue = newValue
                 } else if let externalSelectedTool,
@@ -208,6 +212,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
     let readerSession: TorahReaderSessionState
     let actions: TorahInspectorHostActions
     @Binding var path: [TorahInspectorRoute]
+    @Environment(\.torahInspectorNavigationStack) private var navigationStack
 
     func body(content: Content) -> some View {
         content.navigationDestination(for: TorahInspectorRoute.self) { route in
@@ -236,6 +241,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     configuration: configuration,
                     actions: destinationActions
                 )
+                .environment(\.torahInspectorNavigationScope, originalNavigationScope(for: route))
             case .source(let nextSelection):
                 _InspectorLinkedSourceEntry(
                     selection: nextSelection,
@@ -245,6 +251,7 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     configuration: configuration,
                     actions: destinationActions
                 )
+                .environment(\.torahInspectorNavigationScope, originalNavigationScope(for: route))
             case .fullSource(let nextSelection):
                 TorahSourceReaderView(
                     selection: nextSelection,
@@ -263,6 +270,24 @@ private struct _InspectorNavigationDestinations: ViewModifier {
                     actions: actions,
                     path: $path
                 ))
+            }
+        }
+    }
+
+    private func originalNavigationScope(for route: TorahInspectorRoute) -> TorahInspectorNavigationScope? {
+        guard let navigationStack else { return nil }
+        return TorahInspectorNavigationScope(lifetime: navigationStack.lifetime) { focus in
+            guard navigationStack.isCurrentRoute(route) else { return false }
+            switch route {
+            case .segment(let segment):
+                return focus == TorahInspectorFocus(segment: segment,
+                    providerID: selection.providerID, sectionRef: selection.canonicalRef)
+            case .source:
+                // The linked entry additionally binds its actual document-load
+                // request and resolved original segment before it exposes a panel.
+                return true
+            case .search, .fullSource:
+                return false
             }
         }
     }
@@ -290,6 +315,7 @@ private struct _InspectorLinkedSourceEntry: View {
     @State private var errorMessage: String?
     @State private var documentLoads = TorahDocumentLoadLifetime()
     @Environment(\.locale) private var locale
+    @Environment(\.torahInspectorNavigationScope) private var inheritedNavigationScope
 
     var body: some View {
         Group {
@@ -306,6 +332,7 @@ private struct _InspectorLinkedSourceEntry: View {
                     configuration: configuration,
                     actions: actions
                 )
+                .environment(\.torahInspectorNavigationScope, originalDocumentScope)
             } else if let errorMessage {
                 ContentUnavailableView {
                     Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
@@ -324,6 +351,18 @@ private struct _InspectorLinkedSourceEntry: View {
             await loadSegment(request)
         }
         .onDisappear { documentLoads.invalidate() }
+    }
+
+    private var originalDocumentScope: TorahInspectorNavigationScope? {
+        guard let inheritedNavigationScope,
+              let request = documentLoads.request(for: selection.id) else { return nil }
+        return TorahInspectorNavigationScope(lifetime: inheritedNavigationScope.lifetime) { candidate in
+            guard documentLoads.isCurrent(request), let segment,
+                  inheritedNavigationScope.isCurrent(candidate) else { return false }
+            let expected = TorahInspectorFocus(segment: segment,
+                providerID: selection.providerID, sectionRef: selection.canonicalRef)
+            return candidate == expected && documentLoads.isCurrent(request)
+        }
     }
 
     private func retrySegment() {
@@ -370,9 +409,10 @@ private struct _InspectorSourceReaderEntry: View {
     let onSearchPresentationChanged: (Bool) -> Void
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
+    @Environment(\.torahInspectorNavigationLifetime) private var navigationLifetime
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: originalNavigationPath) {
             TorahSourceReaderView(
                 selection: selection,
                 repository: repository,
@@ -388,15 +428,30 @@ private struct _InspectorSourceReaderEntry: View {
                     configuration: configuration,
                     readerSession: readerSession,
                     actions: actions,
-                    path: $path
+                    path: originalNavigationPath
                 ))
         }
+        .environment(\.torahInspectorNavigationStack, originalNavigationStack)
         .onAppear(perform: consumePendingSearchRequest)
         .onChange(of: pendingSearchRequest?.wrappedValue ?? false) { _, requested in
             if requested { consumePendingSearchRequest() }
         }
         .onChange(of: path) { oldPath, newPath in
             searchPathDidChange(from: oldPath, to: newPath)
+        }
+    }
+
+    private var originalNavigationPath: Binding<[TorahInspectorRoute]> {
+        Binding(get: { path }, set: { value in
+            navigationLifetime?.identityWillChange()
+            path = value
+        })
+    }
+
+    private var originalNavigationStack: TorahInspectorNavigationStackSource? {
+        guard let navigationLifetime else { return nil }
+        return TorahInspectorNavigationStackSource(lifetime: navigationLifetime) { route in
+            path.last == route
         }
     }
 
@@ -410,12 +465,14 @@ private struct _InspectorSourceReaderEntry: View {
 
     private func requestSearch() {
         guard actions.search != nil else { return }
+        navigationLifetime?.identityWillChange()
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
         onSearchPresentationChanged(true)
     }
 
     private func consumePendingSearchRequest() {
         guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
+        navigationLifetime?.identityWillChange()
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
         pendingSearchRequest.wrappedValue = false
     }
@@ -445,6 +502,7 @@ private struct _InspectorRelationshipsEntry: View {
     let onSearchPresentationChanged: (Bool) -> Void
     let actions: TorahInspectorHostActions
     @State private var path: [TorahInspectorRoute] = []
+    @Environment(\.torahInspectorNavigationLifetime) private var navigationLifetime
     @State private var focus: TorahInspectorFocus?
     @State private var errorMessage: String?
     @State private var documentLoads = TorahDocumentLoadLifetime()
@@ -473,7 +531,7 @@ private struct _InspectorRelationshipsEntry: View {
     }
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: originalNavigationPath) {
             Group {
                 if let focus {
                     TorahSegmentDetailView(
@@ -484,6 +542,7 @@ private struct _InspectorRelationshipsEntry: View {
                         configuration: configuration,
                         actions: rootActions
                     )
+                    .environment(\.torahInspectorNavigationScope, originalRootScope)
                 } else if let errorMessage {
                     ContentUnavailableView {
                         Label(TorahStrings.text("No text available", locale: locale), systemImage: "exclamationmark.triangle")
@@ -504,7 +563,7 @@ private struct _InspectorRelationshipsEntry: View {
                 configuration: configuration,
                 readerSession: readerSession,
                 actions: actions,
-                path: $path
+                path: originalNavigationPath
             ))
             .task(id: selection.id) {
                 guard !Task.isCancelled else { return }
@@ -530,12 +589,35 @@ private struct _InspectorRelationshipsEntry: View {
                 }
             }
         }
+        .environment(\.torahInspectorNavigationStack, originalNavigationStack)
         .onAppear(perform: consumePendingSearchRequest)
         .onChange(of: pendingSearchRequest?.wrappedValue ?? false) { _, requested in
             if requested { consumePendingSearchRequest() }
         }
         .onChange(of: path) { oldPath, newPath in
             searchPathDidChange(from: oldPath, to: newPath)
+        }
+    }
+
+    private var originalNavigationPath: Binding<[TorahInspectorRoute]> {
+        Binding(get: { path }, set: { value in
+            navigationLifetime?.identityWillChange()
+            path = value
+        })
+    }
+
+    private var originalNavigationStack: TorahInspectorNavigationStackSource? {
+        guard let navigationLifetime else { return nil }
+        return TorahInspectorNavigationStackSource(lifetime: navigationLifetime) { route in
+            path.last == route
+        }
+    }
+
+    private var originalRootScope: TorahInspectorNavigationScope? {
+        guard let navigationLifetime,
+              let request = documentLoads.request(for: selection.id) else { return nil }
+        return TorahInspectorNavigationScope(lifetime: navigationLifetime) { candidate in
+            path.isEmpty && documentLoads.isCurrent(request) && focus == candidate
         }
     }
 
@@ -549,12 +631,14 @@ private struct _InspectorRelationshipsEntry: View {
 
     private func requestSearch() {
         guard actions.search != nil else { return }
+        navigationLifetime?.identityWillChange()
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
         onSearchPresentationChanged(true)
     }
 
     private func consumePendingSearchRequest() {
         guard let pendingSearchRequest, pendingSearchRequest.wrappedValue else { return }
+        navigationLifetime?.identityWillChange()
         TorahInspectorSearchRouteCoordinator.showSearch(path: &path)
         pendingSearchRequest.wrappedValue = false
     }
@@ -570,6 +654,7 @@ private struct _InspectorRelationshipsEntry: View {
 
     private var fullSourceButton: some View {
         Button {
+            navigationLifetime?.identityWillChange()
             path.append(.fullSource(selection))
         } label: {
             Image(systemName: "book.closed")
